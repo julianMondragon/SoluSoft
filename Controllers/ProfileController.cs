@@ -65,6 +65,8 @@ namespace TAS360.Controllers
                     perfil.Estado = usuario.Estado;
                     perfil.Foto_usuario = usuario.Foto_usuario;
 
+                    GetGeneroOptions(perfil.Género);
+                    GetEstadoOptions(perfil.Estado);
                 }
                 else
                 {
@@ -72,48 +74,8 @@ namespace TAS360.Controllers
                 }
             }
 
-            // Llenar el ViewBag con las opciones para los campos desplegables de género y estado
-            ViewBag.GeneroOptions = new List<SelectListItem>
-            {
-                new SelectListItem { Text = "Masculino", Value = "Masculino" },
-                new SelectListItem { Text = "Femenino", Value = "Femenino" },
-                new SelectListItem { Text = "Otro", Value = "Otro" }
-            };
+            
 
-            ViewBag.EstadoOptions = new List<SelectListItem>
-            {
-               new SelectListItem { Text = "Aguascalientes", Value = "Aguascalientes" },
-    new SelectListItem { Text = "Baja California", Value = "Baja California" },
-    new SelectListItem { Text = "Baja California Sur", Value = "Baja California Sur" },
-    new SelectListItem { Text = "Campeche", Value = "Campeche" },
-    new SelectListItem { Text = "Chiapas", Value = "Chiapas" },
-    new SelectListItem { Text = "Chihuahua", Value = "Chihuahua" },
-    new SelectListItem { Text = "Coahuila", Value = "Coahuila" },
-    new SelectListItem { Text = "Colima", Value = "Colima" },
-    new SelectListItem { Text = "Durango", Value = "Durango" },
-    new SelectListItem { Text = "Guanajuato", Value = "Guanajuato" },
-    new SelectListItem { Text = "Guerrero", Value = "Guerrero" },
-    new SelectListItem { Text = "Hidalgo", Value = "Hidalgo" },
-    new SelectListItem { Text = "Jalisco", Value = "Jalisco" },
-    new SelectListItem { Text = "Mexico", Value = "Mexico" },
-    new SelectListItem { Text = "Michoacán", Value = "Michoacán" },
-    new SelectListItem { Text = "Morelos", Value = "Morelos" },
-    new SelectListItem { Text = "Nayarit", Value = "Nayarit" },
-    new SelectListItem { Text = "Nuevo León", Value = "Nuevo León" },
-    new SelectListItem { Text = "Oaxaca", Value = "Oaxaca" },
-    new SelectListItem { Text = "Puebla", Value = "Puebla" },
-    new SelectListItem { Text = "Querétaro", Value = "Querétaro" },
-    new SelectListItem { Text = "Quintana Roo", Value = "Quintana Roo" },
-    new SelectListItem { Text = "San Luis Potosí", Value = "San Luis Potosí" },
-    new SelectListItem { Text = "Sinaloa", Value = "Sinaloa" },
-    new SelectListItem { Text = "Sonora", Value = "Sonora" },
-    new SelectListItem { Text = "Tabasco", Value = "Tabasco" },
-    new SelectListItem { Text = "Tamaulipas", Value = "Tamaulipas" },
-    new SelectListItem { Text = "Tlaxcala", Value = "Tlaxcala" },
-    new SelectListItem { Text = "Veracruz", Value = "Veracruz" },
-    new SelectListItem { Text = "Yucatán", Value = "Yucatán" },
-    new SelectListItem { Text = "Zacatecas", Value = "Zacatecas" }
-            };
 
             return View(perfil);
         }
@@ -145,7 +107,8 @@ namespace TAS360.Controllers
                         usuario.Estado = perfil.Estado;
                         perfil.Foto_usuario = usuario.Foto_usuario;
 
-
+                        GetGeneroOptions(perfil.Género);
+                        GetEstadoOptions(perfil.Estado);
 
                         // Guardar los cambios en la base de datos
                         db.SaveChanges();
@@ -157,49 +120,9 @@ namespace TAS360.Controllers
                 // Si el modelo no es válido, regresa la vista con el modelo para mostrar los errores
                 ViewBag.ErrorMessage = "Por favor, complete todos los campos requeridos.";
 
-                // Rellenar el ViewBag nuevamente con las opciones para evitar errores en la vista
-                ViewBag.GeneroOptions = new List<SelectListItem>
-                {
-                    new SelectListItem { Text = "Masculino", Value = "Masculino" },
-                    new SelectListItem { Text = "Femenino", Value = "Femenino" },
-                    new SelectListItem { Text = "Otro", Value = "Otro" }
-                };
+                // GetGeneroOptions(perfil.Género);
 
-                ViewBag.EstadoOptions = new List<SelectListItem>
-                {
-                    new SelectListItem { Text = "Aguascalientes", Value = "Aguascalientes" },
-    new SelectListItem { Text = "Baja California", Value = "Baja California" },
-    new SelectListItem { Text = "Baja California Sur", Value = "Baja California Sur" },
-    new SelectListItem { Text = "Campeche", Value = "Campeche" },
-    new SelectListItem { Text = "Chiapas", Value = "Chiapas" },
-    new SelectListItem { Text = "Chihuahua", Value = "Chihuahua" },
-    new SelectListItem { Text = "Coahuila", Value = "Coahuila" },
-    new SelectListItem { Text = "Colima", Value = "Colima" },
-    new SelectListItem { Text = "Durango", Value = "Durango" },
-    new SelectListItem { Text = "Guanajuato", Value = "Guanajuato" },
-    new SelectListItem { Text = "Guerrero", Value = "Guerrero" },
-    new SelectListItem { Text = "Hidalgo", Value = "Hidalgo" },
-    new SelectListItem { Text = "Jalisco", Value = "Jalisco" },
-    new SelectListItem { Text = "Mexico", Value = "Mexico" },
-    new SelectListItem { Text = "Michoacán", Value = "Michoacán" },
-    new SelectListItem { Text = "Morelos", Value = "Morelos" },
-    new SelectListItem { Text = "Nayarit", Value = "Nayarit" },
-    new SelectListItem { Text = "Nuevo León", Value = "Nuevo León" },
-    new SelectListItem { Text = "Oaxaca", Value = "Oaxaca" },
-    new SelectListItem { Text = "Puebla", Value = "Puebla" },
-    new SelectListItem { Text = "Querétaro", Value = "Querétaro" },
-    new SelectListItem { Text = "Quintana Roo", Value = "Quintana Roo" },
-    new SelectListItem { Text = "San Luis Potosí", Value = "San Luis Potosí" },
-    new SelectListItem { Text = "Sinaloa", Value = "Sinaloa" },
-    new SelectListItem { Text = "Sonora", Value = "Sonora" },
-    new SelectListItem { Text = "Tabasco", Value = "Tabasco" },
-    new SelectListItem { Text = "Tamaulipas", Value = "Tamaulipas" },
-    new SelectListItem { Text = "Tlaxcala", Value = "Tlaxcala" },
-    new SelectListItem { Text = "Veracruz", Value = "Veracruz" },
-    new SelectListItem { Text = "Yucatán", Value = "Yucatán" },
-    new SelectListItem { Text = "Zacatecas", Value = "Zacatecas" }
-                };
-
+                
                 return View(perfil);
             }
             catch (Exception ex)
@@ -210,56 +133,91 @@ namespace TAS360.Controllers
                 // Mostrar un mensaje genérico al usuario
                 ViewBag.ErrorMessage = "Ocurrió un error inesperado. Por favor, inténtelo de nuevo más tarde.";
 
-                // Rellenar el ViewBag nuevamente con las opciones para evitar errores en la vista
-                ViewBag.GeneroOptions = new List<SelectListItem>
-                {
-                    new SelectListItem { Text = "Masculino", Value = "Masculino" },
-                    new SelectListItem { Text = "Femenino", Value = "Femenino" },
-                    new SelectListItem { Text = "Otro", Value = "Otro" }
-                };
+               
 
-                ViewBag.EstadoOptions = new List<SelectListItem>
-                {
-                   new SelectListItem { Text = "Aguascalientes", Value = "Aguascalientes" },
-    new SelectListItem { Text = "Baja California", Value = "Baja California" },
-    new SelectListItem { Text = "Baja California Sur", Value = "Baja California Sur" },
-    new SelectListItem { Text = "Campeche", Value = "Campeche" },
-    new SelectListItem { Text = "Chiapas", Value = "Chiapas" },
-    new SelectListItem { Text = "Chihuahua", Value = "Chihuahua" },
-    new SelectListItem { Text = "Coahuila", Value = "Coahuila" },
-    new SelectListItem { Text = "Colima", Value = "Colima" },
-    new SelectListItem { Text = "Durango", Value = "Durango" },
-    new SelectListItem { Text = "Guanajuato", Value = "Guanajuato" },
-    new SelectListItem { Text = "Guerrero", Value = "Guerrero" },
-    new SelectListItem { Text = "Hidalgo", Value = "Hidalgo" },
-    new SelectListItem { Text = "Jalisco", Value = "Jalisco" },
-    new SelectListItem { Text = "Mexico", Value = "Mexico" },
-    new SelectListItem { Text = "Michoacán", Value = "Michoacán" },
-    new SelectListItem { Text = "Morelos", Value = "Morelos" },
-    new SelectListItem { Text = "Nayarit", Value = "Nayarit" },
-    new SelectListItem { Text = "Nuevo León", Value = "Nuevo León" },
-    new SelectListItem { Text = "Oaxaca", Value = "Oaxaca" },
-    new SelectListItem { Text = "Puebla", Value = "Puebla" },
-    new SelectListItem { Text = "Querétaro", Value = "Querétaro" },
-    new SelectListItem { Text = "Quintana Roo", Value = "Quintana Roo" },
-    new SelectListItem { Text = "San Luis Potosí", Value = "San Luis Potosí" },
-    new SelectListItem { Text = "Sinaloa", Value = "Sinaloa" },
-    new SelectListItem { Text = "Sonora", Value = "Sonora" },
-    new SelectListItem { Text = "Tabasco", Value = "Tabasco" },
-    new SelectListItem { Text = "Tamaulipas", Value = "Tamaulipas" },
-    new SelectListItem { Text = "Tlaxcala", Value = "Tlaxcala" },
-    new SelectListItem { Text = "Veracruz", Value = "Veracruz" },
-    new SelectListItem { Text = "Yucatán", Value = "Yucatán" },
-    new SelectListItem { Text = "Zacatecas", Value = "Zacatecas" }
-                };
 
                 // Devolver la vista con el modelo
                 return View(perfil);
             }
         }
 
-       
-      
+
+        private void GetGeneroOptions(string selectedGenero = null)
+        {
+            List<SelectListItem> generoOptions = new List<SelectListItem>
+    {
+        new SelectListItem { Text = "Masculino", Value = "Masculino" },
+        new SelectListItem { Text = "Femenino", Value = "Femenino" },
+        new SelectListItem { Text = "Otro", Value = "Otro" }
+    };
+
+            // Verifica si hay un género seleccionado y si existe en la lista
+            if (!string.IsNullOrEmpty(selectedGenero))
+            {
+                var selectedOption = generoOptions.FirstOrDefault(g => g.Value == selectedGenero);
+                if (selectedOption != null)
+                {
+                    selectedOption.Selected = true;
+                }
+            }
+
+            ViewBag.GeneroOptions = generoOptions;
+        }
+
+
+
+
+        private void GetEstadoOptions(string selectedEstado = null)
+        {
+            List<SelectListItem> estadoOptions = new List<SelectListItem>
+    {
+        new SelectListItem { Text = "Aguascalientes", Value = "Aguascalientes" },
+        new SelectListItem { Text = "Baja California", Value = "Baja California" },
+        new SelectListItem { Text = "Baja California Sur", Value = "Baja California Sur" },
+        new SelectListItem { Text = "Campeche", Value = "Campeche" },
+        new SelectListItem { Text = "Chiapas", Value = "Chiapas" },
+        new SelectListItem { Text = "Chihuahua", Value = "Chihuahua" },
+        new SelectListItem { Text = "Coahuila", Value = "Coahuila" },
+        new SelectListItem { Text = "Colima", Value = "Colima" },
+        new SelectListItem { Text = "Durango", Value = "Durango" },
+        new SelectListItem { Text = "Guanajuato", Value = "Guanajuato" },
+        new SelectListItem { Text = "Guerrero", Value = "Guerrero" },
+        new SelectListItem { Text = "Hidalgo", Value = "Hidalgo" },
+        new SelectListItem { Text = "Jalisco", Value = "Jalisco" },
+        new SelectListItem { Text = "México", Value = "México" },
+        new SelectListItem { Text = "Michoacán", Value = "Michoacán" },
+        new SelectListItem { Text = "Morelos", Value = "Morelos" },
+        new SelectListItem { Text = "Nayarit", Value = "Nayarit" },
+        new SelectListItem { Text = "Nuevo León", Value = "Nuevo León" },
+        new SelectListItem { Text = "Oaxaca", Value = "Oaxaca" },
+        new SelectListItem { Text = "Puebla", Value = "Puebla" },
+        new SelectListItem { Text = "Querétaro", Value = "Querétaro" },
+        new SelectListItem { Text = "Quintana Roo", Value = "Quintana Roo" },
+        new SelectListItem { Text = "San Luis Potosí", Value = "San Luis Potosí" },
+        new SelectListItem { Text = "Sinaloa", Value = "Sinaloa" },
+        new SelectListItem { Text = "Sonora", Value = "Sonora" },
+        new SelectListItem { Text = "Tabasco", Value = "Tabasco" },
+        new SelectListItem { Text = "Tamaulipas", Value = "Tamaulipas" },
+        new SelectListItem { Text = "Tlaxcala", Value = "Tlaxcala" },
+        new SelectListItem { Text = "Veracruz", Value = "Veracruz" },
+        new SelectListItem { Text = "Yucatán", Value = "Yucatán" },
+        new SelectListItem { Text = "Zacatecas", Value = "Zacatecas" }
+    };
+
+            // Selecciona el estado actual si es necesario
+            if (!string.IsNullOrEmpty(selectedEstado))
+            {
+                var selectedOption = estadoOptions.FirstOrDefault(e => e.Value == selectedEstado);
+                if (selectedOption != null) // Verificar que el objeto no sea null
+                {
+                    selectedOption.Selected = true;
+                }
+            }
+
+            ViewBag.EstadoOptions = estadoOptions;
+        }
+
+
 
 
 

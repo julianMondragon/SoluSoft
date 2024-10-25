@@ -2,7 +2,7 @@
 @{
     ViewBag.Title = "Editar Perfil";
 }
-
+<br>
 <h2>Editar Perfil</h2>
 
 @using (Html.BeginForm("Guardar", "Profile", FormMethod.Post, new { enctype = "multipart/form-data" })) // Asegúrate de incluir enctype para la carga de archivos
@@ -38,20 +38,10 @@
         @Html.DropDownListFor(m => m.Estado, new SelectList(ViewBag.EstadoOptions, "Value", "Text"), "Selecciona tu estado", new { @class = "form-control" })
         @Html.ValidationMessageFor(m => m.Estado, "", new { @class = "text-danger" })
     </div>
-
-   
-        <!-- Otros campos -->
-
-        @*<div class="form-group">
-            @Html.Label("Foto de Usuario")
-            <input type="file" name="Foto_usuario" class="form-control" accept="image/*" />
-            @Html.ValidationMessage("Foto_usuario", "", new { @class = "text-danger" })
-        </div>*@
-
-        
-    
-
-
-    <button type="submit" class="btn btn-success">Guardar</button>
-    <button type="button" class="btn btn-danger" onclick="location.href='@Url.Action("Index", "Profile")'">Cancelar</button>
+    <button type="submit" class="btn btn-success">Guardar &raquo;</button>
+    <button type="button" class="btn btn-danger" onclick="location.href='@Url.Action("Index", "Profile")'">Cancelar &laquo;</button>
 }
+
+
+
+

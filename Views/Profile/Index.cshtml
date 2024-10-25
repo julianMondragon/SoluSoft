@@ -9,7 +9,6 @@
 </div>
 
 <div class="row">
-
     <div class="col-md-3 text-center">
         <div class="profile-photo-container">
             @if (Model.Foto_usuario != null && Model.Foto_usuario.Length > 0) // Validar que la imagen no sea nula
@@ -23,9 +22,8 @@
                 <img src="~/images/default-user.png" alt="Foto de perfil" class="img-thumbnail" style="max-width: 200px; max-height: 200px;" />
             }
         </div>
+        <button type="submit" class="btn btn-primary">Editar Imagen &raquo;</button>
     </div>
-
-
 
     <!-- Sección para la información del perfil del usuario -->
     <div class="col-md-9">
@@ -34,34 +32,42 @@
                 Información del Perfil
             </div>
             <div class="card-body">
-                <div class="row mb-3">
-                    <div class="col-md-3 font-weight-bold">ID:</div>
-                    <div class="col-md-9">@Model.id_User</div>
-                </div>
-                <div class="row mb-3">
-                    <div class="col-md-3 font-weight-bold">Nombre:</div>
-                    <div class="col-md-9">@Model.nombre</div>
-                </div>
-                <div class="row mb-3">
-                    <div class="col-md-3 font-weight-bold">Email:</div>
-                    <div class="col-md-9">@Model.email</div>
-                </div>
-                <div class="row mb-3">
-                    <div class="col-md-3 font-weight-bold">Teléfono Celular:</div>
-                    <div class="col-md-9">@Model.Cel</div>
-                </div>
-                <div class="row mb-3">
-                    <div class="col-md-3 font-weight-bold">Género:</div>
-                    <div class="col-md-9">@Model.Género</div>
-                </div>
-                <div class="row mb-3">
-                    <div class="col-md-3 font-weight-bold">Estado:</div>
-                    <div class="col-md-9">@Model.Estado</div>
-                </div>
-                <button onclick="document.location.href = '@Url.Content("~/Profile/EditProfile")'" type="button" class="btn btn-success" data-toggle="tooltip" title="Editar perfil">
+                <table class="table table-striped">
+                    <tbody>
+                        <tr>
+                            <td class="font-weight-bold">ID:</td>
+                            <td>@Model.id_User</td>
+                        </tr>
+                        <tr>
+                            <td class="font-weight-bold">Nombre:</td>
+                            <td>@Model.nombre</td>
+                        </tr>
+                        <tr>
+                            <td class="font-weight-bold">Email:</td>
+                            <td>@Model.email</td>
+                        </tr>
+                        <tr>
+                            <td class="font-weight-bold">Teléfono Celular:</td>
+                            <td>@Model.Cel</td>
+                        </tr>
+                        <tr>
+                            <td class="font-weight-bold">Género:</td>
+                            <td>@Model.Género</td>
+                        </tr>
+                        <tr>
+                            <td class="font-weight-bold">Estado:</td>
+                            <td>@Model.Estado</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <button onclick="document.location.href = '@Url.Content("~/Profile/EditProfile")'" type="button" class="btn btn-primary" data-toggle="tooltip" title="Editar perfil">
                     Editar perfil &raquo;
                 </button>
-                <button type="button" class="btn btn-danger" onclick="location.href='@Url.Action("Home", "Home")'">Cancelar</button>
+                <button type="button" class="btn btn-warning" data-toggle="tooltip" title="Editar contraseña">
+                    Editar contraseña &raquo;
+                </button>
+                <button type="button" class="btn btn-default" onclick="location.href='@Url.Action("Home", "Home")'">Regresar  &laquo;</button>
             </div>
         </div>
     </div>
