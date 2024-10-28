@@ -116,7 +116,7 @@ namespace TAS360.Controllers
                         GetRoles();
                         return View(model);
                     }
-                    string passencripted = ComputeSha256Hash(model.password);
+                    
                     var userToEdit = db.User.Find(model.id);
                     if (userToEdit != null)
                     {
@@ -128,20 +128,27 @@ namespace TAS360.Controllers
                         userToEdit.id_Roll = model.Rolid;
 
 
-                        if (model.password != confirmPassword)
+                        if (!string.IsNullOrEmpty(model.password))
                         {
-                            ModelState.AddModelError("confirmPassword", "Las contraseñas no coinciden");
-                            ModelState.AddModelError("Password", "Las contraseñas no coinciden");
-                            GetRoles();
-                            return View(model);
+                            if (model.password != confirmPassword)
+                            {
+                                ModelState.AddModelError("confirmPassword", "Las contraseñas no coinciden");
+                                ModelState.AddModelError("Password", "Las contraseñas no coinciden");
+                                GetRoles();
+                                return View(model);
+                            }
+
+
+                            string passencripted = ComputeSha256Hash(model.password);
+                            userToEdit.password = passencripted;
+
+                            oLog.Add($"Nuevo passencripted: {passencripted}");
+                            oLog.Add($"Nuevo password: {model.password}");
                         }
-                        userToEdit.password = passencripted;
 
                         // Guardar log de la edición del usuario                       
                         oLog.Add($"Nuevo nombre: {userToEdit.nombre}");
                         oLog.Add($"Nuevo email: {userToEdit.email}");
-                        oLog.Add($"Nuevo passencripted: {passencripted}");
-                        oLog.Add($"Nuevo password: {model.password}");
                         oLog.Add($"Nuevo Rol: {model.Rolid} "); 
                         oLog.Add($"--------------------------------");
                     }
