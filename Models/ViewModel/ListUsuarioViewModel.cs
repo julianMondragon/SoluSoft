@@ -32,7 +32,12 @@ namespace TAS360.Models.ViewModel
         [Compare("password", ErrorMessage = "Las contraseñas no coinciden")]
         public string confirmPassword { get; set; }
 
-        
+        [Required]
+        [Display(Name ="Roll")]
+        public int Rolid { get; set; }
+
+
+
     }
 
 
