@@ -3,9 +3,13 @@
     ViewBag.Title = "Editar Perfil";
 }
 <br>
-<h2>Editar Perfil</h2>
+<div class="jumbotron text-left">
+    <h1>
+        Editar Perfil
+    </h1>
+</div>
 
-@using (Html.BeginForm("Guardar", "Profile", FormMethod.Post, new { enctype = "multipart/form-data" })) // Asegúrate de incluir enctype para la carga de archivos
+@using (Html.BeginForm("Editprofile", "Profile", FormMethod.Post, new { enctype = "multipart/form-data" })) // Asegúrate de incluir enctype para la carga de archivos
 {
     @Html.AntiForgeryToken() <!-- Para proteger contra ataques CSRF -->
 
@@ -17,7 +21,7 @@
 
     <div class="form-group">
         @Html.LabelFor(m => m.email)
-        @Html.TextBoxFor(m => m.email, new { @class = "form-control", placeholder = "Email" })
+        @Html.TextBoxFor(m => m.email, new { @class = "form-control", placeholder = "Email", @readonly = "true" })
         @Html.ValidationMessageFor(m => m.email, "", new { @class = "text-danger" })
     </div>
 
