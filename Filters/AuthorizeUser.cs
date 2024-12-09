@@ -41,7 +41,7 @@ namespace TAS360.Filters
                     if (MyOperationsList.ToList().Count() == 0)
                     {
                         var oOperation = db.Operacion.Find(idOperacion);
-                        int? IdModulo = oOperation?.id_Modulo == null ? 1 : 1;
+                        int? IdModulo = oOperation?.id_Modulo == null ? idOperacion : oOperation?.id_Modulo;
                         nombreOperacion = getNombreDeOperacion(idOperacion);
                         nombreModulo = getNombreModulo(IdModulo);
                         filterContext.Result = new RedirectResult("~/Error/UnauthorizedOperation?operacion=" + nombreOperacion + "?modulo=" + nombreModulo + "?message=No tienes privilegios de acceso, verificalo con el administrador del sistema");
