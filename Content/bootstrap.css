@@ -5086,9 +5086,16 @@ a.badge:focus {
     -webkit-transition: border 0.2s ease-in-out;
     -o-transition: border 0.2s ease-in-out;
     transition: border 0.2s ease-in-out;
-  
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    max-width: 150px;
+    height: auto;
 }
-    
+    .thumbnail img {
+        max-width: 150px;
+        height: auto;
+    }
 .thumbnail > img,
 .thumbnail a > img {
   margin-right: auto;
@@ -6835,7 +6842,7 @@ button.close {
   }
 }
 
-/* Centrar el contenedor de inicio de sesi髇 */
+/* Centrar el contenedor de inicio de sesi贸n */
 .login-container {
     display: flex;
     justify-content: center;
@@ -6844,7 +6851,7 @@ button.close {
     background-color: #f8f9fa;
 }
 
-/* Cuadro de inicio de sesi髇 */
+/* Cuadro de inicio de sesi贸n */
 .login-box {
     position: relative;
     background: white;
@@ -6856,7 +6863,7 @@ button.close {
     text-align: center;
 }
 
-    /* Encabezado de inicio de sesi髇 */
+    /* Encabezado de inicio de sesi贸n */
     .login-box h2 {
         margin-bottom: 1.5rem;
         text-align: center;
@@ -6875,20 +6882,20 @@ button.close {
     margin-bottom: 0.5rem;
 }
 
-/* Estilo para el enlace de recuperar contrase馻 */
+/* Estilo para el enlace de recuperar contrase帽a */
 .forgot-password {
     margin-top: 1rem;
     text-align: center;
 }
 
-/* Estilos para el contenedor de la contrase馻 */
+/* Estilos para el contenedor de la contrase帽a */
 .password-container {
     position: relative;
 }
 
     .password-container input {
         width: 100%;
-        padding-right: 40px; /* Espacio para el bot髇 del ojo */
+        padding-right: 40px; /* Espacio para el bot贸n del ojo */
     }
 
 .toggle-password {
@@ -6899,7 +6906,7 @@ button.close {
     cursor: pointer;
 }
 
-/* Hacer el bot髇 m醩 largo */
+/* Hacer el bot贸n m谩s largo */
 .btn-largo {
     width: 100%;
 }
@@ -6915,18 +6922,18 @@ button.close {
     border-radius: 6px;
     background-color: #C8D6BF;
     color: #fff;
-    transition: background-color 0.3s ease; /* Transici髇 suave */
+    transition: background-color 0.3s ease; /* Transici贸n suave */
 }
 
     .btn-translucent:hover {
-        background-color: #B4D39F; /* Color trasl鷆ido al pasar el cursor */
+        background-color: #B4D39F; /* Color trasl煤cido al pasar el cursor */
     }
 
 .btn-plain {
     background: none;
     border: none;
     padding: 0;
-    margin-left: -35px; /* Ajusta el margen para alinear el bot髇 con el campo de contrase馻 */
+    margin-left: -35px; /* Ajusta el margen para alinear el bot贸n con el campo de contrase帽a */
     cursor: pointer;
 }
 
@@ -6938,7 +6945,6 @@ button.close {
         .btn-plain i:hover {
             color: #000; /* Color del icono al pasar el cursor */
         }
-
 
 .thumbnail2{
 
@@ -7012,3 +7018,4 @@ strong {
     font-weight: 700;
     font-style: normal;
 }
+
