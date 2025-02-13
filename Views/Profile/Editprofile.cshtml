@@ -1,0 +1,51 @@
+﻿@model TAS360.Models.ViewModel.PerfilusrViewModel
+@{
+    ViewBag.Title = "Editar Perfil";
+}
+<br>
+<div class="jumbotron text-left">
+    <h1>
+        Editar Perfil
+    </h1>
+</div>
+
+@using (Html.BeginForm("Editprofile", "Profile", FormMethod.Post, new { enctype = "multipart/form-data" })) // Asegúrate de incluir enctype para la carga de archivos
+{
+    @Html.AntiForgeryToken() <!-- Para proteger contra ataques CSRF -->
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.nombre)
+        @Html.TextBoxFor(m => m.nombre, new { @class = "form-control", placeholder = "Nombre" })
+        @Html.ValidationMessageFor(m => m.nombre, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.email)
+        @Html.TextBoxFor(m => m.email, new { @class = "form-control", placeholder = "Email", @readonly = "true" })
+        @Html.ValidationMessageFor(m => m.email, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.Cel)
+        @Html.TextBoxFor(m => m.Cel, new { @class = "form-control", placeholder = "Teléfono Celular" })
+        @Html.ValidationMessageFor(m => m.Cel, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.Género)
+        @Html.DropDownListFor(m => m.Género, new SelectList(ViewBag.GeneroOptions, "Value", "Text"), "Selecciona tu género", new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Género, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.Estado)
+        @Html.DropDownListFor(m => m.Estado, new SelectList(ViewBag.EstadoOptions, "Value", "Text"), "Selecciona tu estado", new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Estado, "", new { @class = "text-danger" })
+    </div>
+    <button type="submit" class="btn btn-success">Guardar &raquo;</button>
+    <button type="button" class="btn btn-danger" onclick="location.href='@Url.Action("Index", "Profile")'">Cancelar &laquo;</button>
+}
+
+
+
+

@@ -1,0 +1,156 @@
+﻿
+@model TAS360.Models.ViewModel.PerfilusrViewModel
+@{
+    ViewBag.Title = "Perfil del usuario";
+}
+
+<div class="jumbotron text-left">
+    <h1>Mi Perfil</h1>
+    <p class="lead">Gestión de la información de perfil del usuario</p>
+</div>
+
+<!-- Mensajes de Alerta -->
+@if (TempData["Editprofile"] != null)
+{
+    <div class="alert alert-info">
+        @TempData["Editprofile"]
+    </div>
+}
+@if (ViewBag.ErrorMessage != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @ViewBag.ErrorMessage
+    </div>
+}
+
+<div class="row">
+    <!-- Sección de la foto de perfil y botón de edición -->
+    <div class="col-md-3 text-center">
+        <div class="profile-photo-container mb-3">
+            @if (Model.Foto_usuario != null && Model.Foto_usuario.Length > 0)
+            {
+                string base64String = Convert.ToBase64String(Model.Foto_usuario);
+                string imageDataURL = $"data:image/png;base64,{base64String}";
+                <img src="@imageDataURL" alt="Foto de perfil" class="img-thumbnail" style="max-width: 200px; max-height: 200px;" />
+            }
+            else
+            {
+                <img src="~/images/default-user.png" alt="Foto de perfil" class="img-thumbnail" style="max-width: 200px; max-height: 200px;" />
+            }
+        </div>
+        <br />
+        <!-- Botón Editar Imagen con ícono de usuario y lápiz -->
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editPhotoModal" title="Editar imagen de perfil">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                <path d="M15.502 1.94a.5.5 0 0 1 0 .706l-1.292 1.293-2-2 1.292-1.293a.5.5 0 0 1 .707 0l1.293 1.293zm-2.853.854-10 10V14h1.293l10-10-1.293-1.293zm-1.414 6.415 1.293 1.293V14a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5.586l1.293-1.293L10.086 1H3a3 3 0 0 0-3 3v9a3 3 0 0 0 3 3h9a3 3 0 0 0 3-3v-4.586l-1.293-1.293z" />
+            </svg>
+            Editar Imagen
+        </button>
+
+    </div>
+    <!-- Modal de advertencia sobre la función de edición de imagen -->
+    <div class="modal fade" id="editPhotoModal" tabindex="-1" role="dialog" aria-labelledby="editPhotoModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-warning">
+                    <h5 class="modal-title" id="editPhotoModalLabel">Función en Desarrollo</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Esta funcionalidad de edición de foto de perfil está en desarrollo. Pronto estará disponible.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal de advertencia para la edición de contraseña -->
+    <div class="modal fade" id="editPasswordModal" tabindex="-1" role="dialog" aria-labelledby="editPasswordModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-warning">
+                    <h5 class="modal-title" id="editPasswordModalLabel">Función en Desarrollo</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Esta funcionalidad de edición de contraseña está en desarrollo. Pronto estará disponible.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Tabla de Perfil de Usuario -->
+    <div class="col-md-6">
+        <div class="panel panel-default">
+            <div class="panel-heading clearfix">
+                <div class="pull-left">
+                    <b>Perfil del Usuario</b>
+                </div>
+                <div class="pull-right">
+                    <button onclick="document.location.href='@Url.Content("~/Profile/EditProfile")'" class="btn btn-primary" data-toggle="tooltip" title="Editar perfil">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                            <path d="M15.502 1.94a.5.5 0 0 1 0 .706l-1.292 1.293-2-2 1.292-1.293a.5.5 0 0 1 .707 0l1.293 1.293zm-2.853.854-10 10V14h1.293l10-10-1.293-1.293zm-1.414 6.415 1.293 1.293V14a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5.586l1.293-1.293L10.086 1H3a3 3 0 0 0-3 3v9a3 3 0 0 0 3 3h9a3 3 0 0 0 3-3v-4.586l-1.293-1.293z" />
+                        </svg>
+                    </button>
+                    <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#editPasswordModal" title="Editar contraseña">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-key" viewBox="0 0 16 16">
+                            <path d="M3 8a5 5 0 1 1 10 0 5 5 0 0 1-10 0Zm8.5-.5a.5.5 0 0 0-.5.5 3.5 3.5 0 1 1-5-3.162v1.457a2.5 2.5 0 1 0 3.8 2.706h1.497a.5.5 0 0 0 .5-.5v-1.5a.5.5 0 0 0-.5-.5h-2Z" />
+                        </svg>
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="location.href='@Url.Action("Home", "Home")'" data-toggle="tooltip" title="Regresar a la página principal">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M15 8a.5.5 0 0 1-.5.5H3.707l4.147 4.146a.5.5 0 0 1-.708.708l-5-5a.5.5 0 0 1 0-.708l5-5a.5.5 0 0 1 .708.708L3.707 7.5H14.5A.5.5 0 0 1 15 8Z" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div class="panel-body">
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th scope="col">Campo</th>
+                            <th scope="col">Información</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="font-weight-bold">Nombre</td>
+                            <td>@Model.nombre</td>
+                        </tr>
+                        <tr>
+                            <td class="font-weight-bold">Email</td>
+                            <td>@Model.email</td>
+                        </tr>
+                        <tr>
+                            <td class="font-weight-bold">Teléfono Celular</td>
+                            <td>@Model.Cel</td>
+                        </tr>
+                        <tr>
+                            <td class="font-weight-bold">Género</td>
+                            <td>@Model.Género</td>
+                        </tr>
+                        <tr>
+                            <td class="font-weight-bold">Estado</td>
+                            <td>@Model.Estado</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Script para inicializar tooltips -->
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+    </script>
+}
