@@ -162,10 +162,13 @@
     <Compile Include="Controllers\LSAController.cs" />
     <Compile Include="Controllers\PendientesController.cs" />
     <Compile Include="Controllers\ReportsController.cs" />
+    <Compile Include="Controllers\Rice_Lake920iController.cs" />
+    <Compile Include="Controllers\Roles_and_PrivilegeController.cs" />
     <Compile Include="Controllers\TablaCubController.cs" />
     <Compile Include="Controllers\TerminalController.cs" />
     <Compile Include="Controllers\TicketsController.cs" />
     <Compile Include="Controllers\UserController.cs" />
+    <Compile Include="Controllers\ProfileController.cs" />
     <Compile Include="Controllers\WebAPIPemexController.cs" />
     <Compile Include="Filters\AuthorizeUser.cs" />
     <Compile Include="Filters\VerificaSession.cs" />
@@ -395,6 +398,9 @@
     <Compile Include="Models\User.cs">
       <DependentUpon>HelpDesk.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\usr_profile.cs">
+      <DependentUpon>HelpDesk.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\ViewModel\aditivoViewModel.cs" />
     <Compile Include="Models\ViewModel\auditoriaViewModel.cs" />
     <Compile Include="Models\ViewModel\ConfigTanqAditivoViewModel.cs" />
@@ -408,10 +414,16 @@
     <Compile Include="Models\ViewModel\G_TicketsByStatusViewModel.cs" />
     <Compile Include="Models\ViewModel\G_TicketsByTerminalViewModel.cs" />
     <Compile Include="Models\ViewModel\ListUsuarioViewModel.cs" />
+    <Compile Include="Models\ViewModel\ModuloViewModel.cs" />
+    <Compile Include="Models\ViewModel\OperacionViewModel.cs" />
     <Compile Include="Models\ViewModel\PendientesViewModel.cs" />
+    <Compile Include="Models\ViewModel\PerfilusrViewModel.cs" />
     <Compile Include="Models\ViewModel\PuertoSerialViewModel.cs" />
     <Compile Include="Models\ViewModel\RecetasViewModel.cs" />
     <Compile Include="Models\ViewModel\RepTotalizadoViewModel.cs" />
+    <Compile Include="Models\ViewModel\RolesPrivilegesViewModel.cs" />
+    <Compile Include="Models\ViewModel\RollViewModel.cs" />
+    <Compile Include="Models\ViewModel\Rol_OperacionViewModel.cs" />
     <Compile Include="Models\ViewModel\salidasViewModel.cs" />
     <Compile Include="Models\ViewModel\SocketViewModel.cs" />
     <Compile Include="Models\ViewModel\TablaCubViewModel.cs" />
@@ -424,6 +436,7 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StorProc\LSA_Reportes.cs" />
+    <Compile Include="Views\Profile.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Backup_Database\Migraciones\Alter_Pendiente_Add_properties.sql" />
@@ -435,6 +448,10 @@
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\img\Bascula-Info\img_1.jpg" />
+    <Content Include="Content\img\Bascula-Info\img_2.jpg" />
+    <Content Include="Content\img\Bascula-Info\img_3.jpg" />
+    <Content Include="Content\img\Bascula-Info\img_4.jpg" />
     <Content Include="Content\img\Ej_Tabla_Cub_LLenado_2.JPG" />
     <Content Include="Content\img\ERROR-500-CABECERA.jpg" />
     <Content Include="Content\img\Home_BG_1.png" />
@@ -572,6 +589,11 @@
     <Content Include="Content\Documents\Procedimientos_TAS360\A\A4 PTS -ATAD-P-PCM-006.pdf" />
     <Content Include="Content\Documents\Procedimientos_TAS360\A\A5 PTS -ATAD-P-PCM-003.pdf" />
     <Content Include="Content\Documents\Procedimientos_TAS360\A\A6 PTS -ATAD-P-PCM-007.pdf" />
+    <Content Include="Prototipo_Tabla\Lista_de_tickets_.xlsx" />
+    <Content Include="fonts\7600-fontps.otf" />
+    <Content Include="fonts\Myriad Pro Bold.ttf" />
+    <Content Include="fonts\Myriad Pro Italic.ttf" />
+    <Content Include="fonts\PFBeauSansPro-LightItalic.ttf" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\datatables\AutoFill-2.4.0\css\autoFill.bootstrap.css" />
     <Content Include="Scripts\datatables\AutoFill-2.4.0\css\autoFill.bootstrap.min.css" />
@@ -943,6 +965,15 @@
     <Content Include="Views\Tickets\IndexWithFilter.cshtml" />
     <Content Include="Views\LSA\SLAReport.cshtml" />
     <Content Include="Views\Acceso\RecuperarContraseña.cshtml" />
+    <Content Include="Views\Rice_Lake920i\Index.cshtml" />
+    <Content Include="Views\Rice_Lake920i\Info.cshtml" />
+    <Content Include="Views\Roles_and_Privilege\Index.cshtml" />
+    <Content Include="Views\Roles_and_Privilege\AddModule.cshtml" />
+    <Content Include="Views\Roles_and_Privilege\AddOperation.cshtml" />
+    <Content Include="Views\Roles_and_Privilege\AddRol.cshtml" />
+    <Content Include="Views\Roles_and_Privilege\AddRol_Operacion.cshtml" />
+    <Content Include="Views\Profile\Index.cshtml" />
+    <Content Include="Views\Profile\Editprofile.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -950,6 +981,7 @@
     <Folder Include="Logs\" />
     <Folder Include="Tablas_CSV\" />
     <Folder Include="Tablas_Pendientes\" />
+    <Folder Include="Tablas_Tickets\" />
     <Folder Include="TicketFiles\" />
   </ItemGroup>
   <ItemGroup>

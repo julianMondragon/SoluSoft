@@ -5086,16 +5086,9 @@ a.badge:focus {
     -webkit-transition: border 0.2s ease-in-out;
     -o-transition: border 0.2s ease-in-out;
     transition: border 0.2s ease-in-out;
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    max-width: 150px;
-    height: auto;
+  
 }
-    .thumbnail img {
-        max-width: 150px;
-        height: auto;
-    }
+    
 .thumbnail > img,
 .thumbnail a > img {
   margin-right: auto;
@@ -6947,3 +6940,75 @@ button.close {
         }
 
 
+.thumbnail2{
+
+position: absolute;
+top: 10px;
+left: 10px;
+max-width: 200px;
+height: auto;
+}
+
+.thumbnail2 img {
+    max-width: 200px;
+    height: auto;
+}
+
+/* Fuentes segun manual de identidad */
+
+/* PF Beau Sans Light Italic */
+@font-face {
+    font-family: 'PF Beau Sans';
+    src: url('/fonts/PFBeauSansPro-LightItalic.ttf') format('truetype'), url('/fonts/PFBeauSansPro-LightItalic.woff') format('woff');
+    font-weight: 300; /* Light */
+    font-style: italic;
+}
+
+/* Myriad Pro Regular */
+@font-face {
+    font-family: 'Myriad Pro Regular';
+    src: url('/fonts/MyriadPro-Regular.ttf') format('truetype'), url('/fonts/MyriadPro-Regular.woff') format('woff');
+    font-weight: 400; /* Regular */
+    font-style: normal;
+}
+
+/* Myriad Pro Italic */
+@font-face {
+    font-family: 'Myriad Pro Italic';
+    src: url('/fonts/MyriadPro-Italic.ttf') format('truetype'), url('/fonts/MyriadPro-Italic.woff') format('woff');
+    font-weight: 400; /* Regular */
+    font-style: italic;
+}
+
+/* Myriad Pro Bold */
+@font-face {
+    font-family: 'Myriad Pro Bold';
+    src: url('/fonts/MyriadPro-Bold.ttf') format('truetype'), url('/fonts/MyriadPro-Bold.woff') format('woff');
+    font-weight: 700; /* Bold */
+    font-style: normal;
+}
+
+/* Estilos aplicados a elementos */
+h1 {
+    font-family: 'PF Beau Sans', sans-serif;
+    font-weight: 300;
+    font-style: italic;
+}
+
+p {
+    font-family: 'Myriad Pro Regular', sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+em {
+    font-family: 'Myriad Pro Italic', sans-serif;
+    font-weight: 400;
+    font-style: italic;
+}
+
+strong {
+    font-family: 'Myriad Pro Bold', sans-serif;
+    font-weight: 700;
+    font-style: normal;
+}
