@@ -8,7 +8,6 @@ using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using TAS360.Models;
-using System.Net.Sockets;
 
 namespace TAS360.Controllers
 {
@@ -164,8 +163,6 @@ namespace TAS360.Controllers
                     string path = Server.MapPath("~/Logs/Restablecimiento/");
                     Log oLog = new Log(path);
                     oLog.Add("Se restauro la contraseña de: " + user.nombre + " la contraseña es:" + newPassword);
-                    oLog = null;
-
                     contenidoHtml = contenidoHtml.Replace("{usuarioName}", user.nombre)
                              .Replace("{ultimoComentario}", newPassword);
                     // Crear el mensaje de correo
