@@ -219,7 +219,7 @@
         <div class="panel panel-default">
             <div class="panel-heading clearfix">
                 <div class="pull-left">
-                    <b>Privilegios de <br /> Invitado (@Model.Rol_OperacionVist.Count)</b>
+                    <b>Privilegios de <br /> Contacto_TAD (@Model.Rol_OperacionVist.Count)</b>
                 </div>
                 <div class="pull-right">
                     <button onclick="document.location.href='@Url.Content("~/Roles_and_Privilege/AddRol_Operacion/")'" class="btn btn-default" data-toggle="tooltip" title="Agregar Privilegios">
@@ -249,8 +249,7 @@
                                 int e = (int)RO.id_Operacion;
                                 <tr>
                                     <td>@RO.id</td>
-                                    @*<td colspan="2"> @Model.Rolls.Find(x => x.id == i).nombre</td>*@
-                                    <td colspan="2"> Sin operacion </td>
+                                    <td colspan="2"> @Model.Operacions.Find(x => x.id == e).nombre</td>
                                 </tr>
                             }
                         }
@@ -354,7 +353,7 @@
         <div class="panel panel-success">
             <div class="panel-heading clearfix">
                 <div class="pull-left">
-                    <b>Privilegios de <br /> Contacto (@Model.Rol_OperacionContac.Count)</b>
+                    <b>Privilegios de <br /> Contacto_PMX (@Model.Rol_OperacionContac.Count)</b>
                 </div>
                 <div class="pull-right">
                     <button onclick="document.location.href='@Url.Content("~/Roles_and_Privilege/AddRol_Operacion/")'" class="btn btn-success" data-toggle="tooltip" title="Agregar Privilegios">
