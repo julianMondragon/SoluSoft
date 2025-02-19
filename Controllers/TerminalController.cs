@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using TAS360.Models.ViewModel;
 using TAS360.Models;
 using DocumentFormat.OpenXml.EMMA;
+using TAS360.Filters;
 
 namespace TAS360.Controllers
 {
@@ -15,6 +16,7 @@ namespace TAS360.Controllers
         /// Muestra un listado de las terminales actuales en el sistema
         /// </summary>
         /// <returns></returns>
+        [AuthorizeUser(idOperacion:8)]
         public ActionResult Index()
         {
             List<TerminalViewModel> model = new List<TerminalViewModel>();
