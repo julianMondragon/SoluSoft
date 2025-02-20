@@ -50,6 +50,7 @@ namespace TAS360.Controllers
         }
 
         // GET: Terminal/Create
+        [AuthorizeUser(idOperacion: 9)]
         public ActionResult Create()
         {
             TerminalViewModel terminal = new TerminalViewModel();
@@ -58,6 +59,7 @@ namespace TAS360.Controllers
 
         // POST: Terminal/Create
         [HttpPost]
+        [AuthorizeUser(idOperacion: 9)]
         public ActionResult Create(TerminalViewModel model)
         {
             try
@@ -105,6 +107,7 @@ namespace TAS360.Controllers
 
         // GET: Terminal/Edit/5
         [HttpGet]
+        [AuthorizeUser(idOperacion: 21)]
         public ActionResult Edit(int id)
         {
             TerminalViewModel model = new TerminalViewModel();
@@ -123,6 +126,7 @@ namespace TAS360.Controllers
 
         // POST: Terminal/Edit/5
         [HttpPost]
+        [AuthorizeUser(idOperacion: 21)]
         public ActionResult Edit(TerminalViewModel model)
         {
             
@@ -170,6 +174,7 @@ namespace TAS360.Controllers
         }
 
         // GET: Terminal/Delete/5
+        [AuthorizeUser(idOperacion: 41)]
         public ActionResult Delete(int id)
         {
             return View();
@@ -177,6 +182,7 @@ namespace TAS360.Controllers
 
         // POST: Terminal/Delete/5
         [HttpPost]
+        [AuthorizeUser(idOperacion: 41)]
         public ActionResult Delete(int id, FormCollection collection)
         {
             try
