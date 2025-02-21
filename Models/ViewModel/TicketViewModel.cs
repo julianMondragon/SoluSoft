@@ -17,6 +17,9 @@ namespace TAS360.Models.ViewModel
             CurrentList2 = new List<CurrentList2>();
             ListbyFilterTicket = new List<ListbyFilterTicket>();
         }
+        public string UsuarioLogea { get; set; }
+        [Required]
+        [Display(Name = "Roll")]
         public int id { get; set; }
         [Required]
         [Display(Name = "Titulo")]
