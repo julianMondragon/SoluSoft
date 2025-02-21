@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using TAS360.Models.ViewModel;
 using TAS360.Models;
 using DocumentFormat.OpenXml.EMMA;
+using TAS360.Filters;
 
 namespace TAS360.Controllers
 {
@@ -15,6 +16,7 @@ namespace TAS360.Controllers
         /// Muestra un listado de las terminales actuales en el sistema
         /// </summary>
         /// <returns></returns>
+        [AuthorizeUser(idOperacion:8)]
         public ActionResult Index()
         {
             List<TerminalViewModel> model = new List<TerminalViewModel>();
@@ -48,6 +50,7 @@ namespace TAS360.Controllers
         }
 
         // GET: Terminal/Create
+        [AuthorizeUser(idOperacion: 9)]
         public ActionResult Create()
         {
             TerminalViewModel terminal = new TerminalViewModel();
@@ -56,6 +59,7 @@ namespace TAS360.Controllers
 
         // POST: Terminal/Create
         [HttpPost]
+        [AuthorizeUser(idOperacion: 9)]
         public ActionResult Create(TerminalViewModel model)
         {
             try
@@ -103,6 +107,7 @@ namespace TAS360.Controllers
 
         // GET: Terminal/Edit/5
         [HttpGet]
+        [AuthorizeUser(idOperacion: 21)]
         public ActionResult Edit(int id)
         {
             TerminalViewModel model = new TerminalViewModel();
@@ -121,6 +126,7 @@ namespace TAS360.Controllers
 
         // POST: Terminal/Edit/5
         [HttpPost]
+        [AuthorizeUser(idOperacion: 21)]
         public ActionResult Edit(TerminalViewModel model)
         {
             
@@ -168,6 +174,7 @@ namespace TAS360.Controllers
         }
 
         // GET: Terminal/Delete/5
+        [AuthorizeUser(idOperacion: 41)]
         public ActionResult Delete(int id)
         {
             return View();
@@ -175,6 +182,7 @@ namespace TAS360.Controllers
 
         // POST: Terminal/Delete/5
         [HttpPost]
+        [AuthorizeUser(idOperacion: 41)]
         public ActionResult Delete(int id, FormCollection collection)
         {
             try
