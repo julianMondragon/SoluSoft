@@ -138,6 +138,7 @@ namespace TAS360.Controllers
         [AuthorizeUser(idOperacion: 5)]
         public ActionResult IndexWithFilter(string encodedCurrentList)
         {
+            var usuarioLogeado = new User();
             // Inicializa la lista
             List<TicketViewModel> model = new List<TicketViewModel>();
             List<CurrentList> currentList = new List<CurrentList>();
@@ -151,6 +152,7 @@ namespace TAS360.Controllers
                 // Se conecta a la bd
                 using (HelpDesk_Entities1 db = new HelpDesk_Entities1())
                 {
+                    usuarioLogeado = db.User.Find(((User)Session["User"]).id);
                     // Busca el ticket correspondiente en la base de datos
                     var t = db.Ticket.FirstOrDefault(tic => tic.id == item.id);
                     if (t != null)
@@ -174,6 +176,8 @@ namespace TAS360.Controllers
                         });
                     }                    
                 }
+                //String usuarioLogeadoS = usuarioLogeado.id_Roll.ToString();
+                ViewBag.Roll_usuario = usuarioLogeado.id_Roll;
             }
             // Serializa y codifica la lista de tickets filtrados
             var serializedObject = JsonConvert.SerializeObject(currentList);
@@ -345,6 +349,7 @@ namespace TAS360.Controllers
         public ActionResult ShowTicket(int id)
         {
             TicketViewModel myticket = new TicketViewModel();
+            var usuarioLogeado = new User();
             try
             {
                 using (HelpDesk_Entities1 db = new HelpDesk_Entities1())
@@ -357,8 +362,8 @@ namespace TAS360.Controllers
                     myticket.usuario_name = ticket.Ticket_User.OrderByDescending(u => u.CreatedAt).FirstOrDefault().User.nombre;
                     myticket.categoria_name = ticket.Categoria.nombre;
                     myticket.status_name = db.Ticket_Record_Status.Where(x => x.id_Ticket == id).OrderByDescending(x => x.CreatedAt).FirstOrDefault().Status.descripcion;
-                    myticket.terminal_name = db.Terminal.Where(x => x.id == ticket.id_Terminal).FirstOrDefault().Nombre; 
-                    
+                    myticket.terminal_name = db.Terminal.Where(x => x.id == ticket.id_Terminal).FirstOrDefault().Nombre;
+                    usuarioLogeado = db.User.Find(((User)Session["User"]).id);
 
 
                     //Lista de status
@@ -398,6 +403,7 @@ namespace TAS360.Controllers
                         }
                     }
                 }
+                ViewBag.Roll_usuario = usuarioLogeado.id_Roll;
             }
             catch (Exception ex)
             {
@@ -522,15 +528,22 @@ namespace TAS360.Controllers
         public ActionResult AddCommentTicket(int id) 
         {
             TicketViewModel ticket = new TicketViewModel();
-            using(HelpDesk_Entities1 db = new HelpDesk_Entities1())
+            var usuarioLogeado = new User();
+            using (HelpDesk_Entities1 db = new HelpDesk_Entities1())
             {
                 var T = db.Ticket.Find(id);
+                usuarioLogeado = db.User.Find(((User)Session["User"]).id);
                 ticket.id = id;
                 ticket.Status = T.status;
                 ticket.titulo = T.titulo;
                 ticket.mensaje = T.mensaje;
                 //Asignar el usuario.
                 ticket.id_Usuario = db.Ticket_User.Where(a => a.id_Ticket == id).OrderByDescending(a => a.CreatedAt).FirstOrDefault().id_User;
+            }
+            if (usuarioLogeado.id_Roll != 1 && ticket.Status == 12)
+            {
+                // Redirigir a otra vista o mostrar un mensaje de error
+                return Redirect("~/Tickets/ShowTicket/" + ticket.id);
             }
 
             Comentarios comentario = new Comentarios();
@@ -556,6 +569,7 @@ namespace TAS360.Controllers
         [AuthorizeUser(idOperacion: 6)]
         public ActionResult AddCommentTicket(TicketViewModel ticket , Comentarios Comentario)
         {
+            
             try
             {
                 string path = Server.MapPath("~/Logs/Tickets/");
@@ -676,10 +690,23 @@ namespace TAS360.Controllers
         [AuthorizeUser(idOperacion: 2)]
         public ActionResult EditTicket(int id)
         {
+            
             var ticket = new TicketViewModel();
-            using(HelpDesk_Entities1 db = new HelpDesk_Entities1())
+            var usuarioLogeado = new User();
+
+            using (HelpDesk_Entities1 db = new HelpDesk_Entities1())
             {
                 var t = db.Ticket.Find(id);
+
+                //usuarioLogeado = db.User.FirstOrDefault(x=>x.id == usuarioLogeado.id_Roll);
+                usuarioLogeado = db.User.Find(((User)Session["User"]).id);
+                // Obtener el último estatus del ticket
+                ticket.Status = t.Ticket_Record_Status
+                    .Where(s => s.id_Ticket == t.id)
+                    .OrderByDescending(s => s.CreatedAt)
+                    .FirstOrDefault().id_Status;
+
+
                 ticket.id = t.id;
                 ticket.titulo = t.titulo;
                 ticket.id_Terminal = t.id_Terminal;
@@ -690,6 +717,14 @@ namespace TAS360.Controllers
                 ticket.Status = t.Ticket_Record_Status.Where(s => s.id_Ticket == t.id).OrderByDescending(s => s.CreatedAt).FirstOrDefault().id_Status;
                 ticket.mensaje = t.mensaje;
             }
+            
+            // Verificar si el último estatus es 12
+            if (usuarioLogeado.id_Roll != 1 && ticket.Status == 12)
+            {
+                // Redirigir a otra vista o mostrar un mensaje de error
+                return Redirect("~/Tickets/ShowTicket/" + ticket.id);
+            }
+            //string usuarioLogeadoString = usuarioLogeado.id_Roll.ToString();
             GetCategories();
             GetTerminales();
             GetUsuarios();
