@@ -979,6 +979,9 @@
     <Content Include="Views\Roles_and_Privilege\AddRol_Operacion.cshtml" />
     <Content Include="Views\Profile\Index.cshtml" />
     <Content Include="Views\Profile\Editprofile.cshtml" />
+    <Content Include="Views\Roles_and_Privilege\EditOperation.cshtml" />
+    <Content Include="Views\Roles_and_Privilege\EditModulos.cshtml" />
+    <Content Include="Views\Roles_and_Privilege\EditRol.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

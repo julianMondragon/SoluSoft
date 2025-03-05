@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DocumentFormat.OpenXml.EMMA;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -400,6 +401,160 @@ namespace TAS360.Controllers
                 oLog.Add("exeption: " + ex.Message);
                 oLog.Add("------------------------");
 
+                ViewBag.ExceptionMessage = ex.Message;
+                return View(model);
+            }
+        }
+
+        //Controlador de Editar Operación
+        [HttpGet]
+        [AuthorizeUser(idOperacion: 30)]
+        public ActionResult EditOperation(int id)
+        {
+            ListUsuarioViewModel model = new ListUsuarioViewModel(); // Cambiar a ModuloViewModel
+            using (HelpDesk_Entities1 db = new HelpDesk_Entities1())
+            {
+                var ModuloToEdit = db.Operacion.Find(id);
+                if (ModuloToEdit != null)
+                {
+                    model.id = ModuloToEdit.id;
+                    model.nombre = ModuloToEdit.nombre;
+                    model.id_Modulo = ModuloToEdit.id_Modulo;
+                   
+                }
+            }
+            return View(model);
+        }
+
+        [HttpPost]
+        [AuthorizeUser(idOperacion: 18)]
+        public ActionResult EditOperation(ListUsuarioViewModel model)
+        {
+            try
+            {
+                using (HelpDesk_Entities1 db = new HelpDesk_Entities1())
+                {
+                    var ModuloToEdit = db.Operacion.Find(model.id);
+                    if (ModuloToEdit != null)
+                    {
+                        ModuloToEdit.nombre = model.nombre;
+                        ModuloToEdit.id = model.id;
+                        ModuloToEdit.id_Modulo = model.id_Modulo;
+                    }
+                    else
+                    {
+                        ViewBag.ExceptionMessage = "ID no encontrado";
+                        return View(model);
+                    }
+
+                    db.Entry(ModuloToEdit).State = System.Data.Entity.EntityState.Modified;
+                    db.SaveChanges();
+                }
+
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                return View(model);
+            }
+        }
+
+        //Controlador de editar Modulos
+        [HttpGet]
+        [AuthorizeUser(idOperacion: 30)]
+        public ActionResult EditModulos(int id)
+        {
+            ListUsuarioViewModel model = new ListUsuarioViewModel(); // Cambiar a ModuloViewModel
+            using (HelpDesk_Entities1 db = new HelpDesk_Entities1())
+            {
+                var ModuloToEdit = db.Modulo.Find(id);
+                if (ModuloToEdit != null)
+                {
+                    model.nombre = ModuloToEdit.nombre;
+                }
+            }
+            return View(model);
+        }
+
+        [HttpPost]
+        [AuthorizeUser(idOperacion: 18)]
+        public ActionResult EditModulos(ListUsuarioViewModel model)
+        {
+            try
+            {
+                using (HelpDesk_Entities1 db = new HelpDesk_Entities1())
+                {
+                    var ModuloToEdit = db.Modulo.Find(model.id);
+                    if (ModuloToEdit != null)
+                    {
+                        ModuloToEdit.nombre = model.nombre;
+                        ModuloToEdit.id = model.id;
+                    }
+                    else
+                    {
+                        ViewBag.ExceptionMessage = "ID no encontrado";
+                        return View(model);
+                    }
+
+                    db.Entry(ModuloToEdit).State = System.Data.Entity.EntityState.Modified;
+                    db.SaveChanges();
+                }
+
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                ViewBag.ExceptionMessage = ex.Message;
+                return View(model);
+            }
+        }
+
+
+        //Controlador de editar Modulos
+        [HttpGet]
+        [AuthorizeUser(idOperacion: 30)]
+        public ActionResult EditRol(int id)
+        {
+            RollViewModel model = new RollViewModel(); // Cambiar a ModuloViewModel
+            using (HelpDesk_Entities1 db = new HelpDesk_Entities1())
+            {
+                var ModuloToEdit = db.Roll.Find(id);
+                if (ModuloToEdit != null)
+                {
+                    model.nombre = ModuloToEdit.nombre;
+                }
+            }
+            return View(model);
+        }
+
+        [HttpPost]
+        [AuthorizeUser(idOperacion: 18)]
+        public ActionResult EditRol(RollViewModel model)
+        {
+            try
+            {
+                using (HelpDesk_Entities1 db = new HelpDesk_Entities1())
+                {
+                    var ModuloToEdit = db.Roll.Find(model.id);
+                    if (ModuloToEdit != null)
+                    {
+                        ModuloToEdit.nombre = model.nombre;
+                        //ModuloToEdit.id = model.id;
+                    }
+                    else
+                    {
+                        ViewBag.ExceptionMessage = "ID no encontrado";
+                        return View(model);
+                    }
+
+                    db.Entry(ModuloToEdit).State = System.Data.Entity.EntityState.Modified;
+                    db.SaveChanges();
+                }
+
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
                 ViewBag.ExceptionMessage = ex.Message;
                 return View(model);
             }

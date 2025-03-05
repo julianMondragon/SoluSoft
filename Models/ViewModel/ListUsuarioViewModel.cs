@@ -10,6 +10,7 @@ namespace TAS360.Models.ViewModel
     {
         [Display(Name = "ID")]
         public int id { get; set; }
+        public int id_Modulo { get; set; }
 
         [Required]
         [Display(Name = "Nombre")]
@@ -31,12 +32,12 @@ namespace TAS360.Models.ViewModel
         [Display(Name = "Confirmar Contraseña")]
         [Compare("password", ErrorMessage = "Las contraseñas no coinciden")]
         public string confirmPassword { get; set; }
-
         [Required]
-        [Display(Name ="Roll")]
+        [Display(Name = "Roll")]
         public int Rolid { get; set; }
 
-
+        [Display(Name = "RollName")]
+        public string RolidName { get; set; }
 
     }
 

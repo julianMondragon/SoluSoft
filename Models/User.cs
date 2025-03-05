@@ -25,7 +25,7 @@ namespace TAS360.Models
     
         public int id { get; set; }
         public string nombre { get; set; }
-        public Nullable<int> id_Roll { get; set; }
+        public int id_Roll { get; set; }
         public string email { get; set; }
         public string password { get; set; }
         public Nullable<System.DateTime> createdAt { get; set; }
