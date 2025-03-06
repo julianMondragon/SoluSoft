@@ -45,21 +45,21 @@
                             <li role="separator" class="divider"></li>
                             <li>@Html.ActionLink("Roles & Privilegios", "Index", "Roles_and_Privilege")</li>
                             @*<li role="separator" class="divider"></li>
-                    <li>@Html.ActionLink("Danload 6000", "Index", "Danload")</li>
-                    <li role="separator" class="divider"></li>
-                    <li>@Html.ActionLink("Accuload III", "Index", "Accuload")</li>
-                    <li role="separator" class="divider"></li>
-                    <li><a href="#">Reportes</a></li>
-                    <li>@Html.ActionLink("Carga", "Index", "Home")</li>
-                    <li>@Html.ActionLink("Tanques", "About", "Home")</li>
-                    <li role="separator" class="divider"></li>
-                    <li>@Html.ActionLink("Crear Reporte", "Create", "Reports")</li>
-                    <li>@Html.ActionLink("abrir conexion", "Index", "Reports")</li>
-                    <li role="separator" class="divider"></li>
-                    <li><a href="#">SIIC</a></li>
-                    <li>@Html.ActionLink("Entradas", "Index", "Home")</li>
-                    <li>@Html.ActionLink("Salidas", "About", "Home")</li>
-                    <li>@Html.ActionLink("Auditoria", "Contact", "Home")</li>
+                                <li>@Html.ActionLink("Danload 6000", "Index", "Danload")</li>
+                                <li role="separator" class="divider"></li>
+                                <li>@Html.ActionLink("Accuload III", "Index", "Accuload")</li>
+                                <li role="separator" class="divider"></li>
+                                <li><a href="#">Reportes</a></li>
+                                <li>@Html.ActionLink("Carga", "Index", "Home")</li>
+                                <li>@Html.ActionLink("Tanques", "About", "Home")</li>
+                                <li role="separator" class="divider"></li>
+                                <li>@Html.ActionLink("Crear Reporte", "Create", "Reports")</li>
+                                <li>@Html.ActionLink("abrir conexion", "Index", "Reports")</li>
+                                <li role="separator" class="divider"></li>
+                                <li><a href="#">SIIC</a></li>
+                                <li>@Html.ActionLink("Entradas", "Index", "Home")</li>
+                                <li>@Html.ActionLink("Salidas", "About", "Home")</li>
+                                <li>@Html.ActionLink("Auditoria", "Contact", "Home")</li>
                             *@
                         </ul>
                     </li>
@@ -97,9 +97,31 @@
     </div>
 
     @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")   
+    @Scripts.Render("~/bundles/bootstrap")
     @Scripts.Render("~/bundles/corecubi")
     @RenderSection("scripts", required: false)
     <script src="~/Scripts/helper.js"></script>
+    <script type="text/javascript">
+        // Intervalo en milisegundos (aquí configurado para cada 4 minutos)
+        var keepAliveInterval = 4 * 60 * 1000;
+
+        function keepSessionAlive() {
+            // Realiza una solicitud AJAX para mantener la sesión activa
+            fetch('/Home/KeepAlive', {
+                method: 'GET',
+                cache: 'no-cache'
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        console.error('Error manteniendo la sesión activa:', response.statusText);
+                    }
+                })
+                .catch(error => console.error('Error de red al intentar mantener la sesión activa:', error));
+        }
+
+        // Configura el intervalo para mantener la sesión activa
+        setInterval(keepSessionAlive, keepAliveInterval);
+    </script>
+
 </body>    
 </html>

@@ -10,6 +10,20 @@ namespace TAS360.Controllers
 {
     public class HomeController : Controller
     {
+        // Acción KeepAlive para responder a la solicitud de mantenimiento de sesión
+        [HttpGet]
+        public ActionResult KeepAlive()
+        {
+            string path = Server.MapPath("~/Logs/KeepAlive/");
+            Log oLog = new Log(path);
+            oLog.Add("------------------------------------------------------------");
+            oLog.Add("Usuario Logeado: " + ((User)Session["User"]).id);
+            oLog.Add("Usuario Logeado: " + ((User)Session["User"]).nombre);
+            oLog.Add("Fecha: " + DateTime.Now.ToString("dd-MM-yyyy"));
+            oLog.Add("Devuelve un resultado vacío (solo para evitar el reciclaje)");
+            // Devuelve un resultado vacío (solo para evitar el reciclaje)
+            return new EmptyResult();
+        }
         public ActionResult Home()
         {
             return View();
