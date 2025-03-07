@@ -106,8 +106,9 @@
         var keepAliveInterval = 4 * 60 * 1000;
 
         function keepSessionAlive() {
-            // Realiza una solicitud AJAX para mantener la sesión activa
-            fetch('/Home/KeepAlive', {
+            let currentUrl = window.location.href; // Captura la URL actual
+
+            fetch(`/Home/KeepAlive?currentUrl=${encodeURIComponent(currentUrl)}`, {
                 method: 'GET',
                 cache: 'no-cache'
             })
@@ -118,7 +119,6 @@
                 })
                 .catch(error => console.error('Error de red al intentar mantener la sesión activa:', error));
         }
-
         // Configura el intervalo para mantener la sesión activa
         setInterval(keepSessionAlive, keepAliveInterval);
     </script>
