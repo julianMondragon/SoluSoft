@@ -157,6 +157,7 @@
     <Compile Include="Controllers\DanloadController.cs" />
     <Compile Include="Controllers\DocumentacionController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
+    <Compile Include="Controllers\HikVisionController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\logoutController.cs" />
     <Compile Include="Controllers\LSAController.cs" />
@@ -413,6 +414,7 @@
     <Compile Include="Models\ViewModel\G_TicketsByCategoriaViewModel.cs" />
     <Compile Include="Models\ViewModel\G_TicketsByStatusViewModel.cs" />
     <Compile Include="Models\ViewModel\G_TicketsByTerminalViewModel.cs" />
+    <Compile Include="Models\ViewModel\HikVisionViewModel.cs" />
     <Compile Include="Models\ViewModel\ListUsuarioViewModel.cs" />
     <Compile Include="Models\ViewModel\ModuloViewModel.cs" />
     <Compile Include="Models\ViewModel\OperacionViewModel.cs" />
@@ -979,6 +981,7 @@
     <Content Include="Views\Roles_and_Privilege\AddRol_Operacion.cshtml" />
     <Content Include="Views\Profile\Index.cshtml" />
     <Content Include="Views\Profile\Editprofile.cshtml" />
+    <Content Include="Views\HikVision\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
