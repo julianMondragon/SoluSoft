@@ -36,7 +36,7 @@ namespace TAS360.Models.ViewModel
         [Display(Name = "Roll")]
         public int Rolid { get; set; }
 
-        [Display(Name = "RollName")]
+        [Display(Name = "Rol")]
         public string RolidName { get; set; }
 
     }

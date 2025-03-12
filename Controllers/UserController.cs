@@ -74,7 +74,6 @@ namespace TAS360.Controllers
                            RolidName = r.nombre
                        }).ToList();
             }
-
             return View(lst);
         }
 

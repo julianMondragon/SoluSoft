@@ -1,4 +1,4 @@
-﻿@model TAS360.Models.ViewModel.ListUsuarioViewModel
+﻿@model TAS360.Models.ViewModel.OperacionViewModel
 
 @{
     ViewBag.Title = "EditOperation";
@@ -21,22 +21,31 @@
                     <div class="bg-faded rounded p-5">
                         <div class="row" style="margin:5px 0 0 0">
                             <div class="col-md-12">
-                                  <div class="col-lg-4" style="margin: 10px 10px 10px 10px;">
-                                    @Html.LabelFor(model => model.nombre)
-                                    @Html.TextBoxFor(model => model.nombre, new { @class = "form-control", @placeholder = "Nombre Operación" })
-                                    @Html.ValidationMessageFor(model => model.nombre, null, new { @class = "text-danger" })
-                                  </div>
-                                  <div class="col-lg-4" style="margin: 10px 0px 0px 0px;">
-                                      @Html.LabelFor(model => model.id_Modulo)
-                                      @Html.TextBoxFor(model => model.id_Modulo, new { @class = "form-control", @placeholder = "Operación" })
-                                      @Html.ValidationMessageFor(model => model.id_Modulo, null, new { @class = "text-danger" })
-                                  </div>
+                                @using (Html.BeginForm("EditOperation", "Roles_and_Privilege", FormMethod.Post))
+                                {
+                                    @Html.AntiForgeryToken()
+                                    @Html.HiddenFor(model => model.id)
+                                    <br />
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="col-lg-4" style="margin: 10px 10px 10px 10px;">
+                                                @Html.LabelFor(model => model.nombre)
+                                                @Html.TextBoxFor(model => model.nombre, new { @class = "form-control", @placeholder = "Nombre Operación" })
+                                                @Html.ValidationMessageFor(model => model.nombre, null, new { @class = "text-danger" })
+                                            </div>
+                                            <div class="col-lg-4" style="margin: 10px 0px 0px 0px;">
+                                                @Html.LabelFor(model => model.id_modulo)
+                                                @Html.TextBoxFor(model => model.id_modulo, new { @class = "form-control", @placeholder = "Operación" })
+                                                @Html.ValidationMessageFor(model => model.id_modulo, null, new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row" style="margin: 5px 0px 0px 0px; text-align:right">
+                                        <input type="submit" class="btn btn-lg btn-primary" value="Guardar" />
+                                    </div>
+}
                             </div>
-                        </div>
-                        <div class="row" style="margin: 5px 0px 0px 0px; text-align:right">
-                            <input type="submit" class="btn btn-lg btn-primary" value="Guardar" />
-                        </div>
-                    </div>
                         </div>
                     </div>
                 </div>
