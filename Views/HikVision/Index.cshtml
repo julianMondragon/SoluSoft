@@ -5,6 +5,7 @@
     string warning = ViewBag.Warning;
     string Open = ViewBag.Open;
     string Info = ViewBag.Info;
+    string Resp = ViewBag.Respuesta;
 }
 
 <div class="jumbotron">
@@ -21,42 +22,27 @@
         <h7 style="color:blue">@Info</h7>
     }
 </div>
-<style>
-    .form-container {
-        max-width: 500px;
-        margin: 10px auto;
-        padding: 20px;
-        border: 1px solid #ccc;
-        border-radius: 8px;
-        background: #f9f9f9;
-        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-    }
-
-    .form-title {
-        text-align: center;
-    }
-</style>
-
 <div class="container">
     <div class="form-container">
         @using (Html.BeginForm("Index", "HikVision", FormMethod.Post))
         {
-            <div class="form-group">
-                @Html.LabelFor(m => m.APIServer)
-                @Html.TextBoxFor(m => m.APIServer, new { @class = "form-control", placeholder = "Ej: http://192.168.1.100" })
-                @Html.ValidationMessageFor(m => m.APIServer, "", new { @class = "text-danger" })
+            <div class="form-group text-right">
+                <button type="submit" class="btn btn-lg btn-primary">Enviar</button>
             </div>
-
-            <div class="form-group">
-                @Html.LabelFor(m => m.Usuario)
-                @Html.TextBoxFor(m => m.Usuario, new { @class = "form-control", placeholder = "Ej: admin" })
-                @Html.ValidationMessageFor(m => m.Usuario, "", new { @class = "text-danger" })
-            </div>
-
-            <div class="form-group">
-                @Html.LabelFor(m => m.Password)
-                @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "Ingrese su contraseña" })
-                @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+            <div class="row">
+                <div class="col-md-4">
+                    <label>API Server</label>
+                    @Html.TextBoxFor(m => m.APIServer, new { @class = "form-control"@*, @readonly = "readonly"*@ })
+                </div>
+                <div class="col-md-4">
+                    <label>Usuario</label>
+                    @Html.TextBoxFor(m => m.Usuario, new { @class = "form-control"@*, @readonly = "readonly"*@ })
+                </div>
+                @Html.HiddenFor(model => model.Password)
+                <div class="col-md-4">
+                    <label>Password</label>
+                    @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+                </div>
             </div>
 
             <div class="form-group">
@@ -69,14 +55,14 @@
                 @Html.LabelFor(m => m.Parametro)
                 @Html.TextBoxFor(m => m.Parametro, new { @class = "form-control", placeholder = "Ej: { \"cardNo\": \"12345\" }" })
             </div>
+        }
 
-            <div class="form-group">
-                @Html.LabelFor(m => m.Respuesta)
-                @Html.TextAreaFor(m => m.Respuesta, new { @class = "form-control", rows = "3", placeholder = "Aquí aparecerá la respuesta..." })
-            </div>
-
-            <button type="submit" class="btn btn-primary btn-block">Enviar</button>
+        @if (!string.IsNullOrEmpty(Model?.Respuesta))
+        {
+            <label>Respuesta</label>
+            <pre> @Model.Respuesta </pre> <!-- 🔥 Mostrar directamente en un <pre> para ver el formato -->
         }
     </div>
 </div>
+
 

@@ -25,6 +25,9 @@ namespace TAS360.Models.ViewModel
         [Display(Name = "Respuesta")]
         public string Respuesta { get; set; }
 
+        [Display(Name = "Historial")]
+        public string Historial { get; set; }
+
         [Display(Name = "Parámetro (Opcional)")]
         [RegularExpression(@"^(\d+|(\{.*\}))$", ErrorMessage = "La petición debe ser un número o un JSON válido.")]
         public string Parametro { get; set; }
