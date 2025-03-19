@@ -20,12 +20,23 @@
                 </button>
                 @Html.ActionLink("Control de acceso", "Index", "HikVision", new { area = "" }, new { @class = "navbar-brand" })
             </div>
+
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Escuelas", "Index", "HikVision")</li>
-                    <li>@Html.ActionLink("Usuarios", "Index", "HikVision")</li>
-                    <li>@Html.ActionLink("Turnos", "Index", "HikVision")</li>
-                    <li>@Html.ActionLink("Departamentos", "Index", "HikVision")</li>
+                    <li>@Html.ActionLink("Dashboard 1", "Index", "HikVision")</li>
+                    <li>@Html.ActionLink("Dashboard 2", "Index", "HikVision")</li>
+                    <li>@Html.ActionLink("Dashboard 3", "Index", "HikVision")</li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Otras <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li>@Html.ActionLink("Escuelas", "Index", "HikVision")</li>
+                            <li>@Html.ActionLink("Departamentos", "Index", "HikVision")</li>
+                            <li>@Html.ActionLink("Turnos", "Index", "HikVision")</li>
+                            <li role="separator" class="divider"></li>
+                            <li>@Html.ActionLink("Usuarios", "Index", "HikVision")</li>
+                            <li>@Html.ActionLink("Privilegios", "Index", "HikVision")</li>
+                        </ul>
+                    </li>
                 </ul>
             </div>
         </div>
