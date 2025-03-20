@@ -23,7 +23,15 @@
 
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Dashboard 1", "Index", "HikVision")</li>
+                    <li>
+                        @using (Html.BeginForm("MainDashboard", "HikVision", FormMethod.Post, new { @class = "navbar-form", @style = "padding:0; margin:0;" }))
+                        {
+                            @Html.Hidden("APIServer", "http://192.168.0.5")
+                            @Html.Hidden("Usuario", "admin")
+                            @Html.Hidden("Password", "DS-K1T320")
+                            <button type="submit" class="btn btn-link" style="padding: 15px 15px; color: #9d9d9d; text-decoration: none;">Dashboard 1</button>
+                        }
+                    </li>
                     <li>@Html.ActionLink("Dashboard 2", "Index", "HikVision")</li>
                     <li>@Html.ActionLink("Dashboard 3", "Index", "HikVision")</li>
                     <li class="dropdown">

@@ -1,0 +1,64 @@
+﻿@model TAS360.Models.ViewModel.MainDashboardViewModel
+
+@{
+    ViewBag.Title = "Dashboard Principal";
+    Layout = "~/Views/Shared/_Layout3.cshtml";
+}
+
+<div class="jumbotron">
+    <h1>📊 Dashboard Principal</h1>
+    <p class="lead">Información básica del dispositivo conectado</p>
+
+    @if (ViewBag.Warning != null)
+    {
+        <h4 style="color:sandybrown">@ViewBag.Warning</h4>
+    }
+    @if (ViewBag.Info != null)
+    {
+        <h5 style="color:blue">@ViewBag.Info</h5>
+    }
+</div>
+
+<div class="container">
+    <div class="row">
+
+        <div class="col-md-6">
+            <h4>📑 Información del Dispositivo</h4>
+            <table class="table table-striped">
+                <tr>
+                    <th>Modelo</th>
+                    <td>@Model.DeviceInfo.Model</td>
+                </tr>
+                <tr>
+                    <th>Nombre del Dispositivo</th>
+                    <td>@Model.DeviceInfo.DeviceName</td>
+                </tr>
+                <tr>
+                    <th>Número de Serie</th>
+                    <td>@Model.DeviceInfo.SerialNumber</td>
+                </tr>
+                <tr>
+                    <th>Firmware</th>
+                    <td>@Model.DeviceInfo.FirmwareVersion</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="col-md-6">
+            <h4>📡 Estado General</h4>
+            <ul class="list-group">
+                <li class="list-group-item">Conexión API: <b style="color:green">Activa</b></li>
+                <li class="list-group-item">Última actualización: @DateTime.Now.ToString("g")</li>
+                <li class="list-group-item">Capacidad de almacenamiento: <b>@Model.CapacidadEvento / @Model.MaxEventos</b> eventos</li>
+            </ul>
+        </div>
+
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <h4>🔄 Respuesta XML (opcional)</h4>
+            <pre>@Model.RawXML</pre>
+        </div>
+    </div>
+</div>

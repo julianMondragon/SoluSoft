@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using System.Xml.Linq;
 using TAS360.Models.ViewModel;
 
 namespace TAS360.Controllers
@@ -102,6 +103,47 @@ namespace TAS360.Controllers
             }
 
             return View(model);
+        }
+
+        public async Task<ActionResult> MainDashboard(HikVisionViewModel model1)
+        {
+
+            MainDashboardViewModel model = new MainDashboardViewModel();
+            try
+            {
+                string url = $"{model1.APIServer}/ISAPI/System/deviceInfo";
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+                var handler = new HttpClientHandler { Credentials = new NetworkCredential(model1.Usuario, model1.Password) };
+
+
+                using (var client = new HttpClient(handler))
+                {
+                    var response = await client.GetAsync(url);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var xmlString = await response.Content.ReadAsStringAsync();
+                        var doc = XDocument.Parse(xmlString);
+                        
+                        XNamespace ns = doc.Root.GetDefaultNamespace();
+                        var deviceInfo = doc.Root;
+                        if (deviceInfo != null)
+                        {
+                            model.DeviceInfo.DeviceName = deviceInfo.Element(ns + "deviceName")?.Value;
+                            model.DeviceInfo.SerialNumber = deviceInfo.Element(ns + "serialNumber")?.Value;
+                            model.DeviceInfo.FirmwareVersion = deviceInfo.Element(ns + "firmwareVersion")?.Value;
+                            model.DeviceInfo.Model = deviceInfo.Element(ns + "model")?.Value;
+                        }
+
+                    }
+                }
+
+                return View(model);
+            }
+            catch(Exception ex) 
+            {
+                ViewBag.Warning = $"❌ Error: {ex.Message}";
+                return View(model);
+            }
         }
 
     }
