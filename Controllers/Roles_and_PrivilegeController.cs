@@ -424,8 +424,9 @@ namespace TAS360.Controllers
                         Log oLog = new Log(path);
                         oLog.Add("Se le quito la operacion " + OperacionToDelete.id_Operacion + ", al rol: " + OperacionToDelete.id_Roll + ", la accion la realizo el usuario:" + user.nombre);
                         oLog = null;
-                        OperacionToDelete.id_Operacion = null; // hacer logs
-                        OperacionToDelete.id_Roll = null;
+                        //OperacionToDelete.id_Operacion = null; // hacer logs
+                        //OperacionToDelete.id_Roll = null;
+                        db.Roll_Operacion.Remove(OperacionToDelete);
                         db.SaveChanges();
                     }
                     else
@@ -517,7 +518,7 @@ namespace TAS360.Controllers
                         Log oLog = new Log(path);
                         oLog.Add("Se elimino la operación " + OperacionToDelete.nombre + ", la accion fue realizada por el usuario: " + user.nombre);
                         oLog = null;
-                        OperacionToDelete.nombre = null; // hacer logs
+                        OperacionToDelete.nombre = null;
                         db.SaveChanges();
                     }
                     else
@@ -606,7 +607,8 @@ namespace TAS360.Controllers
                         Log oLog = new Log(path);
                         oLog.Add("Se elimino la operación " + ModuloToDelete.nombre + ", la accion fue realizada por el usuario: " + user.nombre);
                         oLog = null;
-                        ModuloToDelete.nombre = null; // hacer logs ususario logeado, antes y despues
+                        //ModuloToDelete.nombre = null;
+                        db.Modulo.Remove(ModuloToDelete);
                         db.SaveChanges();
                     }
                     else
@@ -705,7 +707,8 @@ namespace TAS360.Controllers
                         Log oLog = new Log(path);
                         oLog.Add("Se elimino el rol " + RollToDelete.nombre + ", la accion fue realizada por el usuario: " + user.nombre);
                         oLog = null;
-                        RollToDelete.nombre = null; // hacer logs ususario logeado, antes y despues
+                        db.Roll.Remove(RollToDelete);
+                        //RollToDelete.nombre = null;
                         db.SaveChanges();
                     }
                     else

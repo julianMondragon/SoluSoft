@@ -34,7 +34,7 @@ namespace TAS360.Models.ViewModel
         public string confirmPassword { get; set; }
         [Required]
         [Display(Name = "Roll")]
-        public int Rolid { get; set; }
+        public int? Rolid { get; set; }
 
         [Display(Name = "Rol")]
         public string RolidName { get; set; }

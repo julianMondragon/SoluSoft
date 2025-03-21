@@ -340,16 +340,6 @@ namespace TAS360.Controllers
                 return View();
             }
         }
-
-        [HttpGet]
-        public JsonResult GetTicktsByStatus()
-        {
-            LSA_Reportes Tickets = new LSA_Reportes();
-            List<G_TicketsByStatusViewModel> listTksbyStatus = Tickets.GetTicktsByStatus();
-
-            return Json(listTksbyStatus, JsonRequestBehavior.AllowGet);
-        }
-
         /// <summary>
         /// Metodo para cifrar la contraseña
         /// </summary>
