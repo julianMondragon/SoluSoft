@@ -12,6 +12,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Xml.Linq;
 using TAS360.Models.ViewModel;
+using TAS360.Services;
 
 namespace TAS360.Controllers
 {
@@ -25,8 +26,8 @@ namespace TAS360.Controllers
         {
             HikVisionViewModel model = new HikVisionViewModel()
             {
-                APIServer = "http://192.168.0.5",
-                Peticion = "GET /ISAPI/AccessControl/CardInfo/Capabilities?format=json",
+                APIServer = "http://192.168.0.27",
+                Peticion = "GET /ISAPI/", //AccessControl/CardInfo/Capabilities?format=json",
                 Usuario = "admin",
                 Password = "DS-K1T320",
             };
@@ -93,6 +94,34 @@ namespace TAS360.Controllers
                     }
 
                     model.Respuesta = await response.Content.ReadAsStringAsync();
+                    if (model.Respuesta.TrimStart().StartsWith("{"))
+                    {
+                        ViewBag.ContentType = "application/json";
+                    }                        
+                    else if (model.Respuesta.TrimStart().StartsWith("<"))
+                    {
+                        ViewBag.ContentType = "application/xml";
+                        try
+                        {
+                            var xmlDoc = XDocument.Parse(model.Respuesta);
+
+                            // 🔎 Buscar un nodo por ejemplo <deviceName>
+                            var deviceName = xmlDoc.Descendants("deviceName").FirstOrDefault()?.Value;
+                            ViewBag.DeviceName = deviceName;
+
+                            // 🔧 quí se hace la indentación automática
+                            model.Respuesta = xmlDoc.ToString();
+
+                            // 🔐 También puedes eliminar o modificar nodos si quieres
+                            // xmlDoc.Descendants("serialNumber").Remove();
+                        }
+                        catch (Exception ex)
+                        {
+                            ViewBag.Warning = $"Error procesando XML: {ex.Message}";
+                        }
+                    }
+                    else
+                        ViewBag.ContentType = "text/plain";
                     ViewBag.Respuesta = model.Respuesta;
                 }
             }
@@ -111,6 +140,7 @@ namespace TAS360.Controllers
             MainDashboardViewModel model = new MainDashboardViewModel();
             try
             {
+                HikvisionService service = new HikvisionService();
                 string url = $"{model1.APIServer}/ISAPI/System/deviceInfo";
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
                 var handler = new HttpClientHandler { Credentials = new NetworkCredential(model1.Usuario, model1.Password) };
@@ -135,6 +165,25 @@ namespace TAS360.Controllers
                         }
 
                     }
+                }
+
+                // 🔎 2. Obtener la informacion de la Red
+                string xmlNetwork = await service.GetNetworkInterfaces(model1.APIServer, model1.Usuario, model1.Password);
+                var docNet = XDocument.Parse(xmlNetwork);
+                XNamespace nsNet = docNet.Root.GetDefaultNamespace();
+                var interfaces = docNet.Descendants(nsNet + "NetworkInterface");
+
+                foreach (var iface in interfaces)
+                {
+                    model.NetworkInterfaces.Add(new NetworkInterface
+                    {
+                        Name = iface.Element(nsNet + "id")?.Value,  // El único identificador directo
+                        IPAddress = iface.Element(nsNet + "IPAddress")?.Element(nsNet + "ipAddress")?.Value,
+                        MacAddress = iface.Element(nsNet + "MACAddress")?.Value,
+                        ConnectionType = "N/A",  // No hay campo connectionType
+                        LinkStatus = iface.Element(nsNet + "linkStatus")?.Value ?? "N/A",
+                        WirelessStatus = iface.Element(nsNet + "Wireless")?.Element(nsNet + "Status")?.Value ?? "N/A"
+                    });
                 }
 
                 return View(model);

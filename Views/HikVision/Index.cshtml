@@ -1,4 +1,9 @@
-﻿@model TAS360.Models.ViewModel.HikVisionViewModel
+﻿<!-- jQuery para el plugin -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Collapser para colapsar líneas -->
+<script src="https://cdn.jsdelivr.net/npm/jquery-collapser/jquery.collapser.min.js"></script>
+
+@model TAS360.Models.ViewModel.HikVisionViewModel
 @{
     ViewBag.Title = "HikVision API Communication";
     Layout = "~/Views/Shared/_Layout3.cshtml";
@@ -7,7 +12,6 @@
     string Info = ViewBag.Info;
     string Resp = ViewBag.Respuesta;
 }
-
 <div class="jumbotron">
     @*<h1>🔒 Control de acceso</h1>*@
     <h1>🌐 Protocolo ISAPI</h1>
@@ -33,11 +37,15 @@
             <div class="row">
                 <div class="col-md-4">
                     <label>API Server</label>
-                    @Html.TextBoxFor(m => m.APIServer, new { @class = "form-control"@*, @readonly = "readonly"*@ })
+                    @Html.TextBoxFor(m => m.APIServer, new
+                    {
+                        @class = "form-control"@*, @readonly = "readonly"*@})
                 </div>
                 <div class="col-md-4">
                     <label>Usuario</label>
-                    @Html.TextBoxFor(m => m.Usuario, new { @class = "form-control"@*, @readonly = "readonly"*@ })
+                    @Html.TextBoxFor(m => m.Usuario, new
+                    {
+                        @class = "form-control"@*, @readonly = "readonly"*@})
                 </div>
                 @Html.HiddenFor(model => model.Password)
                 <div class="col-md-4">
@@ -61,9 +69,26 @@
         @if (!string.IsNullOrEmpty(Model?.Respuesta))
         {
             <label>Respuesta</label>
-            <pre> @Model.Respuesta </pre> <!-- 🔥 Mostrar directamente en un <pre> para ver el formato -->
+
+            var tipo = ViewBag.ContentType;
+            string clase = tipo == "application/json" ? "language-json" : (tipo == "application/xml" ? "language-xml" : "language-plaintext");
+            <pre id="respuestaXml" class="line-numbers"><code class="@clase">@Model.Respuesta</code></pre>
         }
     </div>
 </div>
+<script>
+    // Resalta código
+    hljs.highlightAll();
 
-
+    // Aplica colapser solo al PRE donde va el XML
+    $('#respuestaXml').collapser({
+        mode: 'lines',
+        truncate: 8,      // Número de líneas visibles por defecto
+        speed: 'medium',
+        showText: '[+]',
+        hideText: '[-]',
+        atStart: 'show'
+    });
+</script>
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>

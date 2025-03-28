@@ -21,7 +21,6 @@
 
 <div class="container">
     <div class="row">
-
         <div class="col-md-6">
             <h4>📑 Información del Dispositivo</h4>
             <table class="table table-striped">
@@ -45,20 +44,60 @@
         </div>
 
         <div class="col-md-6">
-            <h4>📡 Estado General</h4>
+            <h4>🌐 Estado General</h4>
             <ul class="list-group">
                 <li class="list-group-item">Conexión API: <b style="color:green">Activa</b></li>
                 <li class="list-group-item">Última actualización: @DateTime.Now.ToString("g")</li>
                 <li class="list-group-item">Capacidad de almacenamiento: <b>@Model.CapacidadEvento / @Model.MaxEventos</b> eventos</li>
             </ul>
         </div>
-
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <h3 class="panel-title">📡 Estado de la Red</h3>
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>IP</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.NetworkInterfaces != null && Model.NetworkInterfaces.Any())
+                    {
+                        foreach (var net in Model.NetworkInterfaces)
+                        {
+                            <tr>
+                                <td>@net.Name</td>
+                                <td>@net.IPAddress</td>
+                                <td>@net.LinkStatus</td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="5" class="text-center">Sin información de red</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            
+        </div>
+        <div class="panel-body">
+            
+        </div>
     </div>
 
-    @*<div class="row mt-4">
-        <div class="col-md-12">
-            <h4>🔄 Respuesta XML (opcional)</h4>
-            <pre>@Model.RawXML</pre>
+    <div class="row mt-4">
+            <div class="col-md-12">
+                <h4>🔄 Respuesta XML (opcional)</h4>
+                <pre>@Model.RawXML</pre>
+            </div>
         </div>
-    </div>*@
 </div>
