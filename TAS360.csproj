@@ -436,7 +436,6 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StorProc\LSA_Reportes.cs" />
-    <Compile Include="Views\Profile.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Backup_Database\Migraciones\Alter_Pendiente_Add_properties.sql" />

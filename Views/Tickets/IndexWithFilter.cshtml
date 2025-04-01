@@ -15,13 +15,13 @@
 <div class="jumbotron">
     <h1>Lista de Tickets filtrados</h1>
     <p class="lead">
-        @if (@Model.Count() < 90)
+        @if (@Model.Count() < 80)
         {
-            <text>Se muestran @Model.Count() resultados para el filtro aplicado.</text>
+            <text>Se muestran (@Model.Count()) resultados para el filtro aplicado.</text>
         }
         else
         {
-            <text>Solo se muestran los primeros 90 resultados de tu filtro , puedes agregar mas criterios de busqueda para encontrar el ticket que deseado.</text>
+            <text>Solo se muestran los 80 resultados mas recientes de tu filtro , puedes agregar mas criterios de busqueda para encontrar el ticket que deseado.</text>
         }
     </p>
     <div class="row">

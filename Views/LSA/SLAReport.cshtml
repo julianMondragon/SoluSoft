@@ -7,23 +7,36 @@
 
 }
 <div class="jumbotron">
-    <div class="col-xs-3">
-        <div class="thumbnail">
-            <img src="https://pts-tools.com.mx/Content/img/proftech-logo-01.png" />
+    <div class="row">
+        <div class="col-xs-3">
+            <div class="thumbnail" style="height:100px; width:200px;">
+                <img src="https://pts-tools.com.mx/Content/img/proftech-logo-01.png" class="img-responsive" />
+            </div>
+        </div>
+        <div class="col-xs-9">
+            <h1 class="text-right">Acuerdo de Nivel de Servicio (SLA)</h1>
         </div>
     </div>
-    <h1>Acuerdo de Nivel de Servicio (SLA) </h1>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <p class="lead">
+            Los SLA se utilizan para establecer indicadores medibles del servicio que brindamos y así asegurar el cumplimiento de las expectativas de nuestros clientes.
+        </p>
+        <p class="lead">
+            Para expresar un compromiso de calidad de servicio, esta debe ser medible con facilidad. Esta medición puede ser, muchas veces, subjetiva por parte de los clientes finales, como en el caso de un departamento de atención al cliente.
+        </p>
+        <p class="lead">
+            Anteriormente se muestra las tablas y graficas midiendo la eficiencia de respuesta del servicio.
+        </p>
+    </div>
+    <div class="col-md-6" style="margin:0px 0px 0px 0px">
+        <img src="~/Content/img/SLA.jpg" class="img-responsive" alt="Responsive image">
+    </div>
 </div>
 @*Graficas *@
 <div class="row">
-    @*<div class="col-lg-6">
-        <div class="panel panel-default">
-            <div class="panel-heading"><b>Reporte total de Tickets por categoria</b> </div>
-            <div class="panel-body">
-                <canvas id="myPieChart" width="100" height="50"></canvas>
-            </div>
-        </div>
-    </div>*@
+
     <div class="col-md-6">
         <div class="panel panel-default">
             <div class="panel-heading"><b>Reporte Total de Tickets</b> </div>
@@ -53,35 +66,7 @@
             </div>
         </div>
     </div>
-    @*<div class="col-md-6">
-        <div class="panel panel-default">
-            <div class="panel-heading"><b>Reporte Status de Tickets: ultimo mes</b> </div>
-            <div class="panel-body">
-                <canvas id="myBarChart" width="100" height="50"></canvas>
-            </div>
-        </div>
-    </div>*@
-
 </div>
-@*<div class="row">
-    <div class="col-md-6">
-        <div class="panel panel-default">
-            <div class="panel-heading"><b>Reporte total de Tickets por TAD: ultimo mes</b> </div>
-            <div class="panel-body">
-                <canvas id="myPieChart2" width="50" height="25"></canvas>
-            </div>
-        </div>
-    </div>
-    <div class="col-lg-6">
-        <div class="panel panel-default">
-            <div class="panel-heading"><b>Reporte total de Tickets por TAD</b> </div>
-            <div class="panel-body">
-                <canvas id="myBarChart2" width="50" height="50"></canvas>
-            </div>
-        </div>
-    </div>
-
-</div>*@
 @*tabla de tickets *@
 <div class="row">
     <div class="col-md-12">
@@ -146,23 +131,7 @@
         </div>
     </div>
 </div>
-@*Documentacion SLA*@
-<div class="row">
-    <div class="col-md-6">
-        <p class="lead">
-            Los SLA se utilizan para establecer indicadores medibles del servicio que brindamos y así asegurar el cumplimiento de las expectativas de nuestros clientes.
-        </p>
-        <p class="lead">
-            Para expresar un compromiso de calidad de servicio, esta debe ser medible con facilidad. Esta medición puede ser, muchas veces, subjetiva por parte de los clientes finales, como en el caso de un departamento de atención al cliente.
-        </p>
-        <p class="lead">
-            Anteriormente se muestra las tablas y graficas midiendo la eficiencia de respuesta del servicio.
-        </p>
-    </div>
-    <div class="col-md-6" style="margin:0px 0px 0px 0px">
-        <img src="~/Content/img/SLA.jpg" class="img-responsive" alt="Responsive image">
-    </div>
-</div>
+
 @section scripts
 {
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
