@@ -2,9 +2,9 @@
 @{
     ViewBag.Title = "Editar Ticket";
     List<SelectListItem> Categorias = (List<SelectListItem>)ViewBag.Categorias;
-    List<SelectListItem> Terminales = (List<SelectListItem>)ViewBag.Terminales;
-    List<SelectListItem> Status = (List<SelectListItem>)ViewBag.Status;
-    List<SelectListItem> Usuarios = (List<SelectListItem>)ViewBag.Usuarios;
+    List<SelectListItem> Terminales =  (List<SelectListItem>)ViewBag.Terminales;
+    List<SelectListItem> Status =      (List<SelectListItem>)ViewBag.Status;
+    List<SelectListItem> Usuarios =    (List<SelectListItem>)ViewBag.Usuarios;
     List<SelectListItem> Subsistemas = (List<SelectListItem>)ViewBag.Subsistemas;
     List<SelectListItem> Roll = (List<SelectListItem>)ViewBag.Roll;
     string exception = ViewBag.ExceptionMessage;
@@ -78,10 +78,10 @@
                                                 @Html.ValidationMessageFor(f => f.mensaje, null, new { @class = "red" })
                                             </div>
                                         </div>
-                                        <div style="text-align:right">
-                                            <br />
-                                            <input type="submit" class="btn btn-lg btn-primary" value="Guardar" />
-                                        </div>
+                                            <div style="text-align:right">
+                                                <br />
+                                                <input type="submit" class="btn btn-lg btn-primary" value="Guardar" />
+                                            </div>
                                     </div>
                                 }
                             </div>
