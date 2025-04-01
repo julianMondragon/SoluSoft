@@ -18,86 +18,131 @@
         <h5 style="color:blue">@ViewBag.Info</h5>
     }
 </div>
-
 <div class="container">
+    <!-- Row 1 -->
     <div class="row">
-        <div class="col-md-6">
-            <h4>📑 Información del Dispositivo</h4>
-            <table class="table table-striped">
-                <tr>
-                    <th>Modelo</th>
-                    <td>@Model.DeviceInfo.Model</td>
-                </tr>
-                <tr>
-                    <th>Nombre del Dispositivo</th>
-                    <td>@Model.DeviceInfo.DeviceName</td>
-                </tr>
-                <tr>
-                    <th>Número de Serie</th>
-                    <td>@Model.DeviceInfo.SerialNumber</td>
-                </tr>
-                <tr>
-                    <th>Firmware</th>
-                    <td>@Model.DeviceInfo.FirmwareVersion</td>
-                </tr>
-            </table>
-        </div>
-
-        <div class="col-md-6">
-            <h4>🌐 Estado General</h4>
-            <ul class="list-group">
-                <li class="list-group-item">Conexión API: <b style="color:green">Activa</b></li>
-                <li class="list-group-item">Última actualización: @DateTime.Now.ToString("g")</li>
-                <li class="list-group-item">Capacidad de almacenamiento: <b>@Model.CapacidadEvento / @Model.MaxEventos</b> eventos</li>
-            </ul>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-4">
-            <h3 class="panel-title">📡 Estado de la Red</h3>
-            <table class="table table-bordered table-striped">
-                <thead>
-                    <tr>
-                        <th>Nombre</th>
-                        <th>IP</th>
-                        <th>Estado</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @if (Model.NetworkInterfaces != null && Model.NetworkInterfaces.Any())
-                    {
-                        foreach (var net in Model.NetworkInterfaces)
-                        {
+        <!-- Sección Personas Registradas -->
+        <div class="col-md-8">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <b> 🧍‍♂️Personas Registradas @Model.NumPersonas / Total @Model.TotalPersonas</b>
+                </div>
+                <div class="panel-body">
+                    <table class="table table-bordered table-hover">
+                        <thead>
                             <tr>
-                                <td>@net.Name</td>
-                                <td>@net.IPAddress</td>
-                                <td>@net.LinkStatus</td>
+                                <th>Nombre</th>
+                                <th>No. Empleado</th>
+                                <th>Tipo</th>
+                                <th>Género</th>
+                                <th>Acceso a</th>
                             </tr>
-                        }
-                    }
-                    else
-                    {
-                        <tr>
-                            <td colspan="5" class="text-center">Sin información de red</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-    </div>
-    <div class="panel panel-primary">
-        <div class="panel-heading">
-            
-        </div>
-        <div class="panel-body">
-            
-        </div>
-    </div>
-
-    <div class="row mt-4">
-            <div class="col-md-12">
-                <h4>🔄 Respuesta XML (opcional)</h4>
-                <pre>@Model.RawXML</pre>
+                        </thead>
+                        <tbody>
+                            @if (Model.Personas.Count == 0)
+                            {
+                                <tr><td colspan="5" class="text-center">Sin registros disponibles</td></tr>
+                            }
+                            else
+                            {
+                                foreach (var p in Model.Personas)
+                                {
+                                    <tr>
+                                        <td>@p.name</td>
+                                        <td>@p.employeeNo</td>
+                                        <td>@p.userType</td>
+                                        <td>@(p.valid?.enable == true ? "Femenino" : "Masculino")</td>
+                                        <td>@p.doorRight</td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
+        <!-- Información del Dispositivo -->
+        <div class="col-md-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    📑 <b>Información del Dispositivo</b>
+                </div>
+                <div class="panel-body">
+                    <table class="table table-striped">
+                        <tr><th>Modelo</th><td>@Model.DeviceInfo.Model</td></tr>
+                        <tr><th>Nombre del Dispositivo</th><td>@Model.DeviceInfo.DeviceName</td></tr>
+                        <tr><th>Número de Serie</th><td>@Model.DeviceInfo.SerialNumber</td></tr>
+                        <tr><th>Firmware</th><td>@Model.DeviceInfo.FirmwareVersion</td></tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!-- Sección Estado de la Red -->
+        <div class="col-md-8">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    📡 <b>Estado de la Red</b>
+                </div>
+                <div class="panel-body">
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>IP</th>
+                                <th>Estado</th>
+                                <th>Tipo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var net in Model.NetworkInterfaces)
+                            {
+                                <tr>
+                                    <td>@net.Name</td>
+                                    <td>@net.IPAddress</td>
+                                    <td>@net.LinkStatus</td>
+                                    <td>@net.ConnectionType</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Estado General -->
+        <div class="col-md-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    🌐 <b>Estado General</b>
+                </div>
+                <div class="panel-body">
+                    <table class="table table-bordered">
+                        <tr>
+                            <th>Conexión API</th>
+                            <td>
+                                @if (ViewBag.IsActive)
+                                {
+                                    <span class="text-success"><b>Activa</b></span>
+                                }
+                                else
+                                {
+                                    <span class="text-danger"><b>Inactiva</b></span>
+                                }
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Última actualización</th>
+                            <td>@DateTime.Now.ToString("g")</td>
+                        </tr>
+                        <tr>
+                            <th>Capacidad de almacenamiento</th>
+                            <td>@Model.CapacidadEvento / @Model.MaxEventos eventos</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+

@@ -1,4 +1,5 @@
 ﻿using Microsoft.Ajax.Utilities;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -26,7 +27,7 @@ namespace TAS360.Controllers
         {
             HikVisionViewModel model = new HikVisionViewModel()
             {
-                APIServer = "http://192.168.0.27",
+                APIServer = "http://192.168.0.2",
                 Peticion = "GET /ISAPI/", //AccessControl/CardInfo/Capabilities?format=json",
                 Usuario = "admin",
                 Password = "DS-K1T320",
@@ -175,22 +176,43 @@ namespace TAS360.Controllers
 
                 foreach (var iface in interfaces)
                 {
+                    string id = iface.Element(nsNet + "id")?.Value;
                     model.NetworkInterfaces.Add(new NetworkInterface
                     {
-                        Name = iface.Element(nsNet + "id")?.Value,  // El único identificador directo
+                        Id = iface.Element(nsNet + "id")?.Value,  // El único identificador directo
                         IPAddress = iface.Element(nsNet + "IPAddress")?.Element(nsNet + "ipAddress")?.Value,
                         MacAddress = iface.Element(nsNet + "MACAddress")?.Value,
                         ConnectionType = "N/A",  // No hay campo connectionType
                         LinkStatus = iface.Element(nsNet + "linkStatus")?.Value ?? "N/A",
-                        WirelessStatus = iface.Element(nsNet + "Wireless")?.Element(nsNet + "Status")?.Value ?? "N/A"
+                        WirelessStatus = iface.Element(nsNet + "Wireless")?.Element(nsNet + "enabled")?.Value ?? "N/A"
                     });
+                    if (model.NetworkInterfaces.FirstOrDefault(m => m.Id == id).WirelessStatus == "true")
+                    {
+                        model.NetworkInterfaces.FirstOrDefault(m => m.Id == id).Name = iface.Element(nsNet + "Wireless").Element(nsNet + "ssid").Value;
+                        model.NetworkInterfaces.FirstOrDefault(m => m.Id == id).ConnectionType = "Wireless";
+                        model.NetworkInterfaces.FirstOrDefault(m => m.Id == id).LinkStatus = "True";
+                    }
+                    else
+                    {
+                        model.NetworkInterfaces.FirstOrDefault(m => m.Id == id).Name = "N/A";
+                        model.NetworkInterfaces.FirstOrDefault(m => m.Id == id).ConnectionType = "LAN";
+                        model.NetworkInterfaces.FirstOrDefault(m => m.Id == id).LinkStatus = "False";
+                    }
                 }
 
+                // 🧍‍♂️ 3. Obtener la informacion de Personas
+                (var people, int numMatches, int totalMatches) = await service.GetPeopleInfoAsync(model1.APIServer, model1.Usuario, model1.Password);
+                model.Personas = people;
+                model.NumPersonas = numMatches;
+                model.TotalPersonas = totalMatches;
+                //si todos los servicios en el controller se ejecutaron correctamente se devuelve IsActive.
+                ViewBag.IsActive = true;
                 return View(model);
             }
-            catch(Exception ex) 
+            catch(Exception ex)
             {
-                ViewBag.Warning = $"❌ Error: {ex.Message}";
+                ViewBag.Warning = $"❌: {ex.Message}";
+                ViewBag.IsActive = false;
                 return View(model);
             }
         }
