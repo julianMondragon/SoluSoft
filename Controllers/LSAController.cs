@@ -2,11 +2,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using TAS360.Filters;
 using TAS360.Models.ViewModel;
 using TAS360.StorProc;
+using TAS360.Models;
 
 namespace TAS360.Controllers
 {
@@ -132,6 +134,51 @@ namespace TAS360.Controllers
             GetSummaryTKs();
             return View(tickets);
         }
+        /// <summary>
+        /// Se manda a llamar la nueva vista
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult ReporteHistorico()
+        {
+            return View();
+        }
+
+        public ActionResult Reporte1(string mes, int anio)
+        {
+            return View();
+        }
+
+        public ActionResult Reporte15(string mes, int anio)
+        {
+            return View();
+        }
+        //public ActionResult GenerarReporte(string fecha)
+        //{
+        //    DateTime fechaFin;
+        //    if (!DateTime.TryParse(fecha, out fechaFin))
+        //    {
+        //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "Fecha inválida.");
+        //    }
+
+        //    DateTime fechaInicio = fechaFin.AddDays(-30);
+
+        //    // Aquí deberías obtener los datos de la base de datos dentro del rango de fechas
+        //    var reportes = ObtenerReportes(fechaInicio, fechaFin);
+
+        //    // Retornar la vista con los datos del reporte
+        //    return View("ReporteView", reportes);
+        //}
+
+        //private List<ReporteModel> ObtenerReportes(DateTime inicio, DateTime fin)
+        //{
+        //    using (var db = new MiContexto())  // Asegúrate de usar tu contexto de base de datos
+        //    {
+        //        return db.Reportes
+        //                 .Where(r => r.Fecha >= inicio && r.Fecha <= fin)
+        //                 .ToList();
+        //    }
+        //}
+
         [HttpGet]
         [AuthorizeUser(idOperacion: 27)]
         public ActionResult PrintSLAReport()

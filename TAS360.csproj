@@ -420,6 +420,7 @@
     <Compile Include="Models\ViewModel\PerfilusrViewModel.cs" />
     <Compile Include="Models\ViewModel\PuertoSerialViewModel.cs" />
     <Compile Include="Models\ViewModel\RecetasViewModel.cs" />
+    <Compile Include="Models\ViewModel\ReporteModel.cs" />
     <Compile Include="Models\ViewModel\RepTotalizadoViewModel.cs" />
     <Compile Include="Models\ViewModel\RolesPrivilegesViewModel.cs" />
     <Compile Include="Models\ViewModel\RollViewModel.cs" />
@@ -975,6 +976,8 @@
     <Content Include="Views\Profile\Index.cshtml" />
     <Content Include="Views\Profile\Editprofile.cshtml" />
     <Content Include="Views\LSA\Historico.cshtml" />
+    <Content Include="Views\LSA\ReporteHistorico.cshtml" />
+    <Content Include="Views\LSA\ReporteView.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

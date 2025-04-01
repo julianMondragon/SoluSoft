@@ -6,12 +6,31 @@
     Layout = "~/Views/Shared/_LayoutReport.cshtml";
 
 }
+
+@*Documentacion SLA*@
+<div class="row">
+    <div class="col-md-6">
+        <p class="lead">
+            Los SLA se utilizan para establecer indicadores medibles del servicio que brindamos y así asegurar el cumplimiento de las expectativas de nuestros clientes.
+        </p>
+        <p class="lead">
+            Para expresar un compromiso de calidad de servicio, esta debe ser medible con facilidad. Esta medición puede ser, muchas veces, subjetiva por parte de los clientes finales, como en el caso de un departamento de atención al cliente.
+        </p>
+        <p class="lead">
+            Anteriormente se muestra las tablas y graficas midiendo la eficiencia de respuesta del servicio.
+        </p>
+    </div>
+    <div class="col-md-6" style="margin:0px 0px 0px 0px">
+        <img src="~/Content/img/SLA.jpg" class="img-responsive" alt="Responsive image">
+    </div>
+</div>
+
 <div class="jumbotron">
-    <div class="col-xs-3">
+    @*<div class="col-xs-3">
         <div class="thumbnail">
             <img src="https://pts-tools.com.mx/Content/img/proftech-logo-01.png" />
         </div>
-    </div>
+    </div>*@
     <h1>Acuerdo de Nivel de Servicio (SLA) </h1>
 </div>
 @*Graficas *@
@@ -103,66 +122,89 @@
                         </tr>
                     </thead>
                     <tbody>
+                        @*@if (Model != null)
+            {
+                foreach (var ticket in Model)
+
+                {
+                    int dias = (ticket.Datetobedone.Value - DateTime.Now).Days;
+                    <tr>
+                        <td colspan="1"> <a href="@Url.Content("~/Tickets/ShowTicket/"  + ticket.id)">@ticket.id</a> </td>
+                        <td colspan="2"> @ticket.titulo</td>
+                        <td colspan="1"> @ticket.terminal_name</td>
+                        <td colspan="1"> @ticket.status_name</td>
+                        <td colspan="1"> @ticket.categoria_name</td>
+                        <td colspan="1"> @ticket.Datetobedone.Value.ToString("dd-MMM-yy")</td>
+                        <td colspan="1">
+                            @{
+
+                                if (DateTime.Now.ToShortDateString() == ticket.Datetobedone.Value.ToShortDateString())
+                                {
+                                    <a style="color:darkblue"> Hoy es la entrega </a>
+
+                                }
+                                else if (DateTime.Now < ticket.Datetobedone)
+                                {
+                                    <a style="color:blue"> Quedan @dias días</a>
+
+                                }
+                                else
+                                {
+                                    dias = Math.Abs(dias);
+                                    <a style="color:red"> Atrasado @dias días </a>
+                                }
+                            }
+
+                        </td>
+                    </tr>
+                }
+            }*@
+                    <tbody>
                         @if (Model != null)
                         {
+                            DateTime fechaLimite = DateTime.Now.AddDays(-30);
                             foreach (var ticket in Model)
-
                             {
-                                int dias = (ticket.Datetobedone.Value - DateTime.Now).Days;
-                                <tr>
-                                    <td colspan="1"> <a href="@Url.Content("~/Tickets/ShowTicket/"  + ticket.id)">@ticket.id</a> </td>
-                                    <td colspan="2"> @ticket.titulo</td>
-                                    <td colspan="1"> @ticket.terminal_name</td>
-                                    <td colspan="1"> @ticket.status_name</td>
-                                    <td colspan="1"> @ticket.categoria_name</td>
-                                    <td colspan="1"> @ticket.Datetobedone.Value.ToString("dd-MMM-yy")</td>
-                                    <td colspan="1">
-                                        @{
-
-                                            if (DateTime.Now.ToShortDateString() == ticket.Datetobedone.Value.ToShortDateString())
-                                            {
-                                                <a style="color:darkblue"> Hoy es la entrega </a>
-
+                                // Solo mostrar tickets cuya fecha de compromiso sea mayor o igual a la fecha límite
+                                if (ticket.Datetobedone.HasValue && ticket.Datetobedone.Value >= fechaLimite)
+                                {
+                                    int dias = (ticket.Datetobedone.Value - DateTime.Now).Days;
+                                    <tr>
+                                        <td colspan="1"> <a href="@Url.Content("~/Tickets/ShowTicket/" + ticket.id)">@ticket.id</a> </td>
+                                        <td colspan="2"> @ticket.titulo</td>
+                                        <td colspan="1"> @ticket.terminal_name</td>
+                                        <td colspan="1"> @ticket.status_name</td>
+                                        <td colspan="1"> @ticket.categoria_name</td>
+                                        <td colspan="1"> @ticket.Datetobedone.Value.ToString("dd-MMM-yy")</td>
+                                        <td colspan="1">
+                                            @{
+                                                if (DateTime.Now.ToShortDateString() == ticket.Datetobedone.Value.ToShortDateString())
+                                                {
+                                                    <a style="color:darkblue"> Hoy es la entrega </a>
+                                                }
+                                                else if (DateTime.Now < ticket.Datetobedone)
+                                                {
+                                                    <a style="color:blue"> Quedan @dias días</a>
+                                                }
+                                                else
+                                                {
+                                                    dias = Math.Abs(dias);
+                                                    <a style="color:red"> Atrasado @dias días </a>
+                                                }
                                             }
-                                            else if (DateTime.Now < ticket.Datetobedone)
-                                            {
-                                                <a style="color:blue"> Quedan @dias días</a>
-
-                                            }
-                                            else
-                                            {
-                                                dias = Math.Abs(dias);
-                                                <a style="color:red"> Atrasado @dias días </a>
-                                            }
-                                        }
-
-                                    </td>
-                                </tr>
+                                        </td>
+                                    </tr>
+                                }
                             }
                         }
                     </tbody>
+                    
                 </table>
             </div>
         </div>
     </div>
 </div>
-@*Documentacion SLA*@
-<div class="row">
-    <div class="col-md-6">
-        <p class="lead">
-            Los SLA se utilizan para establecer indicadores medibles del servicio que brindamos y así asegurar el cumplimiento de las expectativas de nuestros clientes.
-        </p>
-        <p class="lead">
-            Para expresar un compromiso de calidad de servicio, esta debe ser medible con facilidad. Esta medición puede ser, muchas veces, subjetiva por parte de los clientes finales, como en el caso de un departamento de atención al cliente.
-        </p>
-        <p class="lead">
-            Anteriormente se muestra las tablas y graficas midiendo la eficiencia de respuesta del servicio.
-        </p>
-    </div>
-    <div class="col-md-6" style="margin:0px 0px 0px 0px">
-        <img src="~/Content/img/SLA.jpg" class="img-responsive" alt="Responsive image">
-    </div>
-</div>
+
 @section scripts
 {
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
