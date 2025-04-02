@@ -90,6 +90,8 @@ namespace TAS360.Controllers
                               where s.status != 12
                               orderby s.CreatedAt descending
                               select s;
+                    ViewBag.HeaderMessage = "Tickets abiertos";
+                    ViewBag.HeaderDescripMess = "Todos los tickets abiertos ordenados descendente";
                 }
                 else
                 {
@@ -98,6 +100,8 @@ namespace TAS360.Controllers
                               where s.status != 12 && s.id_User == usuarioLogeado.id
                               orderby s.CreatedAt descending
                               select s;
+                    ViewBag.HeaderMessage = "Mis tickets";
+                    ViewBag.HeaderDescripMess = "Tickets abiertos asignados a " + usuarioLogeado.nombre + ", ordenados descendente";
                 }
                 if (Tickets != null && Tickets.Any())
                 {
@@ -1220,6 +1224,15 @@ namespace TAS360.Controllers
             GetStatus(1);
             GetCategories();
             GetUsuarios();
+            StringBuilder InfoMessage = new StringBuilder();
+            InfoMessage.AppendLine("");
+            InfoMessage.AppendLine("Este filtro funciona descartando los tickets que no coinciden con las propiedades seleccionadas, siguiendo este orden: Terminal, Categoría, Subsistema, Estatus y Usuario.");
+            InfoMessage.AppendLine("");
+            InfoMessage.AppendLine("Puedes incluir los tickets cerrados o buscar únicamente entre los cerrados, pero no ambas opciones al mismo tiempo.");
+            InfoMessage.AppendLine("");
+            InfoMessage.AppendLine("Si realizas una búsqueda por Id, todas las demás propiedades seleccionadas serán ignoradas en la consulta.");
+            ViewBag.InfoMessage = InfoMessage.ToString();
+
             return View(Filter);
         }
 

@@ -16,7 +16,6 @@ namespace TAS360.Models.ViewModel
 
         [Display(Name = " Buscar por Id")]
         [ConditionalRequired("isSelected_id", ErrorMessage = "El campo Id a buscar es requerido.")]
-        [Range(1, 200)]
         public int? id { get; set; }
 
         public bool isSelected_Categ { get; set; }
