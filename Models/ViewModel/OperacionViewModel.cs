@@ -16,5 +16,6 @@ namespace TAS360.Models.ViewModel
         [Required]
         [Display(Name = "Modulo")]
         public int id_modulo { get; set; }
+        public string moduloname { get; set; }
     }
 }
