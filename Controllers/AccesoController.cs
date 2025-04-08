@@ -48,14 +48,7 @@ namespace TAS360.Controllers
                                     </div>
                                 </body>
                                 </html>";
-        
-        
-        
-        
-        
-        
-        
-        
+  
         // GET: Acceso
         public ActionResult Login()
         {

@@ -19,27 +19,50 @@
     <h1 class="section-heading mb-4">
         <span class="section-heading-lower">Filtrar tickets por: </span>
     </h1>
-    <p class="lead">
-       En esta ventana podrás realizar filtrado de tickets seleccionando el checkbox de cada propiedad.
-    </p>
+
     @if (exception != null)
     {
-        <div class="alert alert-danger" role="alert">
+        <div class="alert alert-danger mt-3" role="alert">
             @exception
         </div>
     }
     @if (Info != null)
     {
-        <div class="alert alert-info" role="alert">
+        <div class="alert alert-info mt-3" role="alert">
             @Info
         </div>
     }
     @if (warning != null)
     {
-        <div class="alert alert-warning" role="alert">
+        <div class="alert alert-warning mt-3" role="alert">
             @warning
         </div>
     }
+</div>
+
+<div class="alert alert-info" role="alert">
+    <h4 class="alert-heading">¿Cómo funciona el filtrado de tickets?</h4>
+    <p>
+        Puedes aplicar múltiples filtros para buscar tickets específicos. Marca los <strong>checkboxes</strong> que quieras activar
+        (como ID, Usuario, Terminal, etc.), y selecciona sus valores correspondientes.
+    </p>
+    <hr />
+    <ul>
+        <li><strong>Los filtros se combinan</strong>: se mostrarán solo los tickets que cumplan <u>todas</u> las condiciones marcadas.</li>
+        <li><strong>Ejemplo 1:</strong> Si eliges <em>ID = 23</em> y <em>Terminal = TAD Hermosillo</em>, se mostrará el ticket 23 solo si pertenece a esa terminal.</li>
+        <li><strong>Ejemplo 2:</strong> Si seleccionas <em>Usuario = Carter</em> y <em>Terminal = TAD Hermosillo</em>, verás solo los tickets de Carter en esa terminal.</li>
+        <li>Si no hay coincidencias con los filtros marcados, <strong>no se mostrará ningún ticket</strong>.</li>
+    </ul>
+    <hr />
+    <p>
+        Además, puedes usar las siguientes opciones para incluir tickets cerrados:
+    </p>
+    <ul>
+        <li><strong>Incluir Tickets cerrados</strong>: Agrega al resultado los tickets que ya fueron finalizados.</li>
+        <li><strong>Solo Tickets cerrados</strong>: Muestra <u>únicamente</u> los tickets que están cerrados.</li>
+    </ul>
+</div>
+
 </div>
 <section class="page-section about-heading">
     <div class="container">
