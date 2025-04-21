@@ -13,6 +13,49 @@ namespace TAS360.Controllers
 {
     public class AccesoController : Controller
     {
+        private string contenidoHtml = @"
+                                <!DOCTYPE html>
+                                <html lang='es'>
+                                <head>
+                                    <meta charset='UTF-8'>
+                                    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+                                    <title>Actualización de Ticket</title>
+                                    <style>
+                                        body { font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 0; }
+                                        .container { width: 100%; max-width: 600px; margin: 0 auto; background-color: #ffffff; border: 1px solid #dddddd; border-radius: 5px; overflow: hidden; }
+                                        .header { background-color: #4CAF50; color: #ffffff; padding: 20px; text-align: center; }
+                                        .content { padding: 20px; }
+                                        .footer { background-color: #f1f1f1; color: #888888; padding: 10px; text-align: center; }
+                                        .button { display: inline-block; background-color: #4CAF50; color: #ffffff; padding: 10px 20px; text-decoration: none; border-radius: 5px; }
+                                    </style>
+                                </head>
+                                <body>
+                                    <div class='container'>
+                                        <div class='header'>
+                                            <h1>Recuperación de contraseña</h1>
+                                        </div>
+                                        <div class='content'>
+                                            <p>Estimado/a <strong>{usuarioName}</strong>,</p>
+                                            <p> Se envia este correo con el fin de mandar la nueva contraseña. </p>
+                                            <ul>                         
+                                                <li><strong>Nueva contraseña:</strong> {ultimoComentario}</li>
+                                            </ul>
+                                        </div>
+                                        <div class='footer'>
+                                            <p>Este es un mensaje automático, por favor no responda a este correo.</p>
+                                            <p>&copy; 2024 HelpDesk PTS</p>
+                                        </div>
+                                    </div>
+                                </body>
+                                </html>";
+        
+        
+        
+        
+        
+        
+        
+        
         // GET: Acceso
         public ActionResult Login()
         {
@@ -116,15 +159,21 @@ namespace TAS360.Controllers
                         EnableSsl = true
                     };
 
+                    // Restablecimiento de contraseña
+                    string path = Server.MapPath("~/Logs/Restablecimiento/");
+                    Log oLog = new Log(path);
+                    oLog.Add("Se restauro la contraseña de: " + user.nombre + " la contraseña es:" + newPassword);
+                    contenidoHtml = contenidoHtml.Replace("{usuarioName}", user.nombre)
+                             .Replace("{ultimoComentario}", newPassword);
                     // Crear el mensaje de correo
                     MailMessage mensaje = new MailMessage
                     {
                         From = new MailAddress("soporte.tas360@pts.mx"),
-                        Subject = "Recuperación de Contraseña",
-                        Body = $"Hola {user.nombre},<br/><br/>Tu nueva contraseña es: {newPassword}<br/><br/>Por favor, cámbiala una vez que inicies sesión.",
+                        Subject = "Restablecimiento de Contraseña",
+                        Body = contenidoHtml,
                         IsBodyHtml = true
                     };
-
+                    
                     // Añadir destinatario
                     mensaje.To.Add(user.email);
 

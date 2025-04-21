@@ -2,23 +2,25 @@
 @using Newtonsoft.Json;
 @model List<TAS360.Models.ViewModel.TicketViewModel>
 @{
-    ViewBag.Title = "Mis Tickets";
+    ViewBag.Title = "Tickets";
     string exception = ViewBag.ExceptionMessage;
     string Info = ViewBag.InfoMessage;
     // Objeto a enviar
     string encodedCurrentList = "";
     // Serialización y codificación
-    var serializedObject = JsonConvert.SerializeObject(Model.FirstOrDefault().ListbyFilterTicket);
-    encodedCurrentList = HttpUtility.UrlEncode(serializedObject);
+    if (Model.Any())
+    {
+        var serializedObject = JsonConvert.SerializeObject(Model.FirstOrDefault().ListbyFilterTicket);
+        encodedCurrentList = HttpUtility.UrlEncode(serializedObject);
+    }
+
 }
 
 <div class="jumbotron">
-    <h1>Mis Tickets</h1>
-    <p class="lead">Todos los tickets abiertos ( @Model.Count() ) ordenados por fecha descendente</p>
+    <h1>@ViewBag.HeaderMessage ( @Model.Count() )</h1>
+    <p class="lead"> @ViewBag.HeaderDescripMess</p>
     <p class="lead">
         <a onclick="document.location.href = '@Url.Content("~/Tickets/CreateTicket")'" class="btn btn-success">Crear un Ticket &raquo;</a>
-        @*Se agrega un botón para que de Index de tickets te envíe a la vista del
-            filtro de tickets*@
         <button onclick="document.location.href = '@Url.Content("~/Tickets/Filter_Tickets")'" type="button" class="btn btn-warning" data-toggle="tooltip" title="Realiza un filtrado personalizado de los pendientes ">
             Filtrado &fnof;
         </button>
@@ -62,7 +64,7 @@
                 </tr>
             </thead>
             <tbody>
-                @if (Model != null)
+                @if (Model.Any())
                 {
                     foreach (var ticket in Model)
                     {
@@ -218,6 +220,12 @@
                             }
                         </tr>
                     }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="12" class="text-center">Sin información de tickets, No eres responsable de ningun ticket abierto</td>
+                    </tr>
                 }
             </tbody>
         </table>

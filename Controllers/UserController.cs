@@ -10,6 +10,7 @@ using TAS360.Filters;
 using TAS360.Models;
 using TAS360.Models.ViewModel;
 using DocumentFormat.OpenXml.Presentation;
+using TAS360.StorProc;
 
 namespace TAS360.Controllers
 {
@@ -62,15 +63,17 @@ namespace TAS360.Controllers
             List<ListUsuarioViewModel> lst;
             using (HelpDesk_Entities1 db = new HelpDesk_Entities1())
             {
-                lst = (from d in db.User
+                lst = (from u in db.User
+                       join r in db.Roll on u.id_Roll equals r.id
                        select new ListUsuarioViewModel
                        {
-                           id = d.id,
-                           nombre = d.nombre,
-                           email = d.email,
+                           id = u.id,
+                           nombre = u.nombre,
+                           email = u.email,
+                           Rolid = u.id_Roll,
+                           RolidName = r.nombre
                        }).ToList();
             }
-
             return View(lst);
         }
 
@@ -78,8 +81,6 @@ namespace TAS360.Controllers
         [HttpGet]
         [AuthorizeUser(idOperacion: 18)]
         public ActionResult Edit(int id)
-
-
         {
 
             ListUsuarioViewModel model = new ListUsuarioViewModel();
@@ -339,7 +340,6 @@ namespace TAS360.Controllers
                 return View();
             }
         }
-        
         /// <summary>
         /// Metodo para cifrar la contraseña
         /// </summary>
