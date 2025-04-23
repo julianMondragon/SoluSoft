@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -19,18 +20,21 @@ namespace TAS360.Controllers
 {
     public class HikVisionController : Controller
     {
+        // Se encapsular acceso seguro del dispositivo a la sesión del usuario
+        private string GetSessionValue(string key) => Session[key] as string ?? string.Empty;
+        private void SetSessionValue(string key, string value) => Session[key] = value;
         /// <summary>
         /// Metodo encargado probar la comunicacion con un equipo
         /// </summary>
         /// <returns></returns>
         public ActionResult Index()
         {
-            HikVisionViewModel model = new HikVisionViewModel()
+            HikVisionViewModel model = new HikVisionViewModel
             {
-                APIServer = "http://192.168.0.2",
-                Peticion = "GET /ISAPI/", //AccessControl/CardInfo/Capabilities?format=json",
-                Usuario = "admin",
-                Password = "DS-K1T320",
+                APIServer = GetSessionValue("HikApiServer"),
+                Usuario = GetSessionValue("HikUser"),
+                Password = GetSessionValue("HikPass"),
+                Peticion = "GET /ISAPI/"
             };
             return View(model);
         }
@@ -47,6 +51,10 @@ namespace TAS360.Controllers
             }
             try
             {
+                // Guardar valores en sesión
+                SetSessionValue("HikApiServer", model.APIServer);
+                SetSessionValue("HikUser", model.Usuario);
+                SetSessionValue("HikPass", model.Password);
                 string baseUrl = model.APIServer?.Trim();
 
                 if (string.IsNullOrEmpty(baseUrl) || !Uri.IsWellFormedUriString(baseUrl, UriKind.Absolute))
@@ -134,19 +142,28 @@ namespace TAS360.Controllers
 
             return View(model);
         }
-
+        /// <summary>
+        /// Metodo que se encarga de mostrar el Dasboard principal, que muestra un
+        /// - CRUD de Personas   
+        /// - La informacion de la RED
+        /// - La informacion del dispositivo
+        /// </summary>
+        /// <param name="model1"></param>
+        /// <returns></returns>
         public async Task<ActionResult> MainDashboard(HikVisionViewModel model1)
         {
+            string apiServer = GetSessionValue("HikApiServer");
+            string user = GetSessionValue("HikUser");
+            string pass = GetSessionValue("HikPass");
 
             MainDashboardViewModel model = new MainDashboardViewModel();
             try
             {
+                // 1. Obtiene la informacion de la Dispositivo (Control de Acceso DS-K1T320)
                 HikvisionService service = new HikvisionService();
-                string url = $"{model1.APIServer}/ISAPI/System/deviceInfo";
+                string url = $"{apiServer}/ISAPI/System/deviceInfo";
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-                var handler = new HttpClientHandler { Credentials = new NetworkCredential(model1.Usuario, model1.Password) };
-
-
+                var handler = new HttpClientHandler { Credentials = new NetworkCredential(user, pass) };
                 using (var client = new HttpClient(handler))
                 {
                     var response = await client.GetAsync(url);
@@ -169,11 +186,10 @@ namespace TAS360.Controllers
                 }
 
                 // 🔎 2. Obtener la informacion de la Red
-                string xmlNetwork = await service.GetNetworkInterfaces(model1.APIServer, model1.Usuario, model1.Password);
+                string xmlNetwork = await service.GetNetworkInterfaces(apiServer, user, pass);
                 var docNet = XDocument.Parse(xmlNetwork);
                 XNamespace nsNet = docNet.Root.GetDefaultNamespace();
                 var interfaces = docNet.Descendants(nsNet + "NetworkInterface");
-
                 foreach (var iface in interfaces)
                 {
                     string id = iface.Element(nsNet + "id")?.Value;
@@ -201,11 +217,11 @@ namespace TAS360.Controllers
                 }
 
                 // 🧍‍♂️ 3. Obtener la informacion de Personas
-                (var people, int numMatches, int totalMatches) = await service.GetPeopleInfoAsync(model1.APIServer, model1.Usuario, model1.Password);
+                (var people, int numMatches, int totalMatches) = await service.GetPeopleInfoAsync(apiServer, user, pass);
                 model.Personas = people;
                 model.NumPersonas = numMatches;
                 model.TotalPersonas = totalMatches;
-                //si todos los servicios en el controller se ejecutaron correctamente se devuelve IsActive.
+                // Resultado a la vista: si todos los 3 servicios en el controller se ejecutaron correctamente se devuelve IsActive.
                 ViewBag.IsActive = true;
                 return View(model);
             }
@@ -217,5 +233,208 @@ namespace TAS360.Controllers
             }
         }
 
+        /// <summary>
+        /// Metodo encargado de mostrar el formulario para crear un usuario en el dispositivo hikvision
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public ActionResult CreateUser()
+        {
+            return View(new HikvisionUserViewModel());
+        }
+        /// <summary>
+        /// Metodo encargado de crear un usuario en el dispositivo hikvision
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<ActionResult> CreateUser(HikvisionUserViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            string apiServer = GetSessionValue("HikApiServer");
+            string user = GetSessionValue("HikUser");
+            string pass = GetSessionValue("HikPass");
+
+            if (string.IsNullOrEmpty(apiServer) || string.IsNullOrEmpty(user) || string.IsNullOrEmpty(pass))
+            {
+                ViewBag.Warning = "⚠️ No hay sesión activa con credenciales del dispositivo. Inicia desde el formulario principal.";
+                return RedirectToAction("Index");
+            }
+
+            var service = new HikvisionService();
+            bool success = await service.CrearUsuarioDispositivoAsync(model, apiServer, user, pass);
+
+            if (success)
+            {
+                TempData["Success"] = "✅ Usuario creado exitosamente en el dispositivo.";
+                return RedirectToAction("MainDashboard");
+            }
+
+            ViewBag.Warning = "❌ No se pudo crear el usuario.";
+            return View(model);
+        }
+
+        /// <summary>
+        /// Metodo encargado de mostrar el formulario para editar un usuario por el id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<ActionResult> EditUser(string id)
+        {
+            if (string.IsNullOrEmpty(id))
+                return RedirectToAction("MainDashboard");
+
+            string apiServer = GetSessionValue("HikApiServer");
+            string user = GetSessionValue("HikUser");
+            string pass = GetSessionValue("HikPass");
+
+            var service = new HikvisionService();
+            try
+            {
+                var usuario = await service.ObtenerUsuarioPorIdAsync(apiServer, user, pass, id);
+                if (usuario == null)
+                    return HttpNotFound();
+
+                var model = new HikvisionUserViewModel
+                {                    
+                    EmployeeNo = usuario.employeeNo,
+                    Name = usuario.name,
+                    UserType = usuario.userType,
+                    DoorRight = usuario.doorRight,
+                    RoomNumber = usuario.roomNumber,
+                    gender = usuario.gender,
+                    BeginTime = DateTime.TryParseExact(usuario.valid.beginTime, "yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out var bTime) ? bTime : DateTime.Now,
+                    EndTime = DateTime.TryParseExact(usuario.valid.endTime, "yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out var eTime) ? eTime : DateTime.Now.AddYears(1),
+                };
+                GetTipoUsuarios();
+                GetGeneros();
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Warning = $"❌ Error al obtener el usuario: {ex.Message}";
+                return RedirectToAction("MainDashboard");
+            }
+        }
+
+        /// <summary>
+        /// Metodo encargado de actualizar un usuario en el dispositivo hikvision
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<ActionResult> EditUser(HikvisionUserViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            string apiServer = GetSessionValue("HikApiServer");
+            string user = GetSessionValue("HikUser");
+            string pass = GetSessionValue("HikPass");
+
+            var service = new HikvisionService();
+            bool actualizado = await service.EditarUsuarioDispositivoAsync(model, apiServer, user, pass);
+
+            if (actualizado)
+            {
+                TempData["Success"] = "✅ Usuario actualizado correctamente.";
+                return RedirectToAction("MainDashboard");
+            }
+
+            ViewBag.Warning = "❌ No se pudo actualizar el usuario en el dispositivo.";
+            GetTipoUsuarios();
+            GetGeneros();
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> DeleteUser(string id)
+        {
+            string apiServer = GetSessionValue("HikApiServer");
+            string user = GetSessionValue("HikUser");
+            string pass = GetSessionValue("HikPass");
+
+            try
+            {
+                if (string.IsNullOrWhiteSpace(id))
+                {
+                    TempData["Warning"] = "⚠️ El número de empleado es inválido.";
+                    return RedirectToAction("MainDashboard");
+                }
+
+                var service = new HikvisionService();
+                var eliminado = await service.EliminarUsuarioDispositivoAsync(apiServer, user, pass, id);
+
+                if (eliminado)
+                {
+                    TempData["Success"] = $"✅ Usuario con ID {id} eliminado correctamente.";
+                }
+                else
+                {
+                    TempData["Warning"] = $"⚠️ No se pudo eliminar el usuario con ID {id}.";
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = $"⚠️ Error al eliminar el usuario: {ex.Message}";
+            }
+
+            return RedirectToAction("MainDashboard");
+        }
+
+
+
+        /// <summary>
+        /// Metodo encargado de devolver un catalogo de generos a la vista.
+        /// </summary>
+        private void GetGeneros()
+        {
+
+            List<SelectListItem> Generos = new List<SelectListItem>();
+            Generos.Add(new SelectListItem
+            {
+                Text = "Masculino",
+                Value = "male",
+                Selected = true
+            });
+
+            Generos.Add(new SelectListItem
+            {
+                Text = "Femenino",
+                Value = "female"
+            });
+
+            ViewBag.Generos = Generos;
+        }
+        /// <summary>
+        /// Metodo encargado de devolver un catalogo de tipo de usuario a la vista.
+        /// </summary>
+        private void GetTipoUsuarios()
+        {
+
+            List<SelectListItem> TipoUsuario = new List<SelectListItem>();
+            TipoUsuario.Add(new SelectListItem
+            {
+                Text = "Usuario Normal",
+                Value = "normal",
+                Selected = true
+            });
+
+            TipoUsuario.Add(new SelectListItem
+            {
+                Text = "Visitante",
+                Value = "visitor"
+            });
+            TipoUsuario.Add(new SelectListItem
+            {
+                Text = "Lista negra",
+                Value = "blackList"
+            });
+
+            ViewBag.TipoUsuario = TipoUsuario;
+        }
     }
 }

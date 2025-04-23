@@ -1,0 +1,54 @@
+﻿@model TAS360.Models.ViewModel.HikvisionUserViewModel
+@{
+    ViewBag.Title = "Crear Usuario en Dispositivo";
+    Layout = "~/Views/Shared/_Layout3.cshtml";
+}
+<div class="jumbotron">
+    <h1> Crear Usuario en Dispositivo</h1>
+
+    @if (ViewBag.Warning != null)
+    {
+        <h4 style="color:sandybrown">@ViewBag.Warning</h4>
+    }
+    @if (ViewBag.Info != null)
+    {
+        <h5 style="color:blue">@ViewBag.Info</h5>
+    }
+</div>
+<div class="container">
+    <div class="form-container">
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.EmployeeNo)
+                @Html.TextBoxFor(m => m.EmployeeNo, new { @class = "form-control", placeholder = "Número de empleado" })
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.Name)
+                @Html.TextBoxFor(m => m.Name, new { @class = "form-control", placeholder = "Nombre completo" })
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.DoorRight)
+                @Html.TextBoxFor(m => m.DoorRight, new { @class = "form-control", placeholder = "Ej. 1" })
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.RoomNumber)
+                @Html.TextBoxFor(m => m.RoomNumber, new { @class = "form-control", placeholder = "Ej. A101" })
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.BeginTime)
+                @Html.TextBoxFor(m => m.BeginTime, "{0:yyyy-MM-ddTHH:mm:ss}", new { type = "datetime-local", @class = "form-control" })
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.EndTime)
+                @Html.TextBoxFor(m => m.EndTime, "{0:yyyy-MM-ddTHH:mm:ss}", new { type = "datetime-local", @class = "form-control" })
+            </div>
+
+            <button class="btn btn-success" type="submit">Crear Usuario</button>
+        }
+    </div>
+    </div>
+        
+

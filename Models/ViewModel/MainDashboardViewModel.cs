@@ -62,6 +62,12 @@ namespace TAS360.Models.ViewModel
         public string password { get; set; }
         public string belongGroup { get; set; }
         public string doorRight { get; set; }
+        public string roomNumber { get; set; }
+        public string gender { get; set; }
+        public int numOfCard { get; set; }
+        public int numOfFP { get; set; }
+        public int numOfFace { get; set; }
+        public bool isAdmin { get; set; }
     }
 
     public class ValidPeriod

@@ -414,6 +414,7 @@
     <Compile Include="Models\ViewModel\G_TicketsByCategoriaViewModel.cs" />
     <Compile Include="Models\ViewModel\G_TicketsByStatusViewModel.cs" />
     <Compile Include="Models\ViewModel\G_TicketsByTerminalViewModel.cs" />
+    <Compile Include="Models\ViewModel\HikvisionUserViewModel.cs" />
     <Compile Include="Models\ViewModel\HikVisionViewModel.cs" />
     <Compile Include="Models\ViewModel\ListUsuarioViewModel.cs" />
     <Compile Include="Models\ViewModel\MainDashboardViewModel.cs" />
@@ -986,6 +987,9 @@
     <Content Include="Views\HikVision\Index.cshtml" />
     <Content Include="Views\Shared\_Layout3.cshtml" />
     <Content Include="Views\HikVision\MainDashboard.cshtml" />
+    <Content Include="Views\Shared\_Alert.cshtml" />
+    <Content Include="Views\HikVision\CreateUser.cshtml" />
+    <Content Include="Views\HikVision\EditUser.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

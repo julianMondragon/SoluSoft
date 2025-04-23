@@ -9,14 +9,8 @@
     <h1>📊 Dashboard Principal</h1>
     <p class="lead">Información básica del dispositivo conectado</p>
 
-    @if (ViewBag.Warning != null)
-    {
-        <h4 style="color:sandybrown">@ViewBag.Warning</h4>
-    }
-    @if (ViewBag.Info != null)
-    {
-        <h5 style="color:blue">@ViewBag.Info</h5>
-    }
+    @Html.Partial("_Alert")
+
 </div>
 <div class="container">
     <!-- Row 1 -->
@@ -24,8 +18,13 @@
         <!-- Sección Personas Registradas -->
         <div class="col-md-8">
             <div class="panel panel-default">
-                <div class="panel-heading">
-                    <b> 🧍‍♂️Personas Registradas @Model.NumPersonas / Total @Model.TotalPersonas</b>
+                <div class="panel-heading clearfix">
+                    <h4 class="pull-left" style="margin-top: 5px;">
+                        🧍‍♂️ Personas Registradas @Model.NumPersonas /  500
+                    </h4>
+                    <a href="@Url.Action("CreateUser", "HikVision")" class="btn btn-success pull-right">
+                        <i class="glyphicon glyphicon-plus"></i> Agregar
+                    </a>
                 </div>
                 <div class="panel-body">
                     <table class="table table-bordered table-hover">
@@ -35,7 +34,10 @@
                                 <th>No. Empleado</th>
                                 <th>Tipo</th>
                                 <th>Género</th>
-                                <th>Acceso a</th>
+                                <th># Finger</th>
+                                <th># Face</th>
+                                <th># Tag</th>
+                                <th>Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -47,13 +49,44 @@
                             {
                                 foreach (var p in Model.Personas)
                                 {
-                                    <tr>
-                                        <td>@p.name</td>
-                                        <td>@p.employeeNo</td>
-                                        <td>@p.userType</td>
-                                        <td>@(p.valid?.enable == true ? "Femenino" : "Masculino")</td>
-                                        <td>@p.doorRight</td>
-                                    </tr>
+                        <tr>
+                            <td>@p.name</td>
+                            <td>@p.employeeNo</td>
+                            <td>@p.userType</td>
+                            <td>@(p.gender == "female" ? "Femenino" : "Masculino")</td>
+                            <td>
+                                @p.numOfFP
+                                <a href="@Url.Action("EditUser", "HikVision", new { id = p.employeeNo })" class="btn btn-sm btn-success">
+                                    <i class="glyphicon glyphicon-hand-up" title="Agregar huella facial"></i>
+                                </a>
+                            </td>
+                            <td>
+                                @p.numOfFace
+                                <a href="@Url.Action("EditUser", "HikVision", new { id = p.employeeNo })" class="btn btn-sm btn-success">
+                                    <i class="glyphicon glyphicon-camera" title="Agregar huella facial"></i>
+                                </a>
+                            </td>
+                            <td>
+                                @p.numOfCard
+                                <a href="@Url.Action("EditUser", "HikVision", new { id = p.employeeNo })" class="btn btn-sm btn-success">
+                                  <i class="glyphicon glyphicon-credit-card" title="Agregar tag"></i>
+                                </a>
+                            </td>
+                            <td>
+                                <a href="@Url.Action("EditUser", "HikVision", new { id = p.employeeNo })" class="btn btn-sm btn-primary">
+                                    <i class="glyphicon glyphicon-edit" title="Editar usuario"></i>
+                                </a>
+                                @using (Html.BeginForm("DeleteUser", "HikVision", FormMethod.Post, new { @style = "display:inline;" }))
+                                {
+                                    @Html.Hidden("id", p.employeeNo)
+                                    <button type="submit" class="btn btn-sm btn-danger"
+                                            onclick="return confirm('¿Estás seguro de eliminar este usuario?');">
+                                        <i class="glyphicon glyphicon-trash" title="Eliminar usuario"></i>
+                                    </button>
+                                }
+
+                            </td>
+                        </tr>
                                 }
                             }
                         </tbody>
