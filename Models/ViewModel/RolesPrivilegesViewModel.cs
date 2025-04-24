@@ -20,6 +20,8 @@ namespace TAS360.Models.ViewModel
             this.Users = new List<User>();
         }
         public List<Roll> Rolls { get; set; }
+        public int id_Modulo { get; set; }
+        public string nombre { get; set; }
         public List<Modulo> Modules { get; set; }
         public List<Roll_Operacion> Rol_OperacionAdmin { get; set; }
         public List<Roll_Operacion> Rol_OperacionResp { get; set; }

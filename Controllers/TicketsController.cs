@@ -82,7 +82,30 @@ namespace TAS360.Controllers
             List<ListbyFilterTicket> currentLists = new List<ListbyFilterTicket>();
             using (Models.HelpDesk_Entities1 db = new Models.HelpDesk_Entities1())
             {
-                var Tickets = (from s in db.Ticket where s.status != 12 orderby s.CreatedAt descending select s);
+                var usuarioLogeado = db.User.Find(((User)Session["User"]).id);
+
+                IQueryable<Ticket> Tickets;
+
+                if (usuarioLogeado.id_Roll == 1 || usuarioLogeado.id_Roll == 2)
+                {
+                    // Admin o Resp_Tec: ven todos los tickets abiertos
+                    Tickets = from s in db.Ticket
+                              where s.status != 12
+                              orderby s.CreatedAt descending
+                              select s;
+                    ViewBag.HeaderMessage = "Tickets abiertos";
+                    ViewBag.HeaderDescripMess = "Todos los tickets abiertos ordenados descendente";
+                }
+                else
+                {
+                    // Otros usuarios: solo ven sus tickets abiertos
+                    Tickets = from s in db.Ticket
+                              where s.status != 12 && s.id_User == usuarioLogeado.id
+                              orderby s.CreatedAt descending
+                              select s;
+                    ViewBag.HeaderMessage = "Mis tickets";
+                    ViewBag.HeaderDescripMess = "Tickets abiertos asignados a " + usuarioLogeado.nombre + ", ordenados descendente";
+                }
                 if (Tickets != null && Tickets.Any())
                 {
                     foreach (var t in Tickets)
@@ -151,25 +174,41 @@ namespace TAS360.Controllers
             bool? just_closed,
             bool? is_closed)
         {
-            using (HelpDesk_Entities1 db = new HelpDesk_Entities1())
-
+            // Inicializa la lista
+            List<TicketViewModel> model = new List<TicketViewModel>();
+            List<CurrentList> currentList = new List<CurrentList>();
+            // Decodifica el objeto que recibe
+            var decodedObject = HttpUtility.UrlDecode(encodedCurrentList);
+            currentList = JsonConvert.DeserializeObject<List<CurrentList>>(decodedObject);
+            // Aquí itera sobre cada elemento para crear la lista
+            foreach (var item in currentList)
             {
-                var ticketsQuery = db.Ticket.AsQueryable();
-
-                // Aplicar filtro por ID si se seleccionó
-                if (id.HasValue)
+                item.is_selected = false;
+                // Se conecta a la bd
+                using (HelpDesk_Entities1 db = new HelpDesk_Entities1())
                 {
-                    ticketsQuery = ticketsQuery.Where(t => t.id == id.Value);
-                }
-                // Aplicar filtro por Terminal
-                if (id_Terminal.HasValue)
-                {
-                    ticketsQuery = ticketsQuery.Where(t => t.id_Terminal == id_Terminal.Value);
-                }
-                // Aplicar filtro por Categoría
-                if (id_Categoria.HasValue)
-                {
-                    ticketsQuery = ticketsQuery.Where(t => t.id_Categoria == id_Categoria.Value);
+                    // Busca el ticket correspondiente en la base de datos
+                    var t = db.Ticket.FirstOrDefault(tic => tic.id == item.id);
+                    if (t != null)
+                    {
+                        // Busca el usuario asociado al ticket
+                        var User = db.User.FirstOrDefault(usr => usr.id == t.id_User);
+                        // Va añadiendo a la lista cada TicketViewModel de los tickets existentes
+                        model.Add(new TicketViewModel
+                            ()
+                        {
+                            id = t.id,
+                            titulo = t.titulo,
+                            mensaje = t.mensaje,
+                            usuario_name = User != null ? User.nombre : "Usuario no encontrado",
+                            categoria_name = t.Categoria != null ? t.Categoria.nombre : "Categoría no encontrada",
+                            terminal_name = t.Terminal != null ? t.Terminal.Nombre : "Terminal no encontrada",
+                            status_name = t.Ticket_Record_Status.OrderByDescending(x => x.CreatedAt).FirstOrDefault()?.Status.descripcion ?? "Estado no encontrado",
+                            Subsistema_name = t.Subsistema != null ? t.Subsistema.Nombre : "Subsistema no encontrado",
+                            Status = t.status,
+                            currentList = currentList
+                        });
+                    }                    
                 }
                 // Aplicar filtro por Subsistema
                 if (id_Subsistema.HasValue)
@@ -387,6 +426,7 @@ namespace TAS360.Controllers
         public ActionResult ShowTicket(int id)
         {
             TicketViewModel myticket = new TicketViewModel();
+            var usuarioLogeado = new User();
             try
             {
                 using (HelpDesk_Entities1 db = new HelpDesk_Entities1())
@@ -399,8 +439,8 @@ namespace TAS360.Controllers
                     myticket.usuario_name = ticket.Ticket_User.OrderByDescending(u => u.CreatedAt).FirstOrDefault().User.nombre;
                     myticket.categoria_name = ticket.Categoria.nombre;
                     myticket.status_name = db.Ticket_Record_Status.Where(x => x.id_Ticket == id).OrderByDescending(x => x.CreatedAt).FirstOrDefault().Status.descripcion;
-                    myticket.terminal_name = db.Terminal.Where(x => x.id == ticket.id_Terminal).FirstOrDefault().Nombre; 
-                    
+                    myticket.terminal_name = db.Terminal.Where(x => x.id == ticket.id_Terminal).FirstOrDefault().Nombre;
+                    usuarioLogeado = db.User.Find(((User)Session["User"]).id);
 
 
                     //Lista de status
@@ -440,6 +480,7 @@ namespace TAS360.Controllers
                         }
                     }
                 }
+                ViewBag.Roll_usuario = usuarioLogeado.id_Roll;
             }
             catch (Exception ex)
             {
@@ -499,9 +540,7 @@ namespace TAS360.Controllers
                             URL = (file.Files.URL.Replace("C:\\Inetpub\\vhosts\\pts-tools.com.mx\\httpdocs\\softwaretool", "")).Replace("\\", "/")
                         }); 
                     }
-                    //Comentarios
-
-                                     
+                    //Comentarios                                     
                     if (db.Ticket_Comentario.Where(c => c.id_Ticket == id).Any())
                     {
                         var coms = db.Ticket_Comentario.Where(c => c.id_Ticket == id);
@@ -564,15 +603,22 @@ namespace TAS360.Controllers
         public ActionResult AddCommentTicket(int id) 
         {
             TicketViewModel ticket = new TicketViewModel();
-            using(HelpDesk_Entities1 db = new HelpDesk_Entities1())
+            var usuarioLogeado = new User();
+            using (HelpDesk_Entities1 db = new HelpDesk_Entities1())
             {
                 var T = db.Ticket.Find(id);
+                usuarioLogeado = db.User.Find(((User)Session["User"]).id);
                 ticket.id = id;
                 ticket.Status = T.status;
                 ticket.titulo = T.titulo;
                 ticket.mensaje = T.mensaje;
                 //Asignar el usuario.
                 ticket.id_Usuario = db.Ticket_User.Where(a => a.id_Ticket == id).OrderByDescending(a => a.CreatedAt).FirstOrDefault().id_User;
+            }
+            if (usuarioLogeado.id_Roll != 1 && ticket.Status == 12)
+            {
+                // Redirigir a otra vista o mostrar un mensaje de error
+                return Redirect("~/Tickets/ShowTicket/" + ticket.id);
             }
 
             Comentarios comentario = new Comentarios();
@@ -598,6 +644,7 @@ namespace TAS360.Controllers
         [AuthorizeUser(idOperacion: 6)]
         public ActionResult AddCommentTicket(TicketViewModel ticket , Comentarios Comentario)
         {
+            
             try
             {
                 string path = Server.MapPath("~/Logs/Tickets/");
@@ -718,10 +765,23 @@ namespace TAS360.Controllers
         [AuthorizeUser(idOperacion: 2)]
         public ActionResult EditTicket(int id)
         {
+            
             var ticket = new TicketViewModel();
-            using(HelpDesk_Entities1 db = new HelpDesk_Entities1())
+            var usuarioLogeado = new User();
+
+            using (HelpDesk_Entities1 db = new HelpDesk_Entities1())
             {
                 var t = db.Ticket.Find(id);
+
+                //usuarioLogeado = db.User.FirstOrDefault(x=>x.id == usuarioLogeado.id_Roll);
+                usuarioLogeado = db.User.Find(((User)Session["User"]).id);
+                // Obtener el último estatus del ticket
+                ticket.Status = t.Ticket_Record_Status
+                    .Where(s => s.id_Ticket == t.id)
+                    .OrderByDescending(s => s.CreatedAt)
+                    .FirstOrDefault().id_Status;
+
+
                 ticket.id = t.id;
                 ticket.titulo = t.titulo;
                 ticket.id_Terminal = t.id_Terminal;
@@ -732,6 +792,14 @@ namespace TAS360.Controllers
                 ticket.Status = t.Ticket_Record_Status.Where(s => s.id_Ticket == t.id).OrderByDescending(s => s.CreatedAt).FirstOrDefault().id_Status;
                 ticket.mensaje = t.mensaje;
             }
+            
+            // Verificar si el último estatus es 12
+            if (usuarioLogeado.id_Roll != 1 && ticket.Status == 12)
+            {
+                // Redirigir a otra vista o mostrar un mensaje de error
+                return Redirect("~/Tickets/ShowTicket/" + ticket.id);
+            }
+            //string usuarioLogeadoString = usuarioLogeado.id_Roll.ToString();
             GetCategories();
             GetTerminales();
             GetUsuarios();
@@ -1293,7 +1361,7 @@ namespace TAS360.Controllers
             GetStatus(1);
             GetCategories();
             GetUsuarios();
-            return View(filter);
+            return View(Filter);
         }
 
         /// <summary>
@@ -1363,56 +1431,103 @@ namespace TAS360.Controllers
                 }
             }
 
-            // Construir los valores de ruta (query string) con los filtros seleccionados
-            var routeValues = new RouteValueDictionary();
+                        if (Filter.is_closed)
+                        {
+                            listFilter = db.Ticket.Take(92).ToList();
+                        }
+                        else if (Filter.just_closed)
+                        {
+                            listFilter = db.Ticket.Where(x => x.status == 12).Take(92).ToList();
+                        }
+                        else
+                        {
+                            listFilter = db.Ticket.Where(x => x.status != 12).Take(92).ToList();
+                        }
+                        if (Filter.isSelected_Terminal)
+                        {
+                            listFilter = listFilter.Where(t => t.id_Terminal == Filter.id_Terminal).ToList();
+                            if (listFilter.Count() < 1)
+                            {
+                                //devuelve a la vista el modelo y un mensaje de busqueda sin resultados
+                                ViewBag.warning = "Ningun registro coicide con la terminal: " + Filter.id_Terminal;
+                                return View(Filter);
 
-            // Si se filtra por ID
-            if (Filter.isSelected_id && Filter.id.HasValue)
-            {
-                routeValues["id"] = Filter.id;
-            }
-            // Filtrar por Terminal (TADs)
-            if (Filter.isSelected_Terminal && Filter.id_Terminal.HasValue)
-            {
-                routeValues["id_Terminal"] = Filter.id_Terminal;
-            }
-            // Filtrar por Categoría
-            if (Filter.isSelected_Categ && Filter.id_Categoria.HasValue)
-            {
-                routeValues["id_Categoria"] = Filter.id_Categoria;
-            }
-            // Filtrar por Subsistema
-            if (Filter.isSelected_subsistema && Filter.id_Subsistema.HasValue)
-            {
-                routeValues["id_Subsistema"] = Filter.id_Subsistema;
-            }
-            // Filtrar por Estatus
-            if (Filter.isSelected_Status && Filter.status.HasValue)
-            {
-                routeValues["status"] = Filter.status;
-            }
-            // Filtrar por Usuario
-            if (Filter.isSelected_User && Filter.id_User.HasValue)
-            {
-                routeValues["id_User"] = Filter.id_User;
-            }
+                            }
+                        }
+                        if (Filter.isSelected_Categ)
+                        {
+                            listFilter = listFilter.Where(t => t.id_Categoria == Filter.id_Categoria).ToList();
+                            if (listFilter.Count() < 1)
+                            {
+                                //devuelve a la vista el modelo y un mensaje de busqueda sin resultados
+                                ViewBag.warning = "Ningun registro coicide con la Categoría: " + Filter.id_Categoria;
+                                return View(Filter);
+
+                            }
+                        }
+                        if (Filter.isSelected_subsistema)
+                        {
+                            listFilter = listFilter.Where(t => t.id_Subsistema == Filter.id_Subsistema).ToList();
+                            if (listFilter.Count() < 1)
+                            {
+                                //devuelve a la vista el modelo y un mensaje de busqueda sin resultados
+                                ViewBag.warning = "Ningun registro coicide con el Subsistema: " + Filter.id_Subsistema;
+                                return View(Filter);
+
+                            }
+                        }
+                        if (Filter.isSelected_Status)
+                        {
+                            listFilter = listFilter.Where(t => t.status == Filter.status).ToList();
+                            if (listFilter.Count() < 1)
+                            {
+                                //devuelve a la vista el modelo y un mensaje de busqueda sin resultados
+                                ViewBag.warning = "Ningun registro coicide con el estatus: " + Filter.status;
+                                return View(Filter);
 
             // Pasar los booleanos de tickets cerrados
             routeValues["just_closed"] = Filter.just_closed;
             routeValues["is_closed"] = Filter.is_closed;
 
-            // Se puede incluir la página (opcional)
-            if (page.HasValue)
-            {
-                routeValues["page"] = page.Value;
-            }
+                        if (Filter.isSelected_User)
+                        {
+                            //Aquí también se establece un límite de 40 tickets a enviar a la lista de la vista
+                            listFilter = listFilter.Where(t => t.id_User == Filter.id_User).Take(40).ToList();
+                            if (listFilter.Count() < 1)
+                            {
+                                //devuelve a la vista el modelo y un mensaje de busqueda sin resultados
+                                ViewBag.warning = "Ningun registro coicide con usuario: " + Filter.id_User;
+                                return View(Filter);
 
             // Redirigir a la acción GET que muestra los resultados filtrados
             return RedirectToAction("IndexWithFilter", routeValues);
         }
 
+                        //el resultado de la busqueda
+                        foreach (var item in listFilter)
+                        {
+                            currentLists.Add(new ListbyFilterTicket() { id = item.id });
+                        }
+                    }
+                }
+            }
+            else
+            {
+                ViewBag.warning = "Filtro no valido";
+                return View(Filter);
+            }
 
-
+            // Objeto a enviar
+            string encodedCurrentList = "";
+            // Serialización y codificación
+            var serializedObject = JsonConvert.SerializeObject(currentLists);
+            encodedCurrentList = HttpUtility.UrlEncode(serializedObject);
+            // Creación de la URL con la cadena de consulta
+            var url = "IndexWithFilter/?encodedCurrentList=" + encodedCurrentList;
+            // Redirecciona a la URL 
+            return Redirect(url);
+            //return View("IndexWithFilter", encodedCurrentList);
+        }
 
         /// <summary>
         /// Metodo que se encarga de exportar la tabla tickets
@@ -1455,6 +1570,38 @@ namespace TAS360.Controllers
                         NewTablaTickets.SetCellValue(Row, 7, ticket.Categoria.nombre);
                         NewTablaTickets.SetCellValue(Row, 8, ticket.Ticket_Record_Status.OrderByDescending(x => x.CreatedAt).FirstOrDefault()?.Status.descripcion);
                         NewTablaTickets.SetCellValue(Row, 9, ticket.id_externo);
+                        
+
+                        //Comentarios
+                        if (db.Ticket_Comentario.Where(c => c.id_Ticket == ticket.id).Any())
+                        {
+                            var coms = db.Ticket_Comentario.Where(c => c.id_Ticket == ticket.id).OrderByDescending(t => t.id).FirstOrDefault();
+
+
+                            if (coms.Comentario.Comentario1.Contains("Cambio de Status a:"))
+                            {
+                                string mensaje = ticket.mensaje + "\n Ultimo estatus del ticket \n" + coms.Comentario.Comentario1;
+                                NewTablaTickets.SetCellValue(Row, 3, mensaje);                               
+                            }
+                            else
+                            {
+                                string formattedDate = "********";
+                                if (coms.Comentario.CreatedAt != null)
+                                {
+                                    var Date = (DateTime)coms.Comentario.CreatedAt;
+                                    formattedDate = Date.ToString("dd-MM-yyyy");
+                                }
+                                string mensaje = ticket.mensaje + 
+                                    "\n Ultimo estatus del ticket \n" + 
+                                    "\n*****************************************************" +
+                                    "\n----------------------------------------- " +
+                                    formattedDate + "\n * Sin cambio de Status." +
+                                    "\n" + "---------------------------------------------------- \n" +
+                                    "***************************************************** \n" +
+                                    coms.Comentario.Comentario1 + "\n";
+                                NewTablaTickets.SetCellValue(Row, 3, mensaje);
+                            }
+                        }
                         Row++;
                     }
 
