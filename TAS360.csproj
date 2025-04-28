@@ -975,9 +975,8 @@
     <Content Include="Views\Roles_and_Privilege\AddRol_Operacion.cshtml" />
     <Content Include="Views\Profile\Index.cshtml" />
     <Content Include="Views\Profile\Editprofile.cshtml" />
-    <Content Include="Views\LSA\Historico.cshtml" />
-    <Content Include="Views\LSA\ReporteHistorico.cshtml" />
-    <Content Include="Views\LSA\ReporteView.cshtml" />
+    <Content Include="Views\LSA\ReportHis.cshtml" />
+    <Content Include="Views\LSA\ReportePeriodico.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

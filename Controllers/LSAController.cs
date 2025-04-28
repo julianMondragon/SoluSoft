@@ -9,6 +9,8 @@ using TAS360.Filters;
 using TAS360.Models.ViewModel;
 using TAS360.StorProc;
 using TAS360.Models;
+using Microsoft.Ajax.Utilities;
+using System.Data.Entity;
 
 namespace TAS360.Controllers
 {
@@ -138,20 +140,6 @@ namespace TAS360.Controllers
         /// Se manda a llamar la nueva vista
         /// </summary>
         /// <returns></returns>
-        public ActionResult ReporteHistorico()
-        {
-            return View();
-        }
-
-        public ActionResult Reporte1(string mes, int anio)
-        {
-            return View();
-        }
-
-        public ActionResult Reporte15(string mes, int anio)
-        {
-            return View();
-        }
         //public ActionResult GenerarReporte(string fecha)
         //{
         //    DateTime fechaFin;
@@ -187,6 +175,76 @@ namespace TAS360.Controllers
             {
                 FileName = $"Reporte_de_SLA_{DateTime.Now.Date.ToShortDateString()}.pdf"
             };
+        }
+        //[HttpGet]
+        //[AuthorizeUser(idOperacion: 27)]
+        //public ActionResult ReportHis()
+        //{
+        //    return View();
+        //}
+        [HttpGet]
+        [AuthorizeUser(idOperacion: 27)]
+        public ActionResult ReportHis(DateTime? fecha)
+        {
+            return View();
+        }
+        public ActionResult ReportePeriodico(string fechaSeleccionada)
+        {
+            List<TicketViewModel> tickets = new List<TicketViewModel>();
+            using (Models.HelpDesk_Entities1 db = new Models.HelpDesk_Entities1())
+            {
+                var Tickets = (from s in db.Ticket where s.status != 12 orderby s.CreatedAt descending select s);
+                if (Tickets != null && Tickets.Any())
+                {
+                    foreach (var t in Tickets)
+                    {
+                        TicketViewModel ticket = new TicketViewModel()
+                        {
+                            id = t.id,
+                            titulo = t.titulo,
+                            mensaje = t.mensaje,
+                            usuario_name = t.Ticket_User.OrderByDescending(x => x.CreatedAt).FirstOrDefault().User.nombre,
+                            categoria_name = t.Categoria.nombre,
+                            terminal_name = t.Terminal.Nombre,
+                            Subsistema_name = t.Subsistema.Nombre,
+                            Status = t.status,
+                            Date = t.CreatedAt,
+                            Datetobedone = t.CreatedAt.HasValue ? t.CreatedAt.Value.AddDays(15) : DateTime.MinValue
+                        };
+                        switch (t.Ticket_Record_Status.OrderByDescending(x => x.CreatedAt).FirstOrDefault().Status.descripcion)
+                        {
+                            case "Pendiente ":
+                                ticket.status_name = "Capturado";
+                                break;
+                            case "Analisis  ":
+                                ticket.status_name = "Espera de info";
+                                break;
+                            case "Correccion":
+                                ticket.status_name = "En Proceso";
+                                break;
+                            case "Pruebas   ":
+                                ticket.status_name = "En Proceso";
+                                break;
+                            case "Implementa":
+                                ticket.status_name = "En Proceso";
+                                break;
+                            case "Pend_Pmx  ":
+                                ticket.status_name = "Espera de info";
+                                break;
+                            case "Cerrado   ":
+                                ticket.status_name = "Espera de info";
+                                break;
+                            default:
+                                ticket.status_name = "Undefineded";
+                                break;
+                        }
+
+                        tickets.Add(ticket);
+                    }
+                }
+            }
+            GetSummaryTKs();
+            return View(tickets);
         }
         [HttpGet]
         public JsonResult GetTicktsByStatus()
