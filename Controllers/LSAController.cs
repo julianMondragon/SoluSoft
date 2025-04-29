@@ -278,6 +278,29 @@ namespace TAS360.Controllers
 
             return Json(listTksbyCategoria, JsonRequestBehavior.AllowGet);
         }
+        public JsonResult GetTicketsModificados()
+        {
+            var resultado = new List<object>();
+
+            using (var context = new Models.HelpDesk_Entities1()) // Reemplaza con tu contexto real
+            {
+                var data = context.Database.SqlQuery<G_TicketsModificadosViewModel>("EXEC ptstools_Jmondragon.SP_GetTicketsByStatus").ToList();
+
+                foreach (var item in data)
+                {
+                    resultado.Add(new
+                    {
+                        id_ticket = item.id_ticket_editado,
+                        cantidad = item.Cantidad_modificaciones,
+                        masAntiguo = item.Mas_Antiguo,
+                        masReciente = item.Mas_Reciente
+                    });
+                }
+            }
+
+            return Json(resultado, JsonRequestBehavior.AllowGet);
+        }
+
         private void GetSummaryTKs()
         {
             int tksopen = 0;

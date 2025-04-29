@@ -76,6 +76,14 @@
             </div>
         </div>
     </div>
+    <div class="col-md-6">
+        <div class="panel panel-default">
+            <div class="panel-heading"><b>Reporte Sobre Modificaciones de Tickets: último mes</b> </div>
+            <div class="panel-body">
+                <canvas id="modTicketsChart" width="100" height="50"></canvas>
+            </div>
+        </div>
+    </div>
 
 </div>
 <div class="row">
@@ -176,7 +184,6 @@
         </div>
     </div>
 </div>
-
 @section scripts
 {
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -275,7 +282,63 @@
                     console.log(error)
                 }
         });
+        //Bar Chart de modificaciones del ultimo mes
+         // Bar Chart para tickets modificados
+jQuery.ajax({
+    url: '@Url.Action("GetTicketsModificados", "LSA")',
+    type: "GET",
+    dataType: "json",
+    contentType: "application/json; charset=utf-8",
+    success: function (data) {
 
+        var idsTickets = [];
+        var cantidades = [];
+
+        for (var i = 0; i < data.length; i++) {
+            idsTickets.push("Ticket " + data[i].id_ticket);
+            cantidades.push(data[i].cantidad);
+        }
+
+        var controlBar2 = document.getElementById("modTicketsChart");
+
+        var graficoBar2 = new Chart(controlBar2, {
+            type: 'bar',
+            data: {
+                labels: idsTickets,
+                datasets: [{
+                    label: "Modificaciones",
+                    backgroundColor: "#0083B1",
+                    borderColor: "#000000",
+                    borderWidth: 0,
+                    data: cantidades,
+                }],
+            },
+            options: {
+                scales: {
+                    xAxes: [{
+                        gridLines: {
+                            display: true
+                        },
+                    }],
+                    yAxes: [{
+                        ticks: {
+                            min: 0,
+                        },
+                        gridLines: {
+                            display: true
+                        }
+                    }],
+                },
+                legend: {
+                    display: true
+                }
+            }
+        });
+    },
+    error: function (error) {
+        console.log(error)
+    }
+});
         //Bar Chart total de tickets por tad
         jQuery.ajax({
                 url: '@Url.Action("GetTicketsByTerminal", "LSA")',
@@ -418,7 +481,43 @@
                 console.log(error)
             }
         });
+
+    jQuery.ajax({
+    url: '@Url.Action("GetTicketsByTerminalOnLastMonth", "LSA")',
+    type: "GET",
+    dataType: "json",
+    contentType: "application/json; charset=utf-8",
+    success: function (data) {
+
+        var arrayCategorias = [];
+        var arrayCantidad = [];
+
+        for (var x = 0; x < data.length; x++)
+        {
+            arrayCategorias.push(data[x].Terminal)
+            arrayCantidad.push(data[x].Cantidad)
+        }
+
+        console.log(arrayCategorias)
+        console.log(arrayCantidad)
+
+        var controlPie1 = document.getElementById("myPieChart2");
+        var graficoPie1 = new Chart(controlPie1, {
+            type: 'pie',
+            data: {
+                labels: arrayCategorias,
+                datasets: [{
+                    data: arrayCantidad,
+                    backgroundColor: ['#007bff', '#dc3545', '#ffc107', '#28a745', "#BB2100", "#03B100", "#0083B1", "#0800B1", "#EBFA00", "#FA00D8"],
+                }],
+            },
+        });
+
+    },
+    error: function (error) {
+        console.log(error)
+    }
+      });
+
     </script>
 }
-
-

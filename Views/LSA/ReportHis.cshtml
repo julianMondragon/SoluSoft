@@ -6,6 +6,8 @@
         "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
         "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
     };
+
+    var fechaActual = DateTime.Today;
 }
 
 <h2>Reporte Histórico 2025</h2>
@@ -19,21 +21,33 @@
         </tr>
     </thead>
     <tbody>
-        @{
-            for (int i = 1; i <= 12; i++)
-            {
-                var fechaUno = new DateTime(2025, i, 1);
-                var fechaQuince = new DateTime(2025, i, 15);
-                <tr>
-                    <td>@fechaUno.ToString("MMMM")</td>
-                    <td>
+        @for (int i = 1; i <= 12; i++)
+        {
+            var fechaUno = new DateTime(2025, i, 1);
+            var fechaQuince = new DateTime(2025, i, 15);
+            <tr>
+                <td>@fechaUno.ToString("MMMM")</td>
+                <td>
+                    @if (fechaUno <= fechaActual)
+                    {
                         <a href="@Url.Action("ReportePeriodico", "LSA", new { fecha = fechaUno.ToString("yyyy-MM-dd") })" class="btn btn-primary">1° Reporte</a>
-                    </td>
-                    <td>
+                    }
+                    else
+                    {
+                        <span class="text-muted">No disponible</span>
+                    }
+                </td>
+                <td>
+                    @if (fechaQuince <= fechaActual)
+                    {
                         <a href="@Url.Action("ReportePeriodico", "LSA", new { fecha = fechaQuince.ToString("yyyy-MM-dd") })" class="btn btn-success">15° Reporte</a>
-                    </td>
-                </tr>
-            }
+                    }
+                    else
+                    {
+                        <span class="text-muted">No disponible</span>
+                    }
+                </td>
+            </tr>
         }
     </tbody>
 </table>
