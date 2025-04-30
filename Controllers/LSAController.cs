@@ -275,14 +275,12 @@ namespace TAS360.Controllers
         {
             LSA_Reportes Tickets = new LSA_Reportes();
             List<G_TicketsByTerminalViewModel> listTksbyCategoria = Tickets.GetTicketsByTerminalOnLastMonth();
-
             return Json(listTksbyCategoria, JsonRequestBehavior.AllowGet);
         }
         public JsonResult GetTicketsModificados()
         {
             var resultado = new List<object>();
-
-            using (var context = new Models.HelpDesk_Entities1()) // Reemplaza con tu contexto real
+            using (var context = new Models.HelpDesk_Entities1())
             {
                 var data = context.Database.SqlQuery<G_TicketsModificadosViewModel>("EXEC ptstools_Jmondragon.SP_GetTicketsByStatus").ToList();
 
@@ -297,7 +295,6 @@ namespace TAS360.Controllers
                     });
                 }
             }
-
             return Json(resultado, JsonRequestBehavior.AllowGet);
         }
 

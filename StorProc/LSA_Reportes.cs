@@ -16,9 +16,9 @@ namespace TAS360.StorProc
             List<G_TicketsByStatusViewModel> objLista = new List<G_TicketsByStatusViewModel>();
 
             
-            using (SqlConnection oconexion = new SqlConnection("data source=65.99.205.97;initial catalog=ptstools_HelpDesk;persist security info=True;user id=ptstools_Jmondragon;password=x4fr73E*0;MultipleActiveResultSets=True"))
+            using (SqlConnection oconexion = new SqlConnection("data source=LAPTOP-I2DGKH8I\\SQLEXPRESS;initial catalog=ptstools_HelpDesk;persist security info=True;user id=AbrahamGS;password=123456;MultipleActiveResultSets=True"))
             {
-                string query = "SP_GetTicketsByStatus";
+                string query = "[ptstools_Jmondragon].[SP_GetTicketsByStatus]";
 
                 SqlCommand cmd = new SqlCommand(query, oconexion);
                 cmd.CommandType = CommandType.StoredProcedure;
@@ -56,9 +56,9 @@ namespace TAS360.StorProc
             List<G_TicketsByCategoriaViewModel> objLista = new List<G_TicketsByCategoriaViewModel>();
 
 
-            using (SqlConnection oconexion = new SqlConnection("data source=65.99.205.97;initial catalog=ptstools_HelpDesk;persist security info=True;user id=ptstools_Jmondragon;password=x4fr73E*0;MultipleActiveResultSets=True"))
+            using (SqlConnection oconexion = new SqlConnection("data source=LAPTOP-I2DGKH8I\\SQLEXPRESS;initial catalog=ptstools_HelpDesk;persist security info=True;user id=AbrahamGS;password=123456;MultipleActiveResultSets=True"))
             {
-                string query = "SP_GetTicketsByCategoria";
+                string query = "[ptstools_Jmondragon].[SP_GetTicketsByCategoria]";
 
                 SqlCommand cmd = new SqlCommand(query, oconexion);
                 cmd.CommandType = CommandType.StoredProcedure;
@@ -96,9 +96,9 @@ namespace TAS360.StorProc
             List<G_TicketsByTerminalViewModel> objLista = new List<G_TicketsByTerminalViewModel>();
 
 
-            using (SqlConnection oconexion = new SqlConnection("data source=65.99.205.97;initial catalog=ptstools_HelpDesk;persist security info=True;user id=ptstools_Jmondragon;password=x4fr73E*0;MultipleActiveResultSets=True"))
+            using (SqlConnection oconexion = new SqlConnection("data source=LAPTOP-I2DGKH8I\\SQLEXPRESS;initial catalog=ptstools_HelpDesk;persist security info=True;user id=AbrahamGS;password=123456;MultipleActiveResultSets=True"))
             {
-                string query = "SP_GetTicketsByTerminal";
+                string query = "[ptstools_Jmondragon].[SP_GetTicketsByTerminal]";
 
                 SqlCommand cmd = new SqlCommand(query, oconexion);
                 cmd.CommandType = CommandType.StoredProcedure;
@@ -134,9 +134,9 @@ namespace TAS360.StorProc
             List<G_TicketsByTerminalViewModel> objLista = new List<G_TicketsByTerminalViewModel>();
 
 
-            using (SqlConnection oconexion = new SqlConnection("data source=65.99.205.97;initial catalog=ptstools_HelpDesk;persist security info=True;user id=ptstools_Jmondragon;password=x4fr73E*0;MultipleActiveResultSets=True"))
+            using (SqlConnection oconexion = new SqlConnection("data source=LAPTOP-I2DGKH8I\\SQLEXPRESS;initial catalog=ptstools_HelpDesk;persist security info=True;user id=AbrahamGS;password=123456;MultipleActiveResultSets=True"))
             {
-                string query = "SP_GetTicketsByTerminalOnLastMonth";
+                string query = "[ptstools_Jmondragon].[SP_GetTicketsByTerminalOnLastMonth]";
 
                 SqlCommand cmd = new SqlCommand(query, oconexion);
                 cmd.CommandType = CommandType.StoredProcedure;
