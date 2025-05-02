@@ -16,7 +16,7 @@ namespace TAS360.StorProc
             List<G_TicketsByStatusViewModel> objLista = new List<G_TicketsByStatusViewModel>();
 
             
-            using (SqlConnection oconexion = new SqlConnection("data source=65.99.205.97;initial catalog=ptstools_HelpDesk;persist security info=True;user id=ptstools_Jmondragon;password=x4fr73E*0;MultipleActiveResultSets=True"))
+            using (SqlConnection oconexion = new SqlConnection("data source=198.59.144.219;initial catalog=ptstools_HelpDesk;persist security info=True;user id=ptstools_Jmondragon;password=x4fr73E*0;MultipleActiveResultSets=True"))
             {
                 string query = "SP_GetTicketsByStatus";
 
@@ -56,7 +56,7 @@ namespace TAS360.StorProc
             List<G_TicketsByCategoriaViewModel> objLista = new List<G_TicketsByCategoriaViewModel>();
 
 
-            using (SqlConnection oconexion = new SqlConnection("data source=65.99.205.97;initial catalog=ptstools_HelpDesk;persist security info=True;user id=ptstools_Jmondragon;password=x4fr73E*0;MultipleActiveResultSets=True"))
+            using (SqlConnection oconexion = new SqlConnection("data source=198.59.144.219;initial catalog=ptstools_HelpDesk;persist security info=True;user id=ptstools_Jmondragon;password=x4fr73E*0;MultipleActiveResultSets=True"))
             {
                 string query = "SP_GetTicketsByCategoria";
 
@@ -96,7 +96,7 @@ namespace TAS360.StorProc
             List<G_TicketsByTerminalViewModel> objLista = new List<G_TicketsByTerminalViewModel>();
 
 
-            using (SqlConnection oconexion = new SqlConnection("data source=65.99.205.97;initial catalog=ptstools_HelpDesk;persist security info=True;user id=ptstools_Jmondragon;password=x4fr73E*0;MultipleActiveResultSets=True"))
+            using (SqlConnection oconexion = new SqlConnection("data source=198.59.144.219;initial catalog=ptstools_HelpDesk;persist security info=True;user id=ptstools_Jmondragon;password=x4fr73E*0;MultipleActiveResultSets=True"))
             {
                 string query = "SP_GetTicketsByTerminal";
 
@@ -134,7 +134,7 @@ namespace TAS360.StorProc
             List<G_TicketsByTerminalViewModel> objLista = new List<G_TicketsByTerminalViewModel>();
 
 
-            using (SqlConnection oconexion = new SqlConnection("data source=65.99.205.97;initial catalog=ptstools_HelpDesk;persist security info=True;user id=ptstools_Jmondragon;password=x4fr73E*0;MultipleActiveResultSets=True"))
+            using (SqlConnection oconexion = new SqlConnection("data source=198.59.144.219;initial catalog=ptstools_HelpDesk;persist security info=True;user id=ptstools_Jmondragon;password=x4fr73E*0;MultipleActiveResultSets=True"))
             {
                 string query = "SP_GetTicketsByTerminalOnLastMonth";
 
