@@ -78,9 +78,17 @@
     </div>
     <div class="col-md-6">
         <div class="panel panel-default">
-            <div class="panel-heading"><b>Reporte Sobre Modificaciones de Tickets: último mes</b> </div>
+            <div class="panel-heading"><b>Modificación de Tickets: último mes</b></div>
             <div class="panel-body">
-                <canvas id="modTicketsChart" width="100" height="50"></canvas>
+                <table class="table table-bordered" id="tablaTicketsModificados">
+                    <thead>
+                        <tr>
+                            <th>ID Ticket</th>
+                            <th>Fecha De Edición</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
             </div>
         </div>
     </div>
@@ -282,63 +290,29 @@
                     console.log(error)
                 }
         });
-        //Bar Chart de modificaciones del ultimo mes
-         // Bar Chart para tickets modificados
 jQuery.ajax({
     url: '@Url.Action("GetTicketsModificados", "LSA")',
     type: "GET",
     dataType: "json",
     contentType: "application/json; charset=utf-8",
     success: function (data) {
+        var tabla = $("#tablaTicketsModificados tbody");
+        tabla.empty(); // Limpia la tabla antes de llenarla
 
-        var idsTickets = [];
-        var cantidades = [];
-
-        for (var i = 0; i < data.length; i++) {
-            idsTickets.push("Ticket " + data[i].id_ticket);
-            cantidades.push(data[i].cantidad);
-        }
-
-        var controlBar2 = document.getElementById("modTicketsChart");
-
-        var graficoBar2 = new Chart(controlBar2, {
-            type: 'bar',
-            data: {
-                labels: idsTickets,
-                datasets: [{
-                    label: "Modificaciones",
-                    backgroundColor: "#0083B1",
-                    borderColor: "#000000",
-                    borderWidth: 0,
-                    data: cantidades,
-                }],
-            },
-            options: {
-                scales: {
-                    xAxes: [{
-                        gridLines: {
-                            display: true
-                        },
-                    }],
-                    yAxes: [{
-                        ticks: {
-                            min: 0,
-                        },
-                        gridLines: {
-                            display: true
-                        }
-                    }],
-                },
-                legend: {
-                    display: true
-                }
-            }
+        data.forEach(function (item) {
+            var fila = `
+                <tr>
+                    <td>${item.id_ticket}</td>
+                    <td>${item.masReciente}</td>
+                </tr>`;
+            tabla.append(fila);
         });
     },
     error: function (error) {
-        console.log(error)
+        console.log(error);
     }
 });
+
         //Bar Chart total de tickets por tad
         jQuery.ajax({
                 url: '@Url.Action("GetTicketsByTerminal", "LSA")',

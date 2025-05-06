@@ -11,6 +11,8 @@ using TAS360.StorProc;
 using TAS360.Models;
 using Microsoft.Ajax.Utilities;
 using System.Data.Entity;
+using System.IO;
+using System.Globalization;
 
 namespace TAS360.Controllers
 {
@@ -176,6 +178,28 @@ namespace TAS360.Controllers
                 FileName = $"Reporte_de_SLA_{DateTime.Now.Date.ToShortDateString()}.pdf"
             };
         }
+        [HttpGet]
+        [AuthorizeUser(idOperacion: 27)]
+        public ActionResult PrintSLAReportHis(string fecha)
+        {
+            DateTime fechaReporte;
+            if (!DateTime.TryParseExact(fecha, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out fechaReporte))
+            {
+                return new HttpStatusCodeResult(400, "Fecha inválida");
+            }
+            ViewBag.FechaReporte = fechaReporte;
+            string nombreArchivo = $"Reporte_de_SLA_{fechaReporte:yyyy_MM_dd}.pdf";
+
+            // También puedes guardar el PDF en el servidor si lo deseas (opcional)
+            string ruta = Server.MapPath($"~/ReportesGenerados/{nombreArchivo}");
+
+            return new ActionAsPdf("ReportePeriodico")
+            {
+                FileName = nombreArchivo,
+                // SaveOnServerPath = ruta // descomenta si quieres guardar también en el servidor
+            };
+        }
+
         //[HttpGet]
         //[AuthorizeUser(idOperacion: 27)]
         //public ActionResult ReportHis()
@@ -283,21 +307,17 @@ namespace TAS360.Controllers
             using (var context = new Models.HelpDesk_Entities1())
             {
                 var data = context.Database.SqlQuery<G_TicketsModificadosViewModel>("EXEC ptstools_Jmondragon.SP_GetTicketsByStatus").ToList();
-
                 foreach (var item in data)
                 {
                     resultado.Add(new
                     {
                         id_ticket = item.id_ticket_editado,
-                        cantidad = item.Cantidad_modificaciones,
-                        masAntiguo = item.Mas_Antiguo,
-                        masReciente = item.Mas_Reciente
+                        masReciente = item.Mas_Reciente.ToString("dd/MM/yyyy")
                     });
                 }
             }
             return Json(resultado, JsonRequestBehavior.AllowGet);
         }
-
         private void GetSummaryTKs()
         {
             int tksopen = 0;

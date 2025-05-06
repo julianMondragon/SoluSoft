@@ -30,7 +30,8 @@
                 <td>
                     @if (fechaUno <= fechaActual)
                     {
-                        <a href="@Url.Action("ReportePeriodico", "LSA", new { fecha = fechaUno.ToString("yyyy-MM-dd") })" class="btn btn-primary">1° Reporte</a>
+                        <a href="@Url.Action("PrintSLAReportHis", "LSA", new { fecha = fechaUno.ToString("yyyy-MM-dd") })" class="btn btn-primary">1° Reporte</a>
+
                     }
                     else
                     {
@@ -40,7 +41,7 @@
                 <td>
                     @if (fechaQuince <= fechaActual)
                     {
-                        <a href="@Url.Action("ReportePeriodico", "LSA", new { fecha = fechaQuince.ToString("yyyy-MM-dd") })" class="btn btn-success">15° Reporte</a>
+                        <a href="@Url.Action("PrintSLAReportHis", "LSA", new { fecha = fechaQuince.ToString("yyyy-MM-dd") })" class="btn btn-success">15° Reporte</a>
                     }
                     else
                     {

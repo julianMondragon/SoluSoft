@@ -2,6 +2,7 @@
 @{
     ViewBag.Title = "ReportePeriodico";
     int total = ViewBag.tksclose + @ViewBag.tksopen;
+    var fecha = ViewBag.FechaReporte as DateTime?;
 }
 
 @*Documentacion SLA*@
@@ -446,5 +447,4 @@
     </script>
 }
 
-
-
+}
