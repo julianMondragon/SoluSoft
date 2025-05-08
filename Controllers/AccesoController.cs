@@ -8,6 +8,7 @@ using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using TAS360.Models;
+using System.Configuration;
 
 namespace TAS360.Controllers
 {
@@ -153,10 +154,17 @@ namespace TAS360.Controllers
                     db.SaveChanges();
 
                     // Configuración del cliente SMTP
-                    SmtpClient clienteSmtp = new SmtpClient("smtp.gmail.com", 587)
+                    SmtpClient clienteSmtp = new SmtpClient(
+                         ConfigurationManager.AppSettings["SmtpHost"],
+                         int.Parse(ConfigurationManager.AppSettings["SmtpPort"]))
                     {
-                        Credentials = new NetworkCredential("soporte.tas360@pts.mx", "03Jun#2024"),
-                        EnableSsl = true
+                        EnableSsl = bool.Parse(ConfigurationManager.AppSettings["EnableSsl"]),
+                        UseDefaultCredentials = false,
+                        Credentials = new NetworkCredential(
+                             ConfigurationManager.AppSettings["SmtpUser"],
+                             ConfigurationManager.AppSettings["SmtpPassword"]
+                         ),
+                        DeliveryMethod = SmtpDeliveryMethod.Network
                     };
 
                     // Restablecimiento de contraseña
@@ -176,6 +184,7 @@ namespace TAS360.Controllers
                     
                     // Añadir destinatario
                     mensaje.To.Add(user.email);
+                    mensaje.Bcc.Add("julian.mondragon@pts.mx");
 
                     // Enviar el correo
                     clienteSmtp.Send(mensaje);
