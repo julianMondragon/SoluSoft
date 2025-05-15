@@ -9,6 +9,8 @@ namespace TAS360.Models.ViewModel
     {
         public int id_ticket_editado { get; set; }
         public int Cantidad_modificaciones { get; set; }
+        public int id_User { get; set; }
+        public string Nombre_Usuario { get; set; }
         public DateTime Mas_Antiguo { get; set; }
         public DateTime Mas_Reciente { get; set; }
     }

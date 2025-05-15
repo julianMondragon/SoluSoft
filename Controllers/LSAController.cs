@@ -182,24 +182,26 @@ namespace TAS360.Controllers
         [AuthorizeUser(idOperacion: 27)]
         public ActionResult PrintSLAReportHis(string fecha)
         {
-            DateTime fechaReporte;
-            if (!DateTime.TryParseExact(fecha, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out fechaReporte))
+            if (!DateTime.TryParseExact(fecha, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime fechaReporte))
             {
                 return new HttpStatusCodeResult(400, "Fecha inválida");
             }
-            ViewBag.FechaReporte = fechaReporte;
             string nombreArchivo = $"Reporte_de_SLA_{fechaReporte:yyyy_MM_dd}.pdf";
-
-            // También puedes guardar el PDF en el servidor si lo deseas (opcional)
-            string ruta = Server.MapPath($"~/ReportesGenerados/{nombreArchivo}");
-
-            return new ActionAsPdf("ReportePeriodico")
+            string rutaCarpeta = Server.MapPath("~/ReportesSLA/");
+            string rutaArchivo = Path.Combine(rutaCarpeta, nombreArchivo);
+            if (!System.IO.File.Exists(rutaArchivo))
             {
-                FileName = nombreArchivo,
-                // SaveOnServerPath = ruta // descomenta si quieres guardar también en el servidor
-            };
+                var pdf = new ActionAsPdf("ReportePeriodico", new { fechaSeleccionada = fechaReporte.ToString("yyyy-MM-dd") })
+                {
+                    FileName = nombreArchivo
+                };
+                byte[] pdfBytes = pdf.BuildFile(ControllerContext);
+                if (!Directory.Exists(rutaCarpeta))
+                    Directory.CreateDirectory(rutaCarpeta);
+                System.IO.File.WriteAllBytes(rutaArchivo, pdfBytes);
+            }
+            return File(rutaArchivo, "application/pdf", nombreArchivo);
         }
-
         //[HttpGet]
         //[AuthorizeUser(idOperacion: 27)]
         //public ActionResult ReportHis()
@@ -214,62 +216,72 @@ namespace TAS360.Controllers
         }
         public ActionResult ReportePeriodico(string fechaSeleccionada)
         {
+            DateTime fechaReporte;
+            if (!DateTime.TryParseExact(fechaSeleccionada, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out fechaReporte))
+            {
+                return new HttpStatusCodeResult(400, "Fecha inválida");
+            }
+            DateTime fechaInicio, fechaFin;
+            if (fechaReporte.Day <= 15)
+            {
+                fechaInicio = new DateTime(fechaReporte.Year, fechaReporte.Month, 1);
+                fechaFin = new DateTime(fechaReporte.Year, fechaReporte.Month, 15, 23, 59, 59);
+            }
+            else
+            {
+                fechaInicio = new DateTime(fechaReporte.Year, fechaReporte.Month, 16);
+                fechaFin = new DateTime(fechaReporte.Year, fechaReporte.Month, DateTime.DaysInMonth(fechaReporte.Year, fechaReporte.Month), 23, 59, 59);
+            }
             List<TicketViewModel> tickets = new List<TicketViewModel>();
             using (Models.HelpDesk_Entities1 db = new Models.HelpDesk_Entities1())
             {
-                var Tickets = (from s in db.Ticket where s.status != 12 orderby s.CreatedAt descending select s);
-                if (Tickets != null && Tickets.Any())
-                {
-                    foreach (var t in Tickets)
-                    {
-                        TicketViewModel ticket = new TicketViewModel()
-                        {
-                            id = t.id,
-                            titulo = t.titulo,
-                            mensaje = t.mensaje,
-                            usuario_name = t.Ticket_User.OrderByDescending(x => x.CreatedAt).FirstOrDefault().User.nombre,
-                            categoria_name = t.Categoria.nombre,
-                            terminal_name = t.Terminal.Nombre,
-                            Subsistema_name = t.Subsistema.Nombre,
-                            Status = t.status,
-                            Date = t.CreatedAt,
-                            Datetobedone = t.CreatedAt.HasValue ? t.CreatedAt.Value.AddDays(15) : DateTime.MinValue
-                        };
-                        switch (t.Ticket_Record_Status.OrderByDescending(x => x.CreatedAt).FirstOrDefault().Status.descripcion)
-                        {
-                            case "Pendiente ":
-                                ticket.status_name = "Capturado";
-                                break;
-                            case "Analisis  ":
-                                ticket.status_name = "Espera de info";
-                                break;
-                            case "Correccion":
-                                ticket.status_name = "En Proceso";
-                                break;
-                            case "Pruebas   ":
-                                ticket.status_name = "En Proceso";
-                                break;
-                            case "Implementa":
-                                ticket.status_name = "En Proceso";
-                                break;
-                            case "Pend_Pmx  ":
-                                ticket.status_name = "Espera de info";
-                                break;
-                            case "Cerrado   ":
-                                ticket.status_name = "Espera de info";
-                                break;
-                            default:
-                                ticket.status_name = "Undefineded";
-                                break;
-                        }
+                var Tickets = db.Ticket
+                                .Where(s => s.status != 12 && s.CreatedAt >= fechaInicio && s.CreatedAt <= fechaFin)
+                                .OrderByDescending(s => s.CreatedAt);
 
-                        tickets.Add(ticket);
+                foreach (var t in Tickets)
+                {
+                    var ticket = new TicketViewModel()
+                    {
+                        id = t.id,
+                        titulo = t.titulo,
+                        mensaje = t.mensaje,
+                        usuario_name = t.Ticket_User.OrderByDescending(x => x.CreatedAt).FirstOrDefault().User.nombre,
+                        categoria_name = t.Categoria.nombre,
+                        terminal_name = t.Terminal.Nombre,
+                        Subsistema_name = t.Subsistema.Nombre,
+                        Status = t.status,
+                        Date = t.CreatedAt,
+                        Datetobedone = t.CreatedAt.HasValue ? t.CreatedAt.Value.AddDays(15) : DateTime.MinValue
+                    };
+                    string descripcionStatus = t.Ticket_Record_Status.OrderByDescending(x => x.CreatedAt).FirstOrDefault()?.Status?.descripcion?.Trim();
+                    switch (descripcionStatus)
+                    {
+                        case "Pendiente":
+                            ticket.status_name = "Capturado";
+                            break;
+                        case "Analisis":
+                        case "Pend_Pmx":
+                        case "Cerrado":
+                            ticket.status_name = "Espera de info";
+                            break;
+                        case "Correccion":
+                        case "Pruebas":
+                        case "Implementa":
+                            ticket.status_name = "En Proceso";
+                            break;
+                        default:
+                            ticket.status_name = "Undefineded";
+                            break;
                     }
+                    tickets.Add(ticket);
                 }
             }
+            ViewBag.FechaSeleccionada = fechaReporte;
             GetSummaryTKs();
             return View(tickets);
         }
+
         [HttpGet]
         public JsonResult GetTicktsByStatus()
         {
@@ -306,12 +318,13 @@ namespace TAS360.Controllers
             var resultado = new List<object>();
             using (var context = new Models.HelpDesk_Entities1())
             {
-                var data = context.Database.SqlQuery<G_TicketsModificadosViewModel>("EXEC ptstools_Jmondragon.SP_GetTicketsByStatus").ToList();
+                var data = context.Database.SqlQuery<G_TicketsModificadosViewModel>("EXEC ptstools_Jmondragon.SP_GetTicketsByModifi").ToList();
                 foreach (var item in data)
                 {
                     resultado.Add(new
                     {
                         id_ticket = item.id_ticket_editado,
+                        Nombre_Usuario = item.Nombre_Usuario,
                         masReciente = item.Mas_Reciente.ToString("dd/MM/yyyy")
                     });
                 }

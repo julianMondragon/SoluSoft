@@ -84,6 +84,7 @@
                     <thead>
                         <tr>
                             <th>ID Ticket</th>
+                            <th>Responsable</th>
                             <th>Fecha De Edición</th>
                         </tr>
                     </thead>
@@ -303,6 +304,7 @@ jQuery.ajax({
             var fila = `
                 <tr>
                     <td>${item.id_ticket}</td>
+                    <td>${item.Nombre_Usuario}</td>
                     <td>${item.masReciente}</td>
                 </tr>`;
             tabla.append(fila);

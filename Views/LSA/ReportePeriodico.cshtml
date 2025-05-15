@@ -3,6 +3,7 @@
     ViewBag.Title = "ReportePeriodico";
     int total = ViewBag.tksclose + @ViewBag.tksopen;
     var fecha = ViewBag.FechaReporte as DateTime?;
+    Layout = "~/Views/Shared/_LayoutReport.cshtml";
 }
 
 @*Documentacion SLA*@
@@ -237,7 +238,7 @@
     <script>
         //Bar Chart ticketes por status
         jQuery.ajax({
-                url: '@Url.Action("GetTicktsByStatus", "LSA")',
+                url: '@Url.Action("GetTicktsByModifi", "LSA")',
                 type: "GET",
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
@@ -445,6 +446,4 @@
             }
         });
     </script>
-}
-
 }
