@@ -76,23 +76,6 @@
             </div>
         </div>
     </div>
-    <div class="col-md-6">
-        <div class="panel panel-default">
-            <div class="panel-heading"><b>Modificación de Tickets: último mes</b></div>
-            <div class="panel-body">
-                <table class="table table-bordered" id="tablaTicketsModificados">
-                    <thead>
-                        <tr>
-                            <th>ID Ticket</th>
-                            <th>Responsable</th>
-                            <th>Fecha De Edición</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </div>
-        </div>
-    </div>
 
 </div>
 <div class="row">
@@ -114,6 +97,27 @@
     </div>
 
 </div>
+
+<div class="col-md-12">
+    <div class="panel panel-default">
+        <div class="panel-heading"><b>Modificación de Tickets: último mes</b></div>
+        <div class="panel-body">
+            <table class="table table-bordered" id="tablaTicketsModificados">
+                <thead>
+                    <tr>
+                        <th>ID Ticket</th>
+                        <th>Modificaciones</th>
+                        <th>Creación</th>
+                        <th>Ultima Edición</th>
+                        <th>Responsable</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
 @*tabla de tickets *@
 <div class="row">
     <div class="col-md-12">
@@ -304,8 +308,10 @@ jQuery.ajax({
             var fila = `
                 <tr>
                     <td>${item.id_ticket}</td>
-                    <td>${item.Nombre_Usuario}</td>
+                    <td>${item.Cantidad_modificaciones}</td>
+                    <td>${item.masAntiguo}</td>
                     <td>${item.masReciente}</td>
+                    <td>${item.Nombre_Usuario}</td>
                 </tr>`;
             tabla.append(fila);
         });
