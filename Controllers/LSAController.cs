@@ -327,6 +327,7 @@ namespace TAS360.Controllers
                         Nombre_Usuario = item.Nombre_Usuario,
                         masReciente = item.Mas_Reciente.ToString("dd/MM/yyyy HH:mm:ss"),
                         masAntiguo = item.Mas_Antiguo.ToString("dd/MM/yyyy HH:mm:ss"),
+                        Status_Actual = item.Status_Actual,
                         Cantidad_modificaciones = item.Cantidad_modificaciones
                     });
                 }
