@@ -2,54 +2,59 @@
 @{
     ViewBag.Title = "ReportHis";
 
-    var meses = new[] {
-        "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
-        "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
-    };
-
     var fechaActual = DateTime.Today;
+    var anioInicio = 2025;
+    var anioFin = fechaActual.Year;
 }
+
 <div class="jumbotron">
-    <h1>Reportes Históricos </h1>
+    <h1>Reportes Históricos</h1>
 </div>
 
-<table class="table table-bordered">
-    <thead>
-        <tr>
-            <th>Mes</th>
-            <th>1° Reportes</th>
-            <th>15° Reportes</th>
-        </tr>
-    </thead>
-    <tbody>
-        @for (int i = 1; i <= 12; i++)
-        {
-            var fechaUno = new DateTime(2025, i, 1);
-            var fechaQuince = new DateTime(2025, i, 15);
+@for (int anio = anioInicio; anio <= anioFin; anio++)
+{
+    <h3>@anio</h3>
+    <table class="table table-bordered">
+        <thead>
             <tr>
-                <td>@fechaUno.ToString("MMMM")</td>
-                <td>
-                    @if (fechaUno <= fechaActual)
-                    {
-                        <a href="@Url.Action("PrintSLAReportHis", "LSA", new { fecha = fechaUno.ToString("yyyy-MM-dd") })" class="btn btn-primary">1° Reporte</a>
-
-                    }
-                    else
-                    {
-                        <span class="text-muted">No disponible</span>
-                    }
-                </td>
-                <td>
-                    @if (fechaQuince <= fechaActual)
-                    {
-                        <a href="@Url.Action("PrintSLAReportHis", "LSA", new { fecha = fechaQuince.ToString("yyyy-MM-dd") })" class="btn btn-success">15° Reporte</a>
-                    }
-                    else
-                    {
-                        <span class="text-muted">No disponible</span>
-                    }
-                </td>
+                <th>Mes</th>
+                <th>1° Reportes</th>
+                <th>15° Reportes</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @for (int mes = 1; mes <= 12; mes++)
+            {
+                var fechaUno = new DateTime(anio, mes, 1);
+                var fechaQuince = new DateTime(anio, mes, 15);
+                <tr>
+                    <td>@fechaUno.ToString("MMMM")</td>
+                    <td>
+                        @if (fechaUno <= fechaActual)
+                        {
+                            <a href="@Url.Action("PrintSLAReportHis", "LSA", new { fecha = fechaUno.ToString("yyyy-MM-dd") })" class="btn btn-primary">
+                                1° Reporte
+                            </a>
+                        }
+                        else
+                        {
+                            <span class="text-muted">No disponible</span>
+                        }
+                    </td>
+                    <td>
+                        @if (fechaQuince <= fechaActual)
+                        {
+                            <a href="@Url.Action("PrintSLAReportHis", "LSA", new { fecha = fechaQuince.ToString("yyyy-MM-dd") })" class="btn btn-success">
+                                15° Reporte
+                            </a>
+                        }
+                        else
+                        {
+                            <span class="text-muted">No disponible</span>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
