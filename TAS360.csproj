@@ -438,12 +438,16 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StorProc\LSA_Reportes.cs" />
-    <Compile Include="Views\Profile.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Backup_Database\Migraciones\Alter_Pendiente_Add_properties.sql" />
     <Content Include="Backup_Database\Migraciones\Create_Table_Pendiente_Files.sql" />
     <Content Include="Backup_Database\Migraciones\Create_Table_Pendiente_Record_Status.sql" />
+    <Content Include="Backup_Database\Sprint_4\SQLQuery1 %28Roles y operaciones%29.sql" />
+    <Content Include="Backup_Database\Sprint_4\SQLQuery2 %28Crea tabla usr_perfil%29.sql" />
+    <Content Include="Backup_Database\Sprint_4\SQLQuery3 %28Crea registro en usr_profile de User%29.sql" />
+    <Content Include="Backup_Database\Sprint_4\SQLQuery4 %28trigger para usr_profile de nuevo user%29.sql" />
+    <Content Include="Backup_Database\Sprint_4\SQLQuery_cambio_nombre_roles.sql" />
     <Content Include="Backup_Database\Triger_Entradas_auditoria.sql" />
     <Content Include="Backup_Database\Trigger_Salidas_auditoria.sql" />
     <Content Include="Content\bootstrap-theme.css" />
@@ -978,6 +982,9 @@
     <Content Include="Views\Profile\Editprofile.cshtml" />
     <Content Include="Views\LSA\ReportHis.cshtml" />
     <Content Include="Views\LSA\ReportePeriodico.cshtml" />
+    <Content Include="Views\Roles_and_Privilege\EditOperation.cshtml" />
+    <Content Include="Views\Roles_and_Privilege\EditModulos.cshtml" />
+    <Content Include="Views\Roles_and_Privilege\EditRol.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -1,0 +1,48 @@
+﻿@model TAS360.Models.ViewModel.RollViewModel
+@{
+    ViewBag.Title = "EditRol";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<br />
+<div class="jumbotron">
+    <h1 class="section-heading mb-4">
+        <span class="section-heading-lower">Editar Rol</span>
+    </h1>
+
+</div>
+<section class="page-section about-heading">
+    <div class="container">
+        <div class="about-heading-content">
+            <div class="row">
+                <div class="col-xl-9 col-lg-10 mx-auto">
+                    <div class="bg-faded rounded p-5">
+                        <div class="row" style="margin:5px 0 0 0">
+                            <div class="col-md-12">
+                                @using (Html.BeginForm("EditRol", "Roles_and_Privilege", FormMethod.Post))
+                                {
+                                    @Html.AntiForgeryToken()
+                                    @Html.HiddenFor(model => model.id)
+                                    <br />
+                                    <div name="row2" class="row" style="margin:0 0 10px 0">
+
+                                        <div class="col-md-12">
+                                            <div class="col-lg-4" style="margin: 10px 10px 10px 10px;">
+                                                @Html.LabelFor(model => model.nombre)
+                                                @Html.TextBoxFor(model => model.nombre, new { @class = "form-control", @placeholder = "Nuevo Nombre Modulo" })
+                                                @Html.ValidationMessageFor(model => model.nombre, null, new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row" style="margin: 5px 0px 0px 0px; text-align:right">
+                                        <input type="submit" class="btn btn-lg btn-primary" value="Guardar" />
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

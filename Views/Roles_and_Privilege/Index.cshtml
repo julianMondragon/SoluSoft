@@ -42,223 +42,184 @@
 </div>
 <!--Tablas -->
 <div class="row">
-    @*Tabla de Usuarios*@
-    <div class="col-md-6">
-        <div class="panel panel-default">
-            <div class="panel-heading clearfix">
-                <div class="pull-left">
-                    <b>Usuarios</b>
+    <div class="row">
+        @*tabla Operaciones *@
+        <div class="col-md-5">
+            <div class="panel panel-default">
+                <div class="panel-heading clearfix">
+                    <div class="pull-left">
+                        <b>Operación</b>
+                    </div>
+                    <div class="pull-right">
+                        <button onclick="document.location.href='@Url.Content("~/Roles_and_Privilege/AddOperation/")'" class="btn btn-success" data-toggle="tooltip" title="Agregar Operacion">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="16" fill="currentColor" class="bi bi-hammer" viewBox="0 0 16 16">
+                                <path d="M9.972 2.508a.5.5 0 0 0-.16-.556l-.178-.129a5 5 0 0 0-2.076-.783C6.215.862 4.504 1.229 2.84 3.133H1.786a.5.5 0 0 0-.354.147L.146 4.567a.5.5 0 0 0 0 .706l2.571 2.579a.5.5 0 0 0 .708 0l1.286-1.29a.5.5 0 0 0 .146-.353V5.57l8.387 8.873A.5.5 0 0 0 14 14.5l1.5-1.5a.5.5 0 0 0 .017-.689l-9.129-8.63c.747-.456 1.772-.839 3.112-.839a.5.5 0 0 0 .472-.334" />
+                            </svg>
+                        </button>
+                    </div>
                 </div>
-                <div class="pull-right">
-                    <button onclick="document.location.href='@Url.Content("~/User/Create/")'" class="btn btn-success" data-toggle="tooltip" title="Agregar Usuario">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-fill-add" viewBox="0 0 16 16">
-                            <path d="M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7m.5-5v1h1a.5.5 0 0 1 0 1h-1v1a.5.5 0 0 1-1 0v-1h-1a.5.5 0 0 1 0-1h1v-1a.5.5 0 0 1 1 0m-2-6a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
-                            <path d="M2 13c0 1 1 1 1 1h5.256A4.5 4.5 0 0 1 8 12.5a4.5 4.5 0 0 1 1.544-3.393Q8.844 9.002 8 9c-5 0-6 3-6 4" />
-                        </svg>
-                    </button>
+                <div class="panel-body" style="max-height: 60vh; overflow-y: auto;">
+                    <table id="ticketsTable" class="table table-success table-striped" style="width: 100%;">
+                        <thead>
+                            <tr>
+                                <th style="width: 5%;">#</th>
+                                <th style="width: 20%;">Nombre</th>
+                                <th style="width: 20%;">Modulo</th>
+                                <th style="width: 35%;">Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model != null)
+                            {
+                                foreach (var operacion in Model.Operacions)
+
+                                {
+                                    if (operacion.nombre != null)
+                                    {
+                                        <tr>
+                                            <td colspan="1"> @operacion.id</td>
+                                            <td colspan="1"> @operacion.nombre</td>
+                                            <td colspan="1"> @Modulos.FirstOrDefault(x => x.Value == operacion.id_Modulo.ToString()).Text</td>
+                                            <td colspan="1">
+                                                @using (Html.BeginForm("DeleteOperacion", "Roles_and_Privilege", FormMethod.Post, new { @class = "d-inline" }))
+                                                {
+                                                    <button onclick="document.location.href = '@Url.Action("EditOperation", "Roles_and_Privilege", new { id = operacion.id })'" type="button" class="btn btn-primary" data-toggle="tooltip" title="Editar Operación">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"><path d="M471.6 21.7c-21.9-21.9-57.3-21.9-79.2 0L362.3 51.7l97.9 97.9 30.1-30.1c21.9-21.9 21.9-57.3 0-79.2L471.6 21.7zm-299.2 220c-6.1 6.1-10.8 13.6-13.5 21.9l-29.6 88.8c-2.9 8.6-.6 18.1 5.8 24.6s15.9 8.7 24.6 5.8l88.8-29.6c8.2-2.7 15.7-7.4 21.9-13.5L437.7 172.3 339.7 74.3 172.4 241.7zM96 64C43 64 0 107 0 160V416c0 53 43 96 96 96H352c53 0 96-43 96-96V320c0-17.7-14.3-32-32-32s-32 14.3-32 32v96c0 17.7-14.3 32-32 32H96c-17.7 0-32-14.3-32-32V160c0-17.7 14.3-32 32-32h96c17.7 0 32-14.3 32-32s-14.3-32-32-32H96z" /></svg>
+                                                    </button>
+                                                    @Html.AntiForgeryToken()
+                                                    @Html.Hidden("id", operacion.id)
+                                                    <button type="submit" class="btn btn-danger" data-toggle="tooltip" title="Eliminar Modulo">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512"><path d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z" /></svg>
+                                                    </button>
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                            }
+                        </tbody>
+                    </table>
                 </div>
             </div>
-            <div class="panel-body">
-                <table id="ticketsTable" class="table table-success table-striped">
-                    <thead>
-                        <tr>
-                            <th scope="col">Nombre</th>
-                            <th colspan="2">Rol</th>
-                            <th colspan="2"></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @if (Model != null)
-                        {
-                            foreach (var user in Model.Users)
-
+        </div>
+        @*tabla Modulos *@
+        <div class="col-md-4">
+            <div class="panel panel-default">
+                <div class="panel-heading clearfix">
+                    <div class="pull-left">
+                        <b>Modulo</b>
+                    </div>
+                    <div class="pull-right">
+                        <button onclick="document.location.href='@Url.Content("~/Roles_and_Privilege/AddModule/")'" class="btn btn-success" data-toggle="tooltip" title="Agregar Modulo">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-file-earmark-plus" viewBox="0 0 16 16">
+                                <path d="M8 6.5a.5.5 0 0 1 .5.5v1.5H10a.5.5 0 0 1 0 1H8.5V11a.5.5 0 0 1-1 0V9.5H6a.5.5 0 0 1 0-1h1.5V7a.5.5 0 0 1 .5-.5" />
+                                <path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5z" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="panel-body" style="max-height: 50vh; overflow-y: auto;">
+                    <table id="ticketsTable" class="table table-success table-striped">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th colspan="1">Nombre</th>
+                                <th style="2">Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model != null)
                             {
-                                <tr>
-                                    <td colspan="1"> @user.nombre </td>
-                                    <td colspan="2"> @Model.Rolls.FirstOrDefault(u => u.id == user.id_Roll).nombre</td>
-                                    <td colspan="2">
-                                        <button onclick="document.location.href='@Url.Content("~/User/Edit/" + user.id)'" class="btn btn-info" data-toggle="tooltip" title="Editar Usuario">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-lines-fill" viewBox="0 0 16 16">
-                                                <path d="M6 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m-5 6s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zM11 3.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 1-.5-.5m.5 2.5a.5.5 0 0 0 0 1h4a.5.5 0 0 0 0-1zm2 3a.5.5 0 0 0 0 1h2a.5.5 0 0 0 0-1zm0 3a.5.5 0 0 0 0 1h2a.5.5 0 0 0 0-1z" />
-                                            </svg>
-                                        </button>
-                                    </td>
-                                </tr>
+                                foreach (var module in Model.Modules)
+
+                                {
+                                    if (module.nombre != null)
+                                    {
+                                        <tr>
+                                            <td colspan="1">@module.id</td>
+                                            <td colspan="2"> @module.nombre</td>
+                                            <td colspan="1">
+                                                @using (Html.BeginForm("DeleteModulos", "Roles_and_Privilege", FormMethod.Post))
+                                                {
+                                                    <button onclick="document.location.href = '@Url.Action("EditModulos", "Roles_and_Privilege", new { id = module.id })'" type="button" class="btn btn-primary" data-toggle="tooltip" title="Editar Modulos">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"><path d="M471.6 21.7c-21.9-21.9-57.3-21.9-79.2 0L362.3 51.7l97.9 97.9 30.1-30.1c21.9-21.9 21.9-57.3 0-79.2L471.6 21.7zm-299.2 220c-6.1 6.1-10.8 13.6-13.5 21.9l-29.6 88.8c-2.9 8.6-.6 18.1 5.8 24.6s15.9 8.7 24.6 5.8l88.8-29.6c8.2-2.7 15.7-7.4 21.9-13.5L437.7 172.3 339.7 74.3 172.4 241.7zM96 64C43 64 0 107 0 160V416c0 53 43 96 96 96H352c53 0 96-43 96-96V320c0-17.7-14.3-32-32-32s-32 14.3-32 32v96c0 17.7-14.3 32-32 32H96c-17.7 0-32-14.3-32-32V160c0-17.7 14.3-32 32-32h96c17.7 0 32-14.3 32-32s-14.3-32-32-32H96z" /></svg>
+                                                    </button>
+                                                    @Html.AntiForgeryToken()
+                                                    @Html.Hidden("id", module.id)
+                                                    <button type="submit" class="btn btn-danger" data-toggle="tooltip" title="Eliminar Modulo">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512">
+                                                            <path d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z" />
+                                                        </svg>
+                                                    </button>
+                                                }
+                                        </tr>
+                                    }
+                                }
                             }
-                        }
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        @*Tabla de Roles*@
+        <div class="col-md-3">
+            <div class="panel panel-default">
+                <div class="panel-heading clearfix">
+                    <div class="pull-left">
+                        <b>Roles</b>
+                    </div>
+                    <div class="pull-right">
+                        <button onclick="document.location.href='@Url.Content("~/Roles_and_Privilege/AddRol/")'" class="btn btn-success" data-toggle="tooltip" title="Agregar Rol">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-ui-checks-grid" viewBox="0 0 16 16">
+                                <path d="M2 10h3a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1m9-9h3a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-3a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1m0 9a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1zm0-10a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h3a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zM2 9a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h3a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2zm7 2a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-3a2 2 0 0 1-2-2zM0 2a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm5.354.854a.5.5 0 1 0-.708-.708L3 3.793l-.646-.647a.5.5 0 1 0-.708.708l1 1a.5.5 0 0 0 .708 0z" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="panel-body" style="max-height: 50vh; overflow-y: auto;">
+                    <table id="ticketsTable" class="table table-success table-striped">
+                        <thead>
+                            <tr>
+                                <th colspan="2">Nombre</th>
+                                <th colspan="3">Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model != null)
+                            {
+                                foreach (var roll in Model.Rolls)
+
+                                {
+                                    if (roll.nombre != null)
+                                    {
+                                        <tr>
+                                            <td colspan="2"> @roll.nombre</td>
+                                            <td colspan="2">
+                                                @using (Html.BeginForm("DeleteRoll", "Roles_and_Privilege", FormMethod.Post))
+                                                {
+                                                    <button onclick="document.location.href = '@Url.Action("EditRol", "Roles_and_Privilege", new { id = roll.id })'" type="button" class="btn btn-primary" data-toggle="tooltip" title="Editar Modulos">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"><path d="M471.6 21.7c-21.9-21.9-57.3-21.9-79.2 0L362.3 51.7l97.9 97.9 30.1-30.1c21.9-21.9 21.9-57.3 0-79.2L471.6 21.7zm-299.2 220c-6.1 6.1-10.8 13.6-13.5 21.9l-29.6 88.8c-2.9 8.6-.6 18.1 5.8 24.6s15.9 8.7 24.6 5.8l88.8-29.6c8.2-2.7 15.7-7.4 21.9-13.5L437.7 172.3 339.7 74.3 172.4 241.7zM96 64C43 64 0 107 0 160V416c0 53 43 96 96 96H352c53 0 96-43 96-96V320c0-17.7-14.3-32-32-32s-32 14.3-32 32v96c0 17.7-14.3 32-32 32H96c-17.7 0-32-14.3-32-32V160c0-17.7 14.3-32 32-32h96c17.7 0 32-14.3 32-32s-14.3-32-32-32H96z" /></svg>
+                                                    </button>
+                                                    @Html.AntiForgeryToken()
+                                                    @Html.Hidden("id", roll.id)
+                                                    <button type="submit" class="btn btn-danger" data-toggle="tooltip" title="Eliminar Rol">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512">
+                                                            <path d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z" />
+                                                        </svg>
+                                                    </button>
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
-    @*tabla Operaciones *@
-    <div class="col-md-4">
-        <div class="panel panel-default">
-            <div class="panel-heading clearfix">
-                <div class="pull-left">
-                    <b>Operaciones</b>
-                </div>
-                <div class="pull-right">
-                    <button onclick="document.location.href='@Url.Content("~/Roles_and_Privilege/AddOperation/")'" class="btn btn-success" data-toggle="tooltip" title="Agregar Operacion">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-hammer" viewBox="0 0 16 16">
-                            <path d="M9.972 2.508a.5.5 0 0 0-.16-.556l-.178-.129a5 5 0 0 0-2.076-.783C6.215.862 4.504 1.229 2.84 3.133H1.786a.5.5 0 0 0-.354.147L.146 4.567a.5.5 0 0 0 0 .706l2.571 2.579a.5.5 0 0 0 .708 0l1.286-1.29a.5.5 0 0 0 .146-.353V5.57l8.387 8.873A.5.5 0 0 0 14 14.5l1.5-1.5a.5.5 0 0 0 .017-.689l-9.129-8.63c.747-.456 1.772-.839 3.112-.839a.5.5 0 0 0 .472-.334" />
-                        </svg>
-                    </button>
-                </div>
-            </div>
-            <div class="panel-body">
-                <table id="ticketsTable" class="table table-success table-striped">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Nombre</th>
-                            <th>Modulo</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @if (Model != null)
-                        {
-                            foreach (var operacion in Model.Operacions)
-
-                            {
-                                <tr>
-                                    <td colspan="1"> <a href="@Url.Content("~/"  + operacion.id)">@operacion.id</a> </td>
-                                    <td colspan="1"> @operacion.nombre</td>
-                                    <td colspan="1"> @Modulos.FirstOrDefault(x=> x.Value == operacion.id_Modulo.ToString()).Text</td>
-                                </tr>
-                            }
-                        }
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-    @*tabla Modulos *@
-    <div class="col-md-2">
-        <div class="panel panel-default">
-            <div class="panel-heading clearfix">
-                <div class="pull-left">
-                    <b>Modulos</b>
-                </div>
-                <div class="pull-right">
-                    <button onclick="document.location.href='@Url.Content("~/Roles_and_Privilege/AddModule/")'" class="btn btn-success" data-toggle="tooltip" title="Agregar Modulo">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-file-earmark-plus" viewBox="0 0 16 16">
-                            <path d="M8 6.5a.5.5 0 0 1 .5.5v1.5H10a.5.5 0 0 1 0 1H8.5V11a.5.5 0 0 1-1 0V9.5H6a.5.5 0 0 1 0-1h1.5V7a.5.5 0 0 1 .5-.5" />
-                            <path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5z" />
-                        </svg>
-                    </button>
-                </div>
-            </div>
-            <div class="panel-body">
-                <table id="ticketsTable" class="table table-success table-striped">
-                    <thead>
-                        <tr>
-                            <th scope="col">#</th>
-                            <th colspan="2">Nombre</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @if (Model != null)
-                        {
-                            foreach (var module in Model.Modules)
-
-                            {
-                                <tr>
-                                    <td colspan="1"> <a href="@Url.Content("~/"  + module.id)">@module.id</a> </td>
-                                    <td colspan="2"> @module.nombre</td>
-                                </tr>
-                            }
-                        }
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-    @*Tabla de Roles*@
-    <div class="col-md-2">
-        <div class="panel panel-default">
-            <div class="panel-heading clearfix">
-                <div class="pull-left">
-                    <b>Roles</b>
-                </div>
-                <div class="pull-right">
-                    <button onclick="document.location.href='@Url.Content("~/Roles_and_Privilege/AddRol/")'" class="btn btn-success" data-toggle="tooltip" title="Agregar Rol">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-ui-checks-grid" viewBox="0 0 16 16">
-                            <path d="M2 10h3a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1m9-9h3a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-3a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1m0 9a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1zm0-10a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h3a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zM2 9a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h3a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2zm7 2a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-3a2 2 0 0 1-2-2zM0 2a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm5.354.854a.5.5 0 1 0-.708-.708L3 3.793l-.646-.647a.5.5 0 1 0-.708.708l1 1a.5.5 0 0 0 .708 0z" />
-                        </svg>
-                    </button>
-                </div>
-            </div>
-            <div class="panel-body">
-                <table id="ticketsTable" class="table table-success table-striped">
-                    <thead>
-                        <tr>
-                            <th scope="col">#</th>
-                            <th colspan="2">Nombre</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @if (Model != null)
-                        {
-                            foreach (var roll in Model.Rolls)
-
-                            {
-                                <tr>
-                                    <td colspan="1"> <a href="@Url.Content("~/"  + roll.id)">@roll.id</a> </td>
-                                    <td colspan="2"> @roll.nombre</td>
-                                </tr>
-                            }
-                        }
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-    @*tabla Rol_Operacion Invitado*@
-    <div class="col-md-3">
-        <div class="panel panel-default">
-            <div class="panel-heading clearfix">
-                <div class="pull-left">
-                    <b>Privilegios de <br /> Invitado (@Model.Rol_OperacionVist.Count)</b>
-                </div>
-                <div class="pull-right">
-                    <button onclick="document.location.href='@Url.Content("~/Roles_and_Privilege/AddRol_Operacion/")'" class="btn btn-default" data-toggle="tooltip" title="Agregar Privilegios">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-tags" viewBox="0 0 16 16">
-                            <path d="M3 2v4.586l7 7L14.586 9l-7-7zM2 2a1 1 0 0 1 1-1h4.586a1 1 0 0 1 .707.293l7 7a1 1 0 0 1 0 1.414l-4.586 4.586a1 1 0 0 1-1.414 0l-7-7A1 1 0 0 1 2 6.586z" />
-                            <path d="M5.5 5a.5.5 0 1 1 0-1 .5.5 0 0 1 0 1m0 1a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3M1 7.086a1 1 0 0 0 .293.707L8.75 15.25l-.043.043a1 1 0 0 1-1.414 0l-7-7A1 1 0 0 1 0 7.586V3a1 1 0 0 1 1-1z" />
-                        </svg>
-                    </button>
-                </div>
-            </div>
-            <div class="panel-body">
-                <table id="ticketsTable" class="table table-success table-striped">
-                    <thead>
-                        <tr>
-                            <th scope="col">Id</th>
-                            @*<th colspan="2">Rol</th>*@
-                            <th scope="col">Operacion</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @if (Model != null)
-                        {
-                            foreach (var RO in Model.Rol_OperacionVist)
-
-                            {
-                                int i = (int)RO.id_Roll;
-                                int e = (int)RO.id_Operacion;
-                                <tr>
-                                    <td>@RO.id</td>
-                                    @*<td colspan="2"> @Model.Rolls.Find(x => x.id == i).nombre</td>*@
-                                    <td colspan="2"> Sin operacion </td>
-                                </tr>
-                            }
-                        }
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
+    @*aqui acaba el div*@
     @*tabla Rol_Operacion Administrador *@
     <div class="col-md-3">
         <div class="panel panel-info">
@@ -275,13 +236,14 @@
                     </button>
                 </div>
             </div>
-            <div class="panel-body">
+            <div class="panel-body" style="max-height: 65vh; overflow-y: auto;">
                 <table id="ticketsTable" class="table table-success table-striped">
                     <thead>
                         <tr>
-                            <th scope="col">Id</th>
-                            @*<th colspan="2">Rol</th>*@
+                            @*<th scope="col">Id</th>
+                                @*<th colspan="2">Rol</th>*@
                             <th scope="col">Operacion</th>
+                            <th scope="col">Accion</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -292,11 +254,25 @@
                             {
                                 int i = (int)RO.id_Roll;
                                 int e = (int)RO.id_Operacion;
-                                <tr>
-                                    <td>@RO.id</td>
-                                    @*<td colspan="2"> @Model.Rolls.Find(x => x.id == i).nombre</td>*@
-                                    <td colspan="2"> @Model.Operacions.Find(x => x.id == e).nombre </td>
-                                </tr>
+                                if (Model.Operacions.Find(x => x.id == e).nombre != null)
+                                {
+                                    <tr>
+                                        @*<td>@RO.id</td>*@
+                                        <td colspan="2"> @Model.Operacions.Find(x => x.id == e).nombre </td>
+                                        <td colspan="2">
+                                            @using (Html.BeginForm("DeleteRol_Operacion", "Roles_and_Privilege", FormMethod.Post))
+                                            {
+                                                @Html.AntiForgeryToken()
+                                                @Html.Hidden("id", RO.id)
+                                                <button type="submit" class="btn btn-danger" data-toggle="tooltip" title="Eliminar Rol">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512">
+                                                        <path d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z" />
+                                                    </svg>
+                                                </button>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
                             }
                         }
                     </tbody>
@@ -320,13 +296,14 @@
                     </button>
                 </div>
             </div>
-            <div class="panel-body">
+            <div class="panel-body" style="max-height: 65vh; overflow-y: auto;">
                 <table id="ticketsTable" class="table table-success table-striped">
                     <thead>
                         <tr>
-                            <th scope="col">Id</th>
-                            @*<th colspan="2">Rol</th>*@
+                            @*<th scope="col">Id</th>
+                                @*<th colspan="2">Rol</th>*@
                             <th scope="col">Operacion</th>
+                            <th scope="col">Accion</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -337,11 +314,25 @@
                             {
                                 int i = (int)RO.id_Roll;
                                 int e = (int)RO.id_Operacion;
-                                <tr>
-                                    <td>@RO.id</td>
-                                    @*<td colspan="2"> @Model.Rolls.Find(x => x.id == i).nombre</td>*@
-                                    <td colspan="2"> @Model.Operacions.Find(x => x.id == e).nombre </td>
-                                </tr>
+                                if (Model.Operacions.Find(x => x.id == e).nombre != null)
+                                {
+                                    <tr>
+                                        @*<td>@RO.id</td>*@
+                                        <td colspan="2"> @Model.Operacions.Find(x => x.id == e).nombre </td>
+                                        <td colspan="2">
+                                            @using (Html.BeginForm("DeleteRol_Operacion", "Roles_and_Privilege", FormMethod.Post))
+                                            {
+                                                @Html.AntiForgeryToken()
+                                                @Html.Hidden("id", RO.id)
+                                                <button type="submit" class="btn btn-danger" data-toggle="tooltip" title="Eliminar Rol">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512">
+                                                        <path d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z" />
+                                                    </svg>
+                                                </button>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
                             }
                         }
                     </tbody>
@@ -354,7 +345,7 @@
         <div class="panel panel-success">
             <div class="panel-heading clearfix">
                 <div class="pull-left">
-                    <b>Privilegios de <br /> Contacto (@Model.Rol_OperacionContac.Count)</b>
+                    <b>Privilegios de <br /> Contacto_PMX (@Model.Rol_OperacionContac.Count)</b>
                 </div>
                 <div class="pull-right">
                     <button onclick="document.location.href='@Url.Content("~/Roles_and_Privilege/AddRol_Operacion/")'" class="btn btn-success" data-toggle="tooltip" title="Agregar Privilegios">
@@ -365,13 +356,14 @@
                     </button>
                 </div>
             </div>
-            <div class="panel-body">
+            <div class="panel-body" style="max-height: 65vh; overflow-y: auto;">
                 <table id="ticketsTable" class="table table-success table-striped">
                     <thead>
                         <tr>
-                            <th scope="col">Id</th>
-                            @*<th colspan="2">Rol</th>*@
+                            @*<th scope="col">Id</th>
+                                @*<th colspan="2">Rol</th>*@
                             <th scope="col">Operacion</th>
+                            <th scope="col">Accion</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -382,11 +374,85 @@
                             {
                                 int i = (int)RO.id_Roll;
                                 int e = (int)RO.id_Operacion;
-                                <tr>
-                                    <td>@RO.id</td>
-                                    @*<td colspan="2"> @Model.Rolls.Find(x => x.id == i).nombre</td>*@
-                                    <td colspan="2"> @Model.Operacions.Find(x => x.id == e).nombre </td>
-                                </tr>
+                                if (Model.Operacions.Find(x => x.id == e).nombre != null)
+                                {
+                                    <tr>
+                                        @*<td>@RO.id</td>*@
+                                        @*<td colspan="2"> @Model.Rolls.Find(x => x.id == i).nombre</td>*@
+                                        <td colspan="2"> @Model.Operacions.Find(x => x.id == e).nombre </td>
+                                        <td colspan="2">
+                                            @using (Html.BeginForm("DeleteRol_Operacion", "Roles_and_Privilege", FormMethod.Post))
+                                            {
+                                                @Html.AntiForgeryToken()
+                                                @Html.Hidden("id", RO.id)
+                                                <button type="submit" class="btn btn-danger" data-toggle="tooltip" title="Eliminar Rol">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512">
+                                                        <path d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z" />
+                                                    </svg>
+                                                </button>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    @*tabla Rol_Operacion Invitado*@
+    <div class="col-md-3">
+        <div class="panel panel-default">
+            <div class="panel-heading clearfix">
+                <div class="pull-left">
+                    <b>Privilegios de <br /> Contacto_TAD (@Model.Rol_OperacionVist.Count)</b>
+                </div>
+                <div class="pull-right">
+                    <button onclick="document.location.href='@Url.Content("~/Roles_and_Privilege/AddRol_Operacion/")'" class="btn btn-default" data-toggle="tooltip" title="Agregar Privilegios">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-tags" viewBox="0 0 16 16">
+                            <path d="M3 2v4.586l7 7L14.586 9l-7-7zM2 2a1 1 0 0 1 1-1h4.586a1 1 0 0 1 .707.293l7 7a1 1 0 0 1 0 1.414l-4.586 4.586a1 1 0 0 1-1.414 0l-7-7A1 1 0 0 1 2 6.586z" />
+                            <path d="M5.5 5a.5.5 0 1 1 0-1 .5.5 0 0 1 0 1m0 1a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3M1 7.086a1 1 0 0 0 .293.707L8.75 15.25l-.043.043a1 1 0 0 1-1.414 0l-7-7A1 1 0 0 1 0 7.586V3a1 1 0 0 1 1-1z" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div class="panel-body" style="max-height: 65vh; overflow-y: auto;">
+                <table id="ticketsTable" class="table table-success table-striped">
+                    <thead>
+                        <tr>
+                            @*<th scope="col">Id</th>
+                                @*<th colspan="2">Rol</th>*@
+                            <th scope="col">Operacion</th>
+                            <th scope="col">Accion</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null)
+                        {
+                            foreach (var RO in Model.Rol_OperacionVist)
+                            {
+                                int i = (int)RO.id_Roll;
+                                int e = (int)RO.id_Operacion;
+                                if (Model.Operacions.Find(x => x.id == e).nombre != null)
+                                {
+                                    <tr>
+                                        @*<td>@RO.id</td>*@
+                                        <td colspan="2"> @Model.Operacions.Find(x => x.id == e).nombre</td>
+                                        <td colspan="2">
+                                            @using (Html.BeginForm("DeleteRol_Operacion", "Roles_and_Privilege", FormMethod.Post))
+                                            {
+                                                @Html.AntiForgeryToken()
+                                                @Html.Hidden("id", RO.id)
+                                                <button type="submit" class="btn btn-danger" data-toggle="tooltip" title="Eliminar Rol">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512">
+                                                        <path d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z" />
+                                                    </svg>
+                                                </button>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
                             }
                         }
                     </tbody>

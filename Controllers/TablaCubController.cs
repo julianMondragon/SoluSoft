@@ -20,7 +20,7 @@ namespace TAS360.Controllers
         /// </summary>
         /// <returns>La vista principal</returns>
         [HttpGet]
-        [AuthorizeUser(idOperacion: 24)]
+        [AuthorizeUser(idOperacion: 25)]
         public ActionResult Index()
         {
             ViewBag.IsVisbleDlcsv = false;
@@ -35,7 +35,7 @@ namespace TAS360.Controllers
         /// <param name="postedFile"></param>
         /// <returns>La vista principal con la informacion </returns>
         [HttpPost]
-        [AuthorizeUser(idOperacion: 24)]
+        [AuthorizeUser(idOperacion: 25)]
         public ActionResult Index(HttpPostedFileBase postedFile)
         {
             TablaCubViewModel tabla = new TablaCubViewModel();

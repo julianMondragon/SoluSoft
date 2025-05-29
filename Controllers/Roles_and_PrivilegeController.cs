@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DocumentFormat.OpenXml.EMMA;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -18,6 +19,8 @@ namespace TAS360.Controllers
         [AuthorizeUser(idOperacion: 29)]
         public ActionResult Index()
         {
+            
+
             RolesPrivilegesViewModel rolesPrivileges = new RolesPrivilegesViewModel();
             using (HelpDesk_Entities1 db = new HelpDesk_Entities1())
             {
@@ -402,6 +405,323 @@ namespace TAS360.Controllers
 
                 ViewBag.ExceptionMessage = ex.Message;
                 return View(model);
+            }
+        }
+
+        [HttpPost]
+        [AuthorizeUser(idOperacion: 19)]
+        public ActionResult DeleteRol_Operacion(int id)
+        {
+            User user = (User)Session["User"];
+            try
+            {
+                using (HelpDesk_Entities1 db = new HelpDesk_Entities1())
+                {
+                    var OperacionToDelete = db.Roll_Operacion.Find(id);
+                    if (OperacionToDelete != null)
+                    {
+                        string path = Server.MapPath("~/Logs/RolesPriv/Delete_Rol_Operacion/");
+                        Log oLog = new Log(path);
+                        oLog.Add("Se le quito la operacion " + OperacionToDelete.id_Operacion + ", al rol: " + OperacionToDelete.id_Roll + ", la accion la realizo el usuario:" + user.nombre);
+                        oLog = null;
+                        //OperacionToDelete.id_Operacion = null; // hacer logs
+                        //OperacionToDelete.id_Roll = null;
+                        db.Roll_Operacion.Remove(OperacionToDelete);
+                        db.SaveChanges();
+                    }
+                    else
+                    {
+                        return HttpNotFound();
+                    }
+                }
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                ViewBag.ExceptionMessage = ex.Message;
+                return RedirectToAction("Index");
+            }
+        }
+
+        //Controlador de Editar Operación
+        [HttpGet]
+        [AuthorizeUser(idOperacion: 30)]
+        public ActionResult EditOperation(int id)
+        {
+            OperacionViewModel model = new OperacionViewModel(); // Cambiar a ModuloViewModel
+            using (HelpDesk_Entities1 db = new HelpDesk_Entities1())
+            {
+                var ModuloToEdit = db.Operacion.Find(id);
+                if (ModuloToEdit != null)
+                {
+                    model.id = ModuloToEdit.id;
+                    model.nombre = ModuloToEdit.nombre;
+                    model.id_modulo = ModuloToEdit.id_Modulo;
+                   
+                }
+            }
+            return View(model);
+        }
+
+        [HttpPost]
+        [AuthorizeUser(idOperacion: 18)]
+        public ActionResult EditOperation(OperacionViewModel model)
+        {
+            User user = (User)Session["User"];
+            try
+            {
+                using (HelpDesk_Entities1 db = new HelpDesk_Entities1())
+                {
+                    var ModuloToEdit = db.Operacion.Find(model.id);
+                    if (ModuloToEdit != null)
+                    {
+                        string AModuloToEdit = ModuloToEdit.nombre;
+                        ModuloToEdit.nombre = model.nombre;
+                        ModuloToEdit.id = model.id;
+                        ModuloToEdit.id_Modulo = model.id_modulo;
+                        string path = Server.MapPath("~/Logs/RolesPriv/EditOperacion/");
+                        Log oLog = new Log(path);
+                        oLog.Add("Se cambio la operacion " + AModuloToEdit +" por "+ ModuloToEdit.nombre + ", la accion fue realizada por el usuario: " + user.nombre);
+                        oLog = null;
+                    }
+                    else
+                    {
+                        ViewBag.ExceptionMessage = "ID no encontrado";
+                        return View(model);
+                    }
+
+                    db.Entry(ModuloToEdit).State = System.Data.Entity.EntityState.Modified;
+                    db.SaveChanges();
+                }
+
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                return View(model);
+            }
+        }
+
+        [HttpPost]
+        [AuthorizeUser(idOperacion: 19)]
+        public ActionResult DeleteOperacion(int id)
+        {
+            User user = (User)Session["User"];
+            try
+            {
+                using (HelpDesk_Entities1 db = new HelpDesk_Entities1())
+                {
+                    var OperacionToDelete = db.Operacion.Find(id);
+                    if (OperacionToDelete != null)
+                    {
+                        string path = Server.MapPath("~/Logs/RolesPriv/DeleteOperacion/");
+                        Log oLog = new Log(path);
+                        oLog.Add("Se elimino la operación " + OperacionToDelete.nombre + ", la accion fue realizada por el usuario: " + user.nombre);
+                        oLog = null;
+                        OperacionToDelete.nombre = null;
+                        db.SaveChanges();
+                    }
+                    else
+                    {
+                        return HttpNotFound();
+                    }
+                }
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                ViewBag.ExceptionMessage = ex.Message;
+                return RedirectToAction("Index");
+            }
+        }
+
+        //Controlador de editar Modulos
+        [HttpGet]
+        [AuthorizeUser(idOperacion: 30)]
+        public ActionResult EditModulos(int id)
+        {
+            ModuloViewModel model = new ModuloViewModel(); // Cambiar a ModuloViewModel
+            using (HelpDesk_Entities1 db = new HelpDesk_Entities1())
+            {
+                var ModuloToEdit = db.Modulo.Find(id);
+                if (ModuloToEdit != null)
+                {
+                    model.nombre = ModuloToEdit.nombre;
+                }
+            }
+            return View(model);
+        }
+
+        [HttpPost]
+        [AuthorizeUser(idOperacion: 18)]
+        public ActionResult EditModulos(ModuloViewModel model)
+        {
+            User user = (User)Session["User"];
+            try
+            {
+                using (HelpDesk_Entities1 db = new HelpDesk_Entities1())
+                {
+                    var ModuloToEdit = db.Modulo.Find(model.id);
+                    if (ModuloToEdit != null)
+                    {
+                        string AModuloToEdit = ModuloToEdit.nombre;
+                        ModuloToEdit.nombre = model.nombre;
+                        ModuloToEdit.id = model.id;
+                        string path = Server.MapPath("~/Logs/RolesPriv/EditModulo/");
+                        Log oLog = new Log(path);
+                        oLog.Add("Se edito el modulo: " + AModuloToEdit + " ahora "+ ModuloToEdit.nombre  + ", la accion fue realizada por el usuario: " + user.nombre);
+                        oLog = null;
+                    }
+                    else
+                    {
+                        ViewBag.ExceptionMessage = "ID no encontrado";
+                        return View(model);
+                    }
+
+                    db.Entry(ModuloToEdit).State = System.Data.Entity.EntityState.Modified;
+                    db.SaveChanges();
+                }
+
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                ViewBag.ExceptionMessage = ex.Message;
+                return View(model);
+            }
+        }
+
+        [HttpPost]
+        [AuthorizeUser(idOperacion: 19)]
+        public ActionResult DeleteModulos(int id)
+        {
+            User user = (User)Session["User"];
+            try
+            {
+                using (HelpDesk_Entities1 db = new HelpDesk_Entities1())
+                {
+                    var ModuloToDelete = db.Modulo.Find(id);
+                    if (ModuloToDelete != null)
+                    {
+                        string path = Server.MapPath("~/Logs/RolesPriv/DeleteModulo/");
+                        Log oLog = new Log(path);
+                        oLog.Add("Se elimino la operación " + ModuloToDelete.nombre + ", la accion fue realizada por el usuario: " + user.nombre);
+                        oLog = null;
+                        //ModuloToDelete.nombre = null;
+                        db.Modulo.Remove(ModuloToDelete);
+                        db.SaveChanges();
+                    }
+                    else
+                    {
+                        return HttpNotFound();
+                    }
+                }
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                ViewBag.ExceptionMessage = ex.Message;
+                return RedirectToAction("Index");
+            }
+        }
+
+
+        //Controlador de editar Modulos
+        [HttpGet]
+        [AuthorizeUser(idOperacion: 30)]
+        public ActionResult EditRol(int id)
+        {
+            RollViewModel model = new RollViewModel(); // Cambiar a ModuloViewModel
+            using (HelpDesk_Entities1 db = new HelpDesk_Entities1())
+            {
+                var ModuloToEdit = db.Roll.Find(id);
+                if (ModuloToEdit != null) // hacer logs ususario logeado, antes y despues
+                {
+                    model.nombre = ModuloToEdit.nombre;
+                }
+            }
+            return View(model);
+        }
+        /// <summary>
+        /// Metodo POST que edita el roll por id de la base de datos
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [AuthorizeUser(idOperacion: 18)]
+        public ActionResult EditRol(RollViewModel model)
+        {
+            User user = (User)Session["User"];
+            try
+            {
+                using (HelpDesk_Entities1 db = new HelpDesk_Entities1())
+                {
+                    var ModuloToEdit = db.Roll.Find(model.id);
+                    if (ModuloToEdit != null)
+                    {
+                        string AModuloToEdit = ModuloToEdit.nombre;
+                        ModuloToEdit.nombre = model.nombre;
+                        string path = Server.MapPath("~/Logs/RolesPriv/EditRol/");
+                        Log oLog = new Log(path);
+                        oLog.Add("Se edito el rol: "+ AModuloToEdit + " ahora el rol es: " + ModuloToEdit.nombre + ", la accion fue realizada por el usuario: " + user.nombre);
+                        oLog = null;
+                    }
+                    else
+                    {
+                        ViewBag.ExceptionMessage = "ID no encontrado";
+                        return View(model);
+                    }
+
+                    db.Entry(ModuloToEdit).State = System.Data.Entity.EntityState.Modified;
+                    db.SaveChanges();
+                }
+
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                ViewBag.ExceptionMessage = ex.Message;
+                return View(model);
+            }
+        }
+
+
+        /// <summary>
+        /// Metodo POST que borra el roll por id de la base de datos
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [AuthorizeUser(idOperacion: 19)]
+        public ActionResult DeleteRoll(int id)
+        {
+            User user = (User)Session["User"];
+            try
+            {
+                using (HelpDesk_Entities1 db = new HelpDesk_Entities1())
+                {
+                    var RollToDelete = db.Roll.Find(id);
+                    if (RollToDelete != null)
+                    {
+                        string path = Server.MapPath("~/Logs/RolesPriv/DeleteRol/");
+                        Log oLog = new Log(path);
+                        oLog.Add("Se elimino el rol " + RollToDelete.nombre + ", la accion fue realizada por el usuario: " + user.nombre);
+                        oLog = null;
+                        db.Roll.Remove(RollToDelete);
+                        //RollToDelete.nombre = null;
+                        db.SaveChanges();
+                    }
+                    else
+                    {
+                        return HttpNotFound();
+                    }
+                }
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                ViewBag.ExceptionMessage = ex.Message;
+                return RedirectToAction("Index");
             }
         }
 

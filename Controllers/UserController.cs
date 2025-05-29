@@ -10,6 +10,8 @@ using TAS360.Filters;
 using TAS360.Models;
 using TAS360.Models.ViewModel;
 using DocumentFormat.OpenXml.Presentation;
+using TAS360.StorProc;
+using System.Configuration;
 
 namespace TAS360.Controllers
 {
@@ -62,15 +64,17 @@ namespace TAS360.Controllers
             List<ListUsuarioViewModel> lst;
             using (HelpDesk_Entities1 db = new HelpDesk_Entities1())
             {
-                lst = (from d in db.User
+                lst = (from u in db.User
+                       join r in db.Roll on u.id_Roll equals r.id
                        select new ListUsuarioViewModel
                        {
-                           id = d.id,
-                           nombre = d.nombre,
-                           email = d.email,
+                           id = u.id,
+                           nombre = u.nombre,
+                           email = u.email,
+                           Rolid = u.id_Roll,
+                           RolidName = r.nombre
                        }).ToList();
             }
-
             return View(lst);
         }
 
@@ -78,8 +82,6 @@ namespace TAS360.Controllers
         [HttpGet]
         [AuthorizeUser(idOperacion: 18)]
         public ActionResult Edit(int id)
-
-
         {
 
             ListUsuarioViewModel model = new ListUsuarioViewModel();
@@ -339,7 +341,6 @@ namespace TAS360.Controllers
                 return View();
             }
         }
-        
         /// <summary>
         /// Metodo para cifrar la contraseña
         /// </summary>
@@ -387,10 +388,17 @@ namespace TAS360.Controllers
                 }
 
                 // Configuración del cliente SMTP
-                SmtpClient clienteSmtp = new SmtpClient("smtp.gmail.com", 587)
+                SmtpClient clienteSmtp = new SmtpClient(
+                     ConfigurationManager.AppSettings["SmtpHost"],
+                     int.Parse(ConfigurationManager.AppSettings["SmtpPort"]))
                 {
-                    Credentials = new NetworkCredential("soporte.tas360@pts.mx", "03Jun#2024"),
-                    EnableSsl = true
+                    EnableSsl = bool.Parse(ConfigurationManager.AppSettings["EnableSsl"]),
+                    UseDefaultCredentials = false,
+                    Credentials = new NetworkCredential(
+                         ConfigurationManager.AppSettings["SmtpUser"],
+                         ConfigurationManager.AppSettings["SmtpPassword"]
+                     ),
+                    DeliveryMethod = SmtpDeliveryMethod.Network
                 };
 
                 // Crear el mensaje de correo
@@ -399,7 +407,7 @@ namespace TAS360.Controllers
                     From = new MailAddress("soporte.tas360@pts.mx"),
                     Subject = "Bienvenido al Help Desk de PTS",
                     Body = contenidoHtml,
-                    IsBodyHtml = true // Si el cuerpo del correo es HTML
+                    IsBodyHtml = true 
                 };
 
                 // Añadir destinatario
