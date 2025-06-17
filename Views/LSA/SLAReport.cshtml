@@ -3,12 +3,11 @@
     ViewBag.Title = "Service Level Agreement";
     int total = ViewBag.tksclose + @ViewBag.tksopen;
     Layout = "~/Views/Shared/_Layout3.cshtml";
-
 }
 <div id="slaReportContainer">
     <div class="jumbotron">
         <h1>Acuerdo de Nivel de Servicio (SLA) </h1>
-        <button id="btnGenerarPDF" class="btn btn-danger">Generar PDF</button>
+        <button id="btnGenerarPDF" class="btn btn-primary">Descarga PDF</button>
         @*<a class="btn btn-info" href="@Url.Content("~/LSA/PrintSLAReport")">Descargar Reporte</a>*@
     </div>
 
@@ -31,16 +30,17 @@
         </div>
     </div>
     @*Graficas *@
+
     <div class="row">
-        <div class="col-lg-5">
+        <div class="col-md-6">
             <div class="panel panel-default">
-                <div class="panel-heading"><b>Reporte total de Tickets por categoria</b> </div>
+                <div class="panel-heading"><b>Reporte Status de Tickets:</b> </div>
                 <div class="panel-body">
-                    <canvas id="myPieChart" width="80" height="50"></canvas>
+                    <canvas id="myBarChart" width="120" height="60"></canvas>
                 </div>
             </div>
         </div>
-        <div class="col-md-5">
+        <div class="col-md-6">
             <div class="panel panel-default">
                 <div class="panel-heading"><b>Reporte Total de Tickets</b> </div>
                 <div class="panel-body">
@@ -69,18 +69,23 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-5">
-            <div class="panel panel-default">
-                <div class="panel-heading"><b>Reporte Status de Tickets: creados ultimo mes (31 días a partir de hoy hacía atrás)</b> </div>
-                <div class="panel-body">
-                    <canvas id="myBarChart" width="100" height="50"></canvas>
+        <div class="row">
+            <div class="col-md-7" style="width: 65%;">
+                <div class="panel panel-default">
+                    <div class="panel-heading"><b>Reporte total de Tickets por categoria </b> </div>
+                    <div class="panel-body">
+                        <canvas id="myPieChart" width="180" height="1180"></canvas>
+                    </div>
                 </div>
             </div>
         </div>
 
     </div>
+
+
     <div class="row">
-        <div class="col-md-5">
+
+        <div class="col-md-6">
             <div class="panel panel-default">
                 <div class="panel-heading"><b>Reporte total de Tickets por TAD: ultimo mes</b> </div>
                 <div class="panel-body">
@@ -465,6 +470,7 @@ jQuery.ajax({
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
     <script>
+
         document.getElementById("btnGenerarPDF").addEventListener("click", function () {
             const container = document.querySelector("#slaReportContainer");
 
@@ -475,25 +481,56 @@ jQuery.ajax({
                 const pdfWidth = pdf.internal.pageSize.getWidth();
                 const pdfHeight = pdf.internal.pageSize.getHeight();
 
-                const imgWidth = pdfWidth;
-                const imgHeight = canvas.height * pdfWidth / canvas.width;
+                const margin = 10;
+                const imgWidth = pdfWidth - 2 * margin;
+                const imgHeight = canvas.height * imgWidth / canvas.width;
 
                 let heightLeft = imgHeight;
-                let position = 0;
+                let position = margin;
 
-                pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                pdf.addImage(imgData, 'PNG', margin, position, imgWidth, imgHeight);
                 heightLeft -= pdfHeight;
 
                 while (heightLeft > 0) {
-                    position = heightLeft - imgHeight;
+                    position = heightLeft - imgHeight + margin;
                     pdf.addPage();
-                    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                    pdf.addImage(imgData, 'PNG', margin, position, imgWidth, imgHeight);
                     heightLeft -= pdfHeight;
                 }
 
-                pdf.save("Reporte_SLA.pdf");
+                // Crear nombre con fecha
+                const fecha = new Date();
+                const yyyy = fecha.getFullYear();
+                const mm = String(fecha.getMonth() + 1).padStart(2, '0');
+                const dd = String(fecha.getDate()).padStart(2, '0');
+                const nombreArchivo = `Reporte_de_SLA_${yyyy}_${mm}_${dd}.pdf`;
+                pdf.save(nombreArchivo);
+
+                // Convertir PDF a base64 sin encabezado 'data:...'
+                const pdfBase64 = pdf.output('datauristring').split(',')[1];
+
+                /*Enviar PDF al servidor para guardarlo*/
+                fetch('/LSAController/GuardarPDF', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ nombreArchivo: nombreArchivo, pdfBase64: pdfBase64 })
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            alert('PDF guardado correctamente en el servidor');
+                            // Descargar localmente
+                            pdf.save(nombreArchivo);
+                        } else {
+                            alert('Error al guardar el PDF en el servidor');
+                        }
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        alert('Error en la comunicación con el servidor');
+                    });
             });
         });
+
     </script>
 
 }

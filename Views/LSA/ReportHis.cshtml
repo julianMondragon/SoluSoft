@@ -32,9 +32,10 @@
                     <td>
                         @if (fechaUno <= fechaActual)
                         {
-                            <a href="@Url.Action("PrintSLAReportHis", "LSA", new { fecha = fechaUno.ToString("yyyy-MM-dd") })" class="btn btn-primary">
+                            <a class="btn btn-primary" href="@Url.Content("~/LSA/SLAReport")"> 1° Reporte (Formato)</a>
+                            @*<a href="@Url.Action("PrintSLAReportHis", "LSA", new { fecha = fechaUno.ToString("yyyy-MM-dd") })" class="btn btn-primary">
                                 1° Reporte
-                            </a>
+                            </a>*@
                         }
                         else
                         {
@@ -44,9 +45,10 @@
                     <td>
                         @if (fechaQuince <= fechaActual)
                         {
-                            <a href="@Url.Action("PrintSLAReportHis", "LSA", new { fecha = fechaQuince.ToString("yyyy-MM-dd") })" class="btn btn-success">
+                            <a class="btn btn-success " href="@Url.Content("~/LSA/SLAReport")"> 15° Reporte (Formato)</a>
+                            @*<a href="@Url.Action("PrintSLAReportHis", "LSA", new { fecha = fechaQuince.ToString("yyyy-MM-dd") })" class="btn btn-success">
                                 15° Reporte
-                            </a>
+                            </a>*@
                         }
                         else
                         {

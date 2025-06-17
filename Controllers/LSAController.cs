@@ -18,6 +18,7 @@ namespace TAS360.Controllers
 {
     public class LSAController : Controller
     {
+
         [HttpGet]
         [AuthorizeUser(idOperacion: 26)]
         public ActionResult Index()
@@ -173,9 +174,9 @@ namespace TAS360.Controllers
         [AuthorizeUser(idOperacion: 27)]
         public ActionResult PrintSLAReport()
         {
-            return new ActionAsPdf($"SLAReport/")
+            return new ActionAsPdf("SLAReport")
             {
-                FileName = $"Reporte_de_SLA_{DateTime.Now.Date.ToShortDateString()}.pdf"
+                FileName = $"Reporte_de_SLA_{DateTime.Now:yyyyMMdd}.pdf",
             };
         }
         [HttpGet]
@@ -202,6 +203,38 @@ namespace TAS360.Controllers
             }
             return File(rutaArchivo, "application/pdf", nombreArchivo);
         }
+        public class PdfRequest
+        {
+            public string NombreArchivo { get; set; }
+            public string PdfBase64 { get; set; }
+        }
+        [HttpPost]
+        public JsonResult GuardarPDF(PdfRequest request)
+        {
+            try
+            {
+                string rutaCarpeta = Server.MapPath("~/ReportesSLA/");
+
+                if (!Directory.Exists(rutaCarpeta))
+                    Directory.CreateDirectory(rutaCarpeta);
+
+                string rutaArchivo = Path.Combine(rutaCarpeta, request.NombreArchivo);
+
+                byte[] pdfBytes = Convert.FromBase64String(request.PdfBase64);
+                System.IO.File.WriteAllBytes(rutaArchivo, pdfBytes);
+
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.ToString() });
+            }
+        }
+
+
+
+
+
         //[HttpGet]
         //[AuthorizeUser(idOperacion: 27)]
         //public ActionResult ReportHis()
@@ -298,6 +331,8 @@ namespace TAS360.Controllers
 
             return Json(listTksbyCategoria, JsonRequestBehavior.AllowGet);
         }
+
+
         [HttpGet]
         public JsonResult GetTicketsByTerminal()
         {
