@@ -2,15 +2,30 @@
 @{
     ViewBag.Title = "Service Level Agreement";
     int total = ViewBag.tksclose + @ViewBag.tksopen;
-    Layout = "~/Views/Shared/_Layout3.cshtml";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
+@*Espacio vacio*@
+<div class="row" style="height: 40px;">
+</div>
+<div style="margin-left: 89.5%;">
+    <button id="btnGenerarPDF" class="btn btn-primary">Descarga PDF</button>
+    @*@using (Html.BeginForm("SubirArchivo", "LSAController", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        <input type="file" name="postedFile" accept=".pdf" />
+        <button type="submit">Subir PDF</button>
+    }*@
+    <form id="formUploadPDF" method="post" enctype="multipart/form-data" action="/LSA/SubirReportePDF">
+        <input type="file" id="inputPDF" name="archivoPDF" style="display:none" />
+    </form>
+</div>
 <div id="slaReportContainer">
     <div class="jumbotron">
         <h1>Acuerdo de Nivel de Servicio (SLA) </h1>
-        <button id="btnGenerarPDF" class="btn btn-primary">Descarga PDF</button>
-        @*<a class="btn btn-info" href="@Url.Content("~/LSA/PrintSLAReport")">Descargar Reporte</a>*@
-    </div>
+        <h3 style="text-align: right; opacity: 0.6; font-weight: normal;">
+            @DateTime.Now.ToString("dd/MM/yyyy")
+        </h3>
 
+    </div>
     <!-- Aquí están tus gráficas, tablas, etc. -->
     @*Documentacion SLA*@
     <div class="row">
@@ -69,22 +84,18 @@
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-7" style="width: 65%;">
-                <div class="panel panel-default">
-                    <div class="panel-heading"><b>Reporte total de Tickets por categoria </b> </div>
-                    <div class="panel-body">
-                        <canvas id="myPieChart" width="180" height="1180"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
 
     </div>
 
-
-    <div class="row">
-
+    <div class="row" style="height: 400px;">
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading"><b>Reporte total de Tickets por categoria </b> </div>
+                <div class="panel-body">
+                    <canvas id="myPieChart" width="180" height="180"></canvas>
+                </div>
+            </div>
+        </div>
         <div class="col-md-6">
             <div class="panel panel-default">
                 <div class="panel-heading"><b>Reporte total de Tickets por TAD: ultimo mes</b> </div>
@@ -93,16 +104,21 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-6">
-            <div class="panel panel-default">
-                <div class="panel-heading"><b>Reporte total de Tickets por TAD</b> </div>
-                <div class="panel-body">
-                    <canvas id="myBarChart2" width="50" height="50"></canvas>
-                </div>
-            </div>
-        </div>
+    </div>
+    @*Espacio vacio*@
+    <div class="row" style="height: 400px;">
 
     </div>
+
+    <div class="col-lg-12">
+        <div class="panel panel-default">
+            <div class="panel-heading"><b>Reporte total de Tickets por TAD</b> </div>
+            <div class="panel-body">
+                <canvas id="myBarChart2" width="50" height="50"></canvas>
+            </div>
+        </div>
+    </div>
+
 
     <div class="col-md-12">
         <div class="panel panel-default">
@@ -470,13 +486,19 @@ jQuery.ajax({
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
     <script>
-
         document.getElementById("btnGenerarPDF").addEventListener("click", function () {
+            console.log("Botón presionado");
+
             const container = document.querySelector("#slaReportContainer");
+            if (!container) {
+                console.error("No se encontró el contenedor.");
+                return;
+            }
 
-            html2canvas(container, { scale: 2 }).then(canvas => {
+            html2canvas(container, { scale: 1.5 }).then(canvas => {
+                console.log("Canvas generado");
+
                 const imgData = canvas.toDataURL("image/png");
-
                 const pdf = new jspdf.jsPDF('p', 'mm', 'a4');
                 const pdfWidth = pdf.internal.pageSize.getWidth();
                 const pdfHeight = pdf.internal.pageSize.getHeight();
@@ -498,7 +520,6 @@ jQuery.ajax({
                     heightLeft -= pdfHeight;
                 }
 
-                // Crear nombre con fecha
                 const fecha = new Date();
                 const yyyy = fecha.getFullYear();
                 const mm = String(fecha.getMonth() + 1).padStart(2, '0');
@@ -506,31 +527,38 @@ jQuery.ajax({
                 const nombreArchivo = `Reporte_de_SLA_${yyyy}_${mm}_${dd}.pdf`;
                 pdf.save(nombreArchivo);
 
-                // Convertir PDF a base64 sin encabezado 'data:...'
-                const pdfBase64 = pdf.output('datauristring').split(',')[1];
+            //    console.log("PDF generado. Nombre:", nombreArchivo);
+            //    const base64PDF = pdf.output('datauristring').split(',')[1];
+            //    console.log("Base64 obtenido, tamaño:", base64PDF.length);
 
-                /*Enviar PDF al servidor para guardarlo*/
-                fetch('/LSAController/GuardarPDF', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ nombreArchivo: nombreArchivo, pdfBase64: pdfBase64 })
-                })
-                    .then(response => {
-                        if (response.ok) {
-                            alert('PDF guardado correctamente en el servidor');
-                            // Descargar localmente
-                            pdf.save(nombreArchivo);
-                        } else {
-                            alert('Error al guardar el PDF en el servidor');
-                        }
-                    })
-                    .catch(err => {
-                        console.error(err);
-                        alert('Error en la comunicación con el servidor');
-                    });
+            //    fetch('/LSA/GuardarPDF', {
+            //        method: 'POST',
+            //        headers: {
+            //            'Content-Type': 'application/json'
+            //        },
+            //        body: JSON.stringify({
+            //            archivoBase64: base64PDF,
+            //            nombreArchivo: nombreArchivo
+            //        })
+            //    })
+            //        .then(async response => {
+            //            console.log("Respuesta recibida, status:", response.status);
+            //            if (!response.ok) {
+            //                const errorText = await response.text();
+            //                throw new Error("Error del servidor: " + errorText);
+            //            } else {
+            //                alert("El PDF se guardó correctamente en el servidor.");
+            //            }
+            //        })
+            //        .catch(error => {
+            //            console.error("Error en fetch:", error);
+            //            alert("Ocurrió un error: " + error.message);
+            //        });
+
+            //}).catch(err => {
+            //    console.error("Error al generar canvas:", err);
             });
         });
 
     </script>
-
 }

@@ -13,6 +13,7 @@ using Microsoft.Ajax.Utilities;
 using System.Data.Entity;
 using System.IO;
 using System.Globalization;
+using Newtonsoft.Json;
 
 namespace TAS360.Controllers
 {
@@ -139,181 +140,162 @@ namespace TAS360.Controllers
             GetSummaryTKs();
             return View(tickets);
         }
-        /// <summary>
-        /// Se manda a llamar la nueva vista
-        /// </summary>
-        /// <returns></returns>
-        //public ActionResult GenerarReporte(string fecha)
+        //[HttpPost]
+        //public ActionResult GuardarPDF(PDFViewModel model)
         //{
-        //    DateTime fechaFin;
-        //    if (!DateTime.TryParse(fecha, out fechaFin))
+        //    try
         //    {
-        //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "Fecha inválida.");
+        //        // Decodificar base64
+        //        byte[] pdfBytes = Convert.FromBase64String(model.ArchivoBase64);
+
+        //        // Asegurar que exista el directorio
+        //        string carpeta = Server.MapPath("~/ReportesSLA/");
+        //        if (!Directory.Exists(carpeta))
+        //            Directory.CreateDirectory(carpeta);
+
+        //        // Ruta del archivo
+        //        string rutaCompleta = Path.Combine(carpeta, model.NombreArchivo);
+
+        //        // Guardar en el servidor
+        //        System.IO.File.WriteAllBytes(rutaCompleta, pdfBytes);
+
+        //        return Json(new { exito = true });
         //    }
-
-        //    DateTime fechaInicio = fechaFin.AddDays(-30);
-
-        //    // Aquí deberías obtener los datos de la base de datos dentro del rango de fechas
-        //    var reportes = ObtenerReportes(fechaInicio, fechaFin);
-
-        //    // Retornar la vista con los datos del reporte
-        //    return View("ReporteView", reportes);
-        //}
-
-        //private List<ReporteModel> ObtenerReportes(DateTime inicio, DateTime fin)
-        //{
-        //    using (var db = new MiContexto())  // Asegúrate de usar tu contexto de base de datos
+        //    catch (Exception ex)
         //    {
-        //        return db.Reportes
-        //                 .Where(r => r.Fecha >= inicio && r.Fecha <= fin)
-        //                 .ToList();
+        //        return new HttpStatusCodeResult(500, "Error al guardar PDF: " + ex.Message);
         //    }
         //}
-
-        [HttpGet]
-        [AuthorizeUser(idOperacion: 27)]
-        public ActionResult PrintSLAReport()
-        {
-            return new ActionAsPdf("SLAReport")
-            {
-                FileName = $"Reporte_de_SLA_{DateTime.Now:yyyyMMdd}.pdf",
-            };
-        }
-        [HttpGet]
-        [AuthorizeUser(idOperacion: 27)]
-        public ActionResult PrintSLAReportHis(string fecha)
-        {
-            if (!DateTime.TryParseExact(fecha, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime fechaReporte))
-            {
-                return new HttpStatusCodeResult(400, "Fecha inválida");
-            }
-            string nombreArchivo = $"Reporte_de_SLA_{fechaReporte:yyyy_MM_dd}.pdf";
-            string rutaCarpeta = Server.MapPath("~/ReportesSLA/");
-            string rutaArchivo = Path.Combine(rutaCarpeta, nombreArchivo);
-            if (!System.IO.File.Exists(rutaArchivo))
-            {
-                var pdf = new ActionAsPdf("ReportePeriodico", new { fechaSeleccionada = fechaReporte.ToString("yyyy-MM-dd") })
-                {
-                    FileName = nombreArchivo
-                };
-                byte[] pdfBytes = pdf.BuildFile(ControllerContext);
-                if (!Directory.Exists(rutaCarpeta))
-                    Directory.CreateDirectory(rutaCarpeta);
-                System.IO.File.WriteAllBytes(rutaArchivo, pdfBytes);
-            }
-            return File(rutaArchivo, "application/pdf", nombreArchivo);
-        }
-        public class PdfRequest
-        {
-            public string NombreArchivo { get; set; }
-            public string PdfBase64 { get; set; }
-        }
-        [HttpPost]
-        public JsonResult GuardarPDF(PdfRequest request)
-        {
-            try
-            {
-                string rutaCarpeta = Server.MapPath("~/ReportesSLA/");
-
-                if (!Directory.Exists(rutaCarpeta))
-                    Directory.CreateDirectory(rutaCarpeta);
-
-                string rutaArchivo = Path.Combine(rutaCarpeta, request.NombreArchivo);
-
-                byte[] pdfBytes = Convert.FromBase64String(request.PdfBase64);
-                System.IO.File.WriteAllBytes(rutaArchivo, pdfBytes);
-
-                return Json(new { success = true });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { success = false, message = ex.ToString() });
-            }
-        }
-
-
-
-
-
-        //[HttpGet]
+        //[HttpPost]
         //[AuthorizeUser(idOperacion: 27)]
-        //public ActionResult ReportHis()
+        //public ActionResult PrintSLAReportHis(string fecha)
         //{
-        //    return View();
+        //    if (!DateTime.TryParseExact(fecha, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime fechaReporte))
+        //    {
+        //        return new HttpStatusCodeResult(400, "Fecha inválida");
+        //    }
+        //    string nombreArchivo = $"Reporte_de_SLA_{fechaReporte:yyyy_MM_dd}.pdf";
+        //    string rutaCarpeta = Server.MapPath("~/ReportesSLA/");
+        //    string rutaArchivo = Path.Combine(rutaCarpeta, nombreArchivo);
+        //    // Generar el PDF desde la acción "ReportePeriodico"
+        //    var pdf = new ActionAsPdf("SLAReport", new { fechaSeleccionada = fechaReporte.ToString("yyyy-MM-dd") })
+        //    {
+        //        FileName = nombreArchivo
+        //    };
+        //    // Crear carpeta si no existe
+        //    if (!Directory.Exists(rutaCarpeta))
+        //        Directory.CreateDirectory(rutaCarpeta);
+        //    // Construir archivo PDF en bytes y guardarlo
+        //    byte[] pdfBytes = pdf.BuildFile(ControllerContext);
+        //    System.IO.File.WriteAllBytes(rutaArchivo, pdfBytes);
+        //    // Retornar el archivo para descargar
+        //    return File(rutaArchivo, "application/pdf", nombreArchivo);
         //}
         [HttpGet]
-        [AuthorizeUser(idOperacion: 27)]
         public ActionResult ReportHis(DateTime? fecha)
         {
             return View();
         }
-        public ActionResult ReportePeriodico(string fechaSeleccionada)
-        {
-            DateTime fechaReporte;
-            if (!DateTime.TryParseExact(fechaSeleccionada, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out fechaReporte))
-            {
-                return new HttpStatusCodeResult(400, "Fecha inválida");
-            }
-            DateTime fechaInicio, fechaFin;
-            if (fechaReporte.Day <= 15)
-            {
-                fechaInicio = new DateTime(fechaReporte.Year, fechaReporte.Month, 1);
-                fechaFin = new DateTime(fechaReporte.Year, fechaReporte.Month, 15, 23, 59, 59);
-            }
-            else
-            {
-                fechaInicio = new DateTime(fechaReporte.Year, fechaReporte.Month, 16);
-                fechaFin = new DateTime(fechaReporte.Year, fechaReporte.Month, DateTime.DaysInMonth(fechaReporte.Year, fechaReporte.Month), 23, 59, 59);
-            }
-            List<TicketViewModel> tickets = new List<TicketViewModel>();
-            using (Models.HelpDesk_Entities1 db = new Models.HelpDesk_Entities1())
-            {
-                var Tickets = db.Ticket
-                                .Where(s => s.status != 12 && s.CreatedAt >= fechaInicio && s.CreatedAt <= fechaFin)
-                                .OrderByDescending(s => s.CreatedAt);
+        //public ActionResult ReportePeriodico(string fechaSeleccionada)
+        //{
+        //    DateTime fechaReporte;
+        //    if (!DateTime.TryParseExact(fechaSeleccionada, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out fechaReporte))
+        //    {
+        //        return new HttpStatusCodeResult(400, "Fecha inválida");
+        //    }
+        //    DateTime fechaInicio, fechaFin;
+        //    if (fechaReporte.Day <= 15)
+        //    {
+        //        fechaInicio = new DateTime(fechaReporte.Year, fechaReporte.Month, 1);
+        //        fechaFin = new DateTime(fechaReporte.Year, fechaReporte.Month, 15, 23, 59, 59);
+        //    }
+        //    else
+        //    {
+        //        fechaInicio = new DateTime(fechaReporte.Year, fechaReporte.Month, 16);
+        //        fechaFin = new DateTime(fechaReporte.Year, fechaReporte.Month, DateTime.DaysInMonth(fechaReporte.Year, fechaReporte.Month), 23, 59, 59);
+        //    }
+        //    List<TicketViewModel> tickets = new List<TicketViewModel>();
+        //    using (Models.HelpDesk_Entities1 db = new Models.HelpDesk_Entities1())
+        //    {
+        //        var Tickets = db.Ticket
+        //                        .Where(s => s.status != 12 && s.CreatedAt >= fechaInicio && s.CreatedAt <= fechaFin)
+        //                        .OrderByDescending(s => s.CreatedAt);
 
-                foreach (var t in Tickets)
-                {
-                    var ticket = new TicketViewModel()
-                    {
-                        id = t.id,
-                        titulo = t.titulo,
-                        mensaje = t.mensaje,
-                        usuario_name = t.Ticket_User.OrderByDescending(x => x.CreatedAt).FirstOrDefault().User.nombre,
-                        categoria_name = t.Categoria.nombre,
-                        terminal_name = t.Terminal.Nombre,
-                        Subsistema_name = t.Subsistema.Nombre,
-                        Status = t.status,
-                        Date = t.CreatedAt,
-                        Datetobedone = t.CreatedAt.HasValue ? t.CreatedAt.Value.AddDays(15) : DateTime.MinValue
-                    };
-                    string descripcionStatus = t.Ticket_Record_Status.OrderByDescending(x => x.CreatedAt).FirstOrDefault()?.Status?.descripcion?.Trim();
-                    switch (descripcionStatus)
-                    {
-                        case "Pendiente":
-                            ticket.status_name = "Capturado";
-                            break;
-                        case "Analisis":
-                        case "Pend_Pmx":
-                        case "Cerrado":
-                            ticket.status_name = "Espera de info";
-                            break;
-                        case "Correccion":
-                        case "Pruebas":
-                        case "Implementa":
-                            ticket.status_name = "En Proceso";
-                            break;
-                        default:
-                            ticket.status_name = "Undefineded";
-                            break;
-                    }
-                    tickets.Add(ticket);
-                }
-            }
-            ViewBag.FechaSeleccionada = fechaReporte;
-            GetSummaryTKs();
-            return View(tickets);
-        }
+        //        foreach (var t in Tickets)
+        //        {
+        //            var ticket = new TicketViewModel()
+        //            {
+        //                id = t.id,
+        //                titulo = t.titulo,
+        //                mensaje = t.mensaje,
+        //                usuario_name = t.Ticket_User.OrderByDescending(x => x.CreatedAt).FirstOrDefault().User.nombre,
+        //                categoria_name = t.Categoria.nombre,
+        //                terminal_name = t.Terminal.Nombre,
+        //                Subsistema_name = t.Subsistema.Nombre,
+        //                Status = t.status,
+        //                Date = t.CreatedAt,
+        //                Datetobedone = t.CreatedAt.HasValue ? t.CreatedAt.Value.AddDays(15) : DateTime.MinValue
+        //            };
+        //            string descripcionStatus = t.Ticket_Record_Status.OrderByDescending(x => x.CreatedAt).FirstOrDefault()?.Status?.descripcion?.Trim();
+        //            switch (descripcionStatus)
+        //            {
+        //                case "Pendiente":
+        //                    ticket.status_name = "Capturado";
+        //                    break;
+        //                case "Analisis":
+        //                case "Pend_Pmx":
+        //                case "Cerrado":
+        //                    ticket.status_name = "Espera de info";
+        //                    break;
+        //                case "Correccion":
+        //                case "Pruebas":
+        //                case "Implementa":
+        //                    ticket.status_name = "En Proceso";
+        //                    break;
+        //                default:
+        //                    ticket.status_name = "Undefineded";
+        //                    break;
+        //            }
+        //            tickets.Add(ticket);
+        //        }
+        //    }
+        //    ViewBag.FechaSeleccionada = fechaReporte;
+        //    GetSummaryTKs();
+        //    return View(tickets);
+        //}
+        //[AuthorizeUser(idOperacion: 7)]
+        //public ActionResult SubirArchivo(HttpPostedFileBase postedFile)
+        //{
+        //    try
+        //    {
+        //        string filepath = string.Empty;
+        //        if (postedFile != null)
+        //        {
+        //            // Ruta donde se guardará el archivo (sin carpeta por ID)
+        //            string path = Server.MapPath("~/ReportesSLA/");
+        //            if (!Directory.Exists(path))
+        //            {
+        //                Directory.CreateDirectory(path);
+        //            }
+
+        //            // Construir ruta completa del archivo
+        //            filepath = Path.Combine(path, Path.GetFileName(postedFile.FileName));
+
+        //            // Guardar archivo
+        //            postedFile.SaveAs(filepath);
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // Manejo de errores (opcional)
+        //        string path = Server.MapPath("~/Logs/");
+        //        Log oLog = new Log(path);
+        //        oLog.Add("Error al subir archivo: " + ex.Message);
+        //        ViewBag.Exception = ex.Message;
+        //    }
+
+        //    return RedirectToAction("Index"); // O donde desees redirigir
+        //}
 
         [HttpGet]
         public JsonResult GetTicktsByStatus()
