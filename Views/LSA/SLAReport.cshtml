@@ -9,7 +9,7 @@
 </div>
 <div style="margin-left: 89.5%;">
     <button id="btnGenerarPDF" class="btn btn-primary">Descarga PDF</button>
-    @*@using (Html.BeginForm("SubirArchivo", "LSAController", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    @*@using (Html.BeginForm("ReporteServer", "LSA", FormMethod.Post, new { enctype = "multipart/form-data" }))
     {
         <input type="file" name="postedFile" accept=".pdf" />
         <button type="submit">Subir PDF</button>
@@ -521,44 +521,40 @@ jQuery.ajax({
                 }
 
                 const fecha = new Date();
-                const yyyy = fecha.getFullYear();
-                const mm = String(fecha.getMonth() + 1).padStart(2, '0');
                 const dd = String(fecha.getDate()).padStart(2, '0');
-                const nombreArchivo = `Reporte_de_SLA_${yyyy}_${mm}_${dd}.pdf`;
+                const mm = String(fecha.getMonth() + 1).padStart(2, '0'); // Enero es 0
+                const yy = String(fecha.getFullYear()).slice(-2);
+                /*const nombreArchivo = `${yyyy}_${mm}_${dd}.pdf`;*/
+                const nombreArchivo = `${dd}${mm}${yy}.pdf`;
                 pdf.save(nombreArchivo);
+                pdf.output('blob').then(blob => {
+                    const form = new FormData();
+                    form.append('file', blob, nombreArchivo);
 
-            //    console.log("PDF generado. Nombre:", nombreArchivo);
-            //    const base64PDF = pdf.output('datauristring').split(',')[1];
-            //    console.log("Base64 obtenido, tamaño:", base64PDF.length);
+                    fetch('/LSA/GuardarPDF', {
+                        method: 'POST',
+                        body: form
+                    })
+                        .then(async response => {
+                            console.log("Respuesta recibida, status:", response.status);
+                            if (!response.ok) {
+                                const errorText = await response.text();
+                                throw new Error("Error del servidor: " + errorText);
+                            } else {
+                                alert("El PDF se guardó correctamente en el servidor.");
+                            }
+                        })
+                        .catch(error => {
+                            console.error("Error en fetch:", error);
+                            alert("Ocurrió un error: " + error.message);
+                        });
+                });
 
-            //    fetch('/LSA/GuardarPDF', {
-            //        method: 'POST',
-            //        headers: {
-            //            'Content-Type': 'application/json'
-            //        },
-            //        body: JSON.stringify({
-            //            archivoBase64: base64PDF,
-            //            nombreArchivo: nombreArchivo
-            //        })
-            //    })
-            //        .then(async response => {
-            //            console.log("Respuesta recibida, status:", response.status);
-            //            if (!response.ok) {
-            //                const errorText = await response.text();
-            //                throw new Error("Error del servidor: " + errorText);
-            //            } else {
-            //                alert("El PDF se guardó correctamente en el servidor.");
-            //            }
-            //        })
-            //        .catch(error => {
-            //            console.error("Error en fetch:", error);
-            //            alert("Ocurrió un error: " + error.message);
-            //        });
-
-            //}).catch(err => {
-            //    console.error("Error al generar canvas:", err);
+            }).catch(err => {
+                console.error("Error al generar canvas:", err);
             });
         });
+
 
     </script>
 }
