@@ -5,18 +5,29 @@ using System.Web;
 using TAS360.Models.ViewModel;
 using System.Data.SqlClient;
 using System.Data;
+using System.Configuration;
+using System.Data.Entity.Core.EntityClient;
 
 namespace TAS360.StorProc
 {
+    
     public class LSA_Reportes
     {
+
+        private string ObtenerCadenaSqlDesdeEntity(string entityConnName)
+        {
+        var entityConnString = ConfigurationManager.ConnectionStrings[entityConnName].ConnectionString;
+        var builder = new EntityConnectionStringBuilder(entityConnString);
+        return builder.ProviderConnectionString;
+        }
+
         public List<G_TicketsByStatusViewModel> GetTicktsByStatus()
         {
            
             List<G_TicketsByStatusViewModel> objLista = new List<G_TicketsByStatusViewModel>();
 
-            
-            using (SqlConnection oconexion = new SqlConnection("data source=localhost;initial catalog=ptstools_HelpDesk;persist security info=True;"))
+
+            using (SqlConnection oconexion = new SqlConnection(ObtenerCadenaSqlDesdeEntity("HelpDesk_Entities1")))
 
             {
                 string query = "[ptstools_Jmondragon].[SP_GetTicketsByStatus]";
@@ -57,7 +68,7 @@ namespace TAS360.StorProc
             List<G_TicketsByCategoriaViewModel> objLista = new List<G_TicketsByCategoriaViewModel>();
 
 
-            using (SqlConnection oconexion = new SqlConnection("data source=localhost;initial catalog=ptstools_HelpDesk;persist security info=True;"))
+            using (SqlConnection oconexion = new SqlConnection(ObtenerCadenaSqlDesdeEntity("HelpDesk_Entities1")))
 
             {
                 string query = "[ptstools_Jmondragon].[SP_GetTicketsByCategoria]";
@@ -98,7 +109,7 @@ namespace TAS360.StorProc
             List<G_TicketsByTerminalViewModel> objLista = new List<G_TicketsByTerminalViewModel>();
 
 
-            using (SqlConnection oconexion = new SqlConnection("data source=localhost;initial catalog=ptstools_HelpDesk;persist security info=True;"))
+            using (SqlConnection oconexion = new SqlConnection(ObtenerCadenaSqlDesdeEntity("HelpDesk_Entities1")))
 
             {
                 string query = "[ptstools_Jmondragon].[SP_GetTicketsByTerminal]";
@@ -138,7 +149,7 @@ namespace TAS360.StorProc
 
 
 
-            using (SqlConnection oconexion = new SqlConnection("data source=localhost;initial catalog=ptstools_HelpDesk;persist security info=True;"))
+            using (SqlConnection oconexion = new SqlConnection(ObtenerCadenaSqlDesdeEntity("HelpDesk_Entities1")))
             {
                 string query = "[ptstools_Jmondragon].[SP_GetTicketsByTerminalOnLastMonth]";
 
