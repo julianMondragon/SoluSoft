@@ -163,6 +163,16 @@ namespace TAS360.Controllers
 
             return View();
         }
+        /// <summary>
+        /// Abre y devuelve el archivo PDF del reporte correspondiente a la fecha 
+        /// seleccionada, la cual se recibe como parámetro. El nombre del archivo 
+        /// se construye con base en esa fecha y se busca en la carpeta 
+        /// ~/ReportesSLAHistorico/.
+        /// Cabe mencionar que es necesario programar un nueno metodo, para que
+        /// se genere el reporte y se guarde directamente en el servidor.
+        /// </summary>
+        /// <param name="fecha">Fecha del reporte a visualizar.</param>
+        /// <returns></returns>
         public ActionResult VerReportePDF(DateTime fecha)
         {
             string fileName = fecha.ToString("ddMMyy") + ".pdf";
@@ -176,27 +186,7 @@ namespace TAS360.Controllers
             byte[] fileBytes = System.IO.File.ReadAllBytes(filePath);
             return File(fileBytes, "application/pdf", fileName);
         }
-        //[AuthorizeUser(idOperacion: 7)]
-        //public ActionResult ReporteServer(HttpPostedFileBase postedFile)
-        //{
-        //        string filepath = string.Empty;
-        //        if (postedFile != null)
-        //        {
-        //            // Ruta donde se guardará el archivo (sin carpeta por ID)
-        //            string path = Server.MapPath("~/ReportesSLAHistorico/");
-        //            if (!Directory.Exists(path))
-        //            {
-        //                Directory.CreateDirectory(path);
-        //            }
-
-        //            // Construir ruta completa del archivo
-        //            filepath = Path.Combine(path, Path.GetFileName(postedFile.FileName));
-
-        //            // Guardar archivo
-        //            postedFile.SaveAs(filepath);
-        //        }
-        //    return RedirectToAction("Index"); // O donde desees redirigir
-        //}
+        
         [HttpGet]
         public JsonResult GetTicktsByStatus()
         {
