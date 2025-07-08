@@ -412,7 +412,8 @@
     <Compile Include="Models\ViewModel\FilterTicketsViewModel.cs" />
     <Compile Include="Models\ViewModel\G_TicketsByCategoriaViewModel.cs" />
     <Compile Include="Models\ViewModel\G_TicketsByStatusViewModel.cs" />
-    <Compile Include="Models\ViewModel\G_TicketsModificadosViewModel - Copia.cs" />
+    <Compile Include="Models\ViewModel\PDFViewModel.cs" />
+    <Compile Include="Models\ViewModel\G_TicketsModificadoViewModel.cs" />
     <Compile Include="Models\ViewModel\G_TicketsByTerminalViewModel.cs" />
     <Compile Include="Models\ViewModel\ListUsuarioViewModel.cs" />
     <Compile Include="Models\ViewModel\ModuloViewModel.cs" />
