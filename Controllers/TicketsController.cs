@@ -23,6 +23,7 @@ using System.EnterpriseServices.Internal;
 using X.PagedList;
 using X.PagedList.Mvc;
 using System.Web.Routing;
+using System.Configuration;
 
 
 
@@ -1681,10 +1682,17 @@ namespace TAS360.Controllers
                 }
 
                 // Configuración del cliente SMTP
-                SmtpClient clienteSmtp = new SmtpClient("smtp.gmail.com", 587)
+                SmtpClient clienteSmtp = new SmtpClient(
+                     ConfigurationManager.AppSettings["SmtpHost"],
+                     int.Parse(ConfigurationManager.AppSettings["SmtpPort"]))
                 {
-                    Credentials = new NetworkCredential("soporte.tas360@pts.mx", "03Jun#2024"),
-                    EnableSsl = true
+                    EnableSsl = bool.Parse(ConfigurationManager.AppSettings["EnableSsl"]),
+                    UseDefaultCredentials = false,
+                    Credentials = new NetworkCredential(
+                         ConfigurationManager.AppSettings["SmtpUser"],
+                         ConfigurationManager.AppSettings["SmtpPassword"]
+                     ),
+                    DeliveryMethod = SmtpDeliveryMethod.Network
                 };
 
                 // Crear el mensaje de correo
@@ -1765,10 +1773,17 @@ namespace TAS360.Controllers
                 }
 
                 // Configuración del cliente SMTP
-                SmtpClient clienteSmtp = new SmtpClient("smtp.gmail.com", 587)
+                SmtpClient clienteSmtp = new SmtpClient(
+                     ConfigurationManager.AppSettings["SmtpHost"],
+                     int.Parse(ConfigurationManager.AppSettings["SmtpPort"]))
                 {
-                    Credentials = new NetworkCredential("soporte.tas360@pts.mx", "03Jun#2024"),
-                    EnableSsl = true
+                    EnableSsl = bool.Parse(ConfigurationManager.AppSettings["EnableSsl"]),
+                    UseDefaultCredentials = false,
+                    Credentials = new NetworkCredential(
+                         ConfigurationManager.AppSettings["SmtpUser"],
+                         ConfigurationManager.AppSettings["SmtpPassword"]
+                     ),
+                    DeliveryMethod = SmtpDeliveryMethod.Network
                 };
 
                 // Crear el mensaje de correo
