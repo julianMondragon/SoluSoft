@@ -1,0 +1,35 @@
+﻿@model List<TAS360.Models.ViewModel.ReporteModel>
+
+
+@{
+    ViewBag.Title = "Reporte Histórico";
+}
+
+<h2>Reporte del @Model.FirstOrDefault()?.Fecha.ToString("yyyy-MM-dd") al @Model.LastOrDefault()?.Fecha.ToString("yyyy-MM-dd")</h2>
+
+@if (Model != null && Model.Any())
+{
+    <table class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <th>Fecha</th>
+                <th>Descripción</th>
+                <th>Estado</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var reporte in Model)
+            {
+                <tr>
+                    <td>@reporte.Fecha.ToString("yyyy-MM-dd")</td>
+                    <td>@reporte.Descripcion</td>
+                    <td>@reporte.Estado</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No hay reportes disponibles en este rango de fechas.</p>
+}
