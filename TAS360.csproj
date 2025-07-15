@@ -423,6 +423,8 @@
     <Compile Include="Models\ViewModel\FilterTicketsViewModel.cs" />
     <Compile Include="Models\ViewModel\G_TicketsByCategoriaViewModel.cs" />
     <Compile Include="Models\ViewModel\G_TicketsByStatusViewModel.cs" />
+    <Compile Include="Models\ViewModel\PDFViewModel.cs" />
+    <Compile Include="Models\ViewModel\G_TicketsModificadoViewModel.cs" />
     <Compile Include="Models\ViewModel\G_TicketsByTerminalViewModel.cs" />
     <Compile Include="Models\ViewModel\ListUsuarioViewModel.cs" />
     <Compile Include="Models\ViewModel\ModuloViewModel.cs" />
@@ -431,6 +433,7 @@
     <Compile Include="Models\ViewModel\PerfilusrViewModel.cs" />
     <Compile Include="Models\ViewModel\PuertoSerialViewModel.cs" />
     <Compile Include="Models\ViewModel\RecetasViewModel.cs" />
+    <Compile Include="Models\ViewModel\ReporteModel.cs" />
     <Compile Include="Models\ViewModel\RepTotalizadoViewModel.cs" />
     <Compile Include="Models\ViewModel\RolesPrivilegesViewModel.cs" />
     <Compile Include="Models\ViewModel\RollViewModel.cs" />
@@ -989,6 +992,8 @@
     <Content Include="Views\Roles_and_Privilege\AddRol_Operacion.cshtml" />
     <Content Include="Views\Profile\Index.cshtml" />
     <Content Include="Views\Profile\Editprofile.cshtml" />
+    <Content Include="Views\LSA\ReportHis.cshtml" />
+    <Content Include="Views\LSA\ReportePeriodico.cshtml" />
     <Content Include="Views\Roles_and_Privilege\EditOperation.cshtml" />
     <Content Include="Views\Roles_and_Privilege\EditModulos.cshtml" />
     <Content Include="Views\Roles_and_Privilege\EditRol.cshtml" />

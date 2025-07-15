@@ -7,8 +7,10 @@
 <div class="jumbotron">
     <h1>Acuerdo de Nivel de Servicio (SLA) </h1>
     @*<h3><strong style="font-family: Monotype Corsiva ">Resumen</strong></h3>*@
-    <a class="btn btn-default " href="@Url.Content("~/Home/Home")">Regresar</a>
-    <a class="btn btn-info" href="@Url.Content("~/LSA/PrintSLAReport")">Generar Reporte</a>
+    <a class="btn btn-primary " href="@Url.Content("~/Home/Home")">Regresar</a>
+    @*<a class="btn btn-info" href="@Url.Content("~/LSA/PrintSLAReport")">Generar Reporte</a>*@
+    <a class="btn btn-translucent " href="@Url.Content("~/LSA/ReportHis")">Historico</a>
+    <a class="btn btn-primary " href="@Url.Content("~/LSA/SLAReport")">Generar PDF</a>
 </div>
 
 @*Documentacion SLA*@
@@ -96,6 +98,28 @@
     </div>
 
 </div>
+
+<div class="col-md-12">
+    <div class="panel panel-default">
+        <div class="panel-heading"><b>Actualización de Tickets: últimos 15 días</b></div>
+        <div class="panel-body">
+            <table class="table table-bordered" id="tablaTicketsModificados">
+                <thead>
+                    <tr>
+                        <th>ID Ticket</th>
+                        <th>Modificaciones</th>
+                        <th>Creación</th>
+                        <th>Ultima Edición</th>
+                        <th>Status</th>
+                        <th>Responsable</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
 @*tabla de tickets *@
 <div class="row">
     <div class="col-md-12">
@@ -175,7 +199,6 @@
         </div>
     </div>
 </div>
-
 @section scripts
 {
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -274,6 +297,32 @@
                     console.log(error)
                 }
         });
+jQuery.ajax({
+    url: '@Url.Action("GetTicketsModificados", "LSA")',
+    type: "GET",
+    dataType: "json",
+    contentType: "application/json; charset=utf-8",
+    success: function (data) {
+        var tabla = $("#tablaTicketsModificados tbody");
+        tabla.empty(); // Limpia la tabla antes de llenarla
+
+        data.forEach(function (item) {
+            var fila = `
+                <tr>
+                    <td>${item.id_ticket}</td>
+                    <td>${item.Cantidad_modificaciones}</td>
+                    <td>${item.masAntiguo}</td>
+                    <td>${item.masReciente}</td>
+                    <td>${item.Status_Actual}</td>
+                    <td>${item.Nombre_Usuario}</td>
+                </tr>`;
+            tabla.append(fila);
+        });
+    },
+    error: function (error) {
+        console.log(error);
+    }
+});
 
         //Bar Chart total de tickets por tad
         jQuery.ajax({
@@ -417,7 +466,43 @@
                 console.log(error)
             }
         });
+
+    jQuery.ajax({
+    url: '@Url.Action("GetTicketsByTerminalOnLastMonth", "LSA")',
+    type: "GET",
+    dataType: "json",
+    contentType: "application/json; charset=utf-8",
+    success: function (data) {
+
+        var arrayCategorias = [];
+        var arrayCantidad = [];
+
+        for (var x = 0; x < data.length; x++)
+        {
+            arrayCategorias.push(data[x].Terminal)
+            arrayCantidad.push(data[x].Cantidad)
+        }
+
+        console.log(arrayCategorias)
+        console.log(arrayCantidad)
+
+        var controlPie1 = document.getElementById("myPieChart2");
+        var graficoPie1 = new Chart(controlPie1, {
+            type: 'pie',
+            data: {
+                labels: arrayCategorias,
+                datasets: [{
+                    data: arrayCantidad,
+                    backgroundColor: ['#007bff', '#dc3545', '#ffc107', '#28a745', "#BB2100", "#03B100", "#0083B1", "#0800B1", "#EBFA00", "#FA00D8"],
+                }],
+            },
+        });
+
+    },
+    error: function (error) {
+        console.log(error)
+    }
+      });
+
     </script>
 }
-
-
