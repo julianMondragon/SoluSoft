@@ -162,6 +162,7 @@
     <Compile Include="Controllers\logoutController.cs" />
     <Compile Include="Controllers\LSAController.cs" />
     <Compile Include="Controllers\PendientesController.cs" />
+    <Compile Include="Controllers\PlantelController.cs" />
     <Compile Include="Controllers\ReportsController.cs" />
     <Compile Include="Controllers\Rice_Lake920iController.cs" />
     <Compile Include="Controllers\Roles_and_PrivilegeController.cs" />
@@ -177,6 +178,9 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Log.cs" />
+    <Compile Include="Models\Accesos.cs">
+      <DependentUpon>HelpDesk.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\AditivoBD.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -246,6 +250,12 @@
     <Compile Include="Models\Entradas.cs">
       <DependentUpon>Simcot_db.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Estudiantes.cs">
+      <DependentUpon>HelpDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\EstudiantesXTutor.cs">
+      <DependentUpon>HelpDesk.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Files.cs">
       <DependentUpon>HelpDesk.tt</DependentUpon>
     </Compile>
@@ -270,6 +280,9 @@
     <Compile Include="Models\NivTanq.cs">
       <DependentUpon>AditivoBD.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Notificaciones.cs">
+      <DependentUpon>HelpDesk.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Operacion.cs">
       <DependentUpon>HelpDesk.tt</DependentUpon>
     </Compile>
@@ -282,7 +295,13 @@
     <Compile Include="Models\Pendiente_Record_Status.cs">
       <DependentUpon>HelpDesk.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Planteles.cs">
+      <DependentUpon>HelpDesk.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Prioridad_de_Pendiente.cs">
+      <DependentUpon>HelpDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\PuntosAcceso.cs">
       <DependentUpon>HelpDesk.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Recetas.cs">
@@ -369,6 +388,9 @@
     <Compile Include="Models\TotIny9.cs">
       <DependentUpon>AditivoBD.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Tutores.cs">
+      <DependentUpon>HelpDesk.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\UCIny10.cs">
       <DependentUpon>AditivoBD.tt</DependentUpon>
     </Compile>
@@ -422,6 +444,7 @@
     <Compile Include="Models\ViewModel\OperacionViewModel.cs" />
     <Compile Include="Models\ViewModel\PendientesViewModel.cs" />
     <Compile Include="Models\ViewModel\PerfilusrViewModel.cs" />
+    <Compile Include="Models\ViewModel\PlantelViewModel.cs" />
     <Compile Include="Models\ViewModel\PuertoSerialViewModel.cs" />
     <Compile Include="Models\ViewModel\RecetasViewModel.cs" />
     <Compile Include="Models\ViewModel\RepTotalizadoViewModel.cs" />
@@ -990,6 +1013,9 @@
     <Content Include="Views\Shared\_Alert.cshtml" />
     <Content Include="Views\HikVision\CreateUser.cshtml" />
     <Content Include="Views\HikVision\EditUser.cshtml" />
+    <Content Include="Views\Plantel\Index.cshtml" />
+    <Content Include="Views\Plantel\Create.cshtml" />
+    <Content Include="Views\Plantel\Edit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

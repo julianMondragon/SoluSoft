@@ -12,20 +12,26 @@ namespace TAS360.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class Clasificacion_Pendiente
+    public partial class Planteles
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Clasificacion_Pendiente()
+        public Planteles()
         {
-            this.Pendiente = new HashSet<Pendiente>();
+            this.Estudiantes = new HashSet<Estudiantes>();
+            this.PuntosAcceso = new HashSet<PuntosAcceso>();
         }
     
         public int id { get; set; }
-        public string Nombre { get; set; }
-        public string Descripcion { get; set; }
-        public string Clave { get; set; }
+        public string nombre { get; set; }
+        public string telefono { get; set; }
+        public string direccion { get; set; }
+        public string administrador { get; set; }
+        public string director { get; set; }
+        public Nullable<System.DateTime> FechaHoraRegistro { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Pendiente> Pendiente { get; set; }
+        public virtual ICollection<Estudiantes> Estudiantes { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<PuntosAcceso> PuntosAcceso { get; set; }
     }
 }

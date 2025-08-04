@@ -12,21 +12,30 @@ namespace TAS360.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class Roll
+    public partial class Estudiantes
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Roll()
+        public Estudiantes()
         {
-            this.Roll_Operacion = new HashSet<Roll_Operacion>();
-            this.User = new HashSet<User>();
+            this.Accesos = new HashSet<Accesos>();
+            this.EstudiantesXTutor = new HashSet<EstudiantesXTutor>();
         }
     
         public int id { get; set; }
+        public int idEscuela { get; set; }
         public string nombre { get; set; }
+        public string Grado { get; set; }
+        public string correoPersonal { get; set; }
+        public string correoTutor { get; set; }
+        public string telefonoPersonal { get; set; }
+        public string telefonoTutor { get; set; }
+        public string id_externo { get; set; }
+        public Nullable<System.DateTime> fechaHoraRegistro { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Roll_Operacion> Roll_Operacion { get; set; }
+        public virtual ICollection<Accesos> Accesos { get; set; }
+        public virtual Planteles Planteles { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<User> User { get; set; }
+        public virtual ICollection<EstudiantesXTutor> EstudiantesXTutor { get; set; }
     }
 }

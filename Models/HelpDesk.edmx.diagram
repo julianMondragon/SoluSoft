@@ -5,35 +5,49 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="d91f5ac36dfc49c78298fcabef5c2a5a" Name="Diagram1" ZoomLevel="55">
-        <EntityTypeShape EntityType="HelpDeskModel.Categoria" Width="1.5" PointX="3.75" PointY="5.125" />
-        <EntityTypeShape EntityType="HelpDeskModel.Clasificacion_Pendiente" Width="1.5" PointX="0.75" PointY="21" />
-        <EntityTypeShape EntityType="HelpDeskModel.Comentario" Width="1.5" PointX="9" PointY="2.75" />
-        <EntityTypeShape EntityType="HelpDeskModel.Files" Width="1.5" PointX="6" PointY="4.75" />
-        <EntityTypeShape EntityType="HelpDeskModel.Modulo" Width="1.5" PointX="1.5" PointY="30.875" />
-        <EntityTypeShape EntityType="HelpDeskModel.Operacion" Width="1.5" PointX="1.5" PointY="27.625" />
-        <EntityTypeShape EntityType="HelpDeskModel.Pendiente" Width="1.5" PointX="3" PointY="7.625" />
-        <EntityTypeShape EntityType="HelpDeskModel.Pendiente_Files" Width="1.5" PointX="8.25" PointY="9.875" />
-        <EntityTypeShape EntityType="HelpDeskModel.Pendiente_Record_Status" Width="1.5" PointX="8.25" PointY="6.75" />
-        <EntityTypeShape EntityType="HelpDeskModel.Prioridad_de_Pendiente" Width="1.5" PointX="0.75" PointY="23.75" />
-        <EntityTypeShape EntityType="HelpDeskModel.Roll" Width="1.5" PointX="1.5" PointY="17.75" />
-        <EntityTypeShape EntityType="HelpDeskModel.Roll_Operacion" Width="1.5" PointX="3.75" PointY="17.625" />
-        <EntityTypeShape EntityType="HelpDeskModel.Status" Width="1.5" PointX="0.75" PointY="2.5" />
-        <EntityTypeShape EntityType="HelpDeskModel.Subsistema" Width="1.5" PointX="0.75" PointY="9.875" />
-        <EntityTypeShape EntityType="HelpDeskModel.Terminal" Width="1.5" PointX="0.75" PointY="5.25" />
-        <EntityTypeShape EntityType="HelpDeskModel.Ticket" Width="1.5" PointX="6" PointY="8.5" />
-        <EntityTypeShape EntityType="HelpDeskModel.Ticket_Comentario" Width="1.5" PointX="11.25" PointY="6.875" />
-        <EntityTypeShape EntityType="HelpDeskModel.Ticket_Record_Status" Width="1.5" PointX="8.25" PointY="12.75" />
-        <EntityTypeShape EntityType="HelpDeskModel.Ticket_User" Width="1.5" PointX="11.25" PointY="12.75" />
-        <EntityTypeShape EntityType="HelpDeskModel.Tickets_Files" Width="1.5" PointX="11.25" PointY="9.875" />
-        <EntityTypeShape EntityType="HelpDeskModel.User" Width="1.5" PointX="0.75" PointY="13" />
-        <EntityTypeShape EntityType="HelpDeskModel.usr_profile" Width="1.5" PointX="3" PointY="20.875" />
+        <EntityTypeShape EntityType="HelpDeskModel.Accesos" Width="1.5" PointX="18.25" PointY="8.5" />
+        <EntityTypeShape EntityType="HelpDeskModel.Categoria" Width="1.5" PointX="3.75" PointY="6.875" />
+        <EntityTypeShape EntityType="HelpDeskModel.Clasificacion_Pendiente" Width="1.5" PointX="0.75" PointY="4.375" />
+        <EntityTypeShape EntityType="HelpDeskModel.Comentario" Width="1.5" PointX="9" PointY="5.625" />
+        <EntityTypeShape EntityType="HelpDeskModel.Estudiantes" Width="1.5" PointX="16" PointY="4.125" />
+        <EntityTypeShape EntityType="HelpDeskModel.EstudiantesXTutor" Width="1.5" PointX="18.25" PointY="4.875" />
+        <EntityTypeShape EntityType="HelpDeskModel.Files" Width="1.5" PointX="6" PointY="6.625" />
+        <EntityTypeShape EntityType="HelpDeskModel.Modulo" Width="1.5" PointX="1.5" PointY="31.75" />
+        <EntityTypeShape EntityType="HelpDeskModel.Notificaciones" Width="1.5" PointX="20.5" PointY="8.625" />
+        <EntityTypeShape EntityType="HelpDeskModel.Operacion" Width="1.5" PointX="1.5" PointY="28.5" />
+        <EntityTypeShape EntityType="HelpDeskModel.Pendiente" Width="1.5" PointX="3" PointY="9.375" />
+        <EntityTypeShape EntityType="HelpDeskModel.Pendiente_Files" Width="1.5" PointX="8.25" PointY="8.625" />
+        <EntityTypeShape EntityType="HelpDeskModel.Pendiente_Record_Status" Width="1.5" PointX="8.25" PointY="11.5" />
+        <EntityTypeShape EntityType="HelpDeskModel.Planteles" Width="1.5" PointX="13.75" PointY="6.5" />
+        <EntityTypeShape EntityType="HelpDeskModel.Prioridad_de_Pendiente" Width="1.5" PointX="0.75" PointY="11.625" />
+        <EntityTypeShape EntityType="HelpDeskModel.PuntosAcceso" Width="1.5" PointX="16" PointY="8.5" />
+        <EntityTypeShape EntityType="HelpDeskModel.Roll" Width="1.5" PointX="1.5" PointY="19.625" />
+        <EntityTypeShape EntityType="HelpDeskModel.Roll_Operacion" Width="1.5" PointX="3.75" PointY="19.5" />
+        <EntityTypeShape EntityType="HelpDeskModel.Status" Width="1.5" PointX="0.75" PointY="22.875" />
+        <EntityTypeShape EntityType="HelpDeskModel.Subsistema" Width="1.5" PointX="0.75" PointY="7.125" />
+        <EntityTypeShape EntityType="HelpDeskModel.Terminal" Width="1.5" PointX="0.75" PointY="25.625" />
+        <EntityTypeShape EntityType="HelpDeskModel.Ticket" Width="1.5" PointX="6" PointY="10.25" />
+        <EntityTypeShape EntityType="HelpDeskModel.Ticket_Comentario" Width="1.5" PointX="11.25" PointY="8.625" />
+        <EntityTypeShape EntityType="HelpDeskModel.Ticket_Record_Status" Width="1.5" PointX="11.25" PointY="11.5" />
+        <EntityTypeShape EntityType="HelpDeskModel.Ticket_User" Width="1.5" PointX="8.25" PointY="15.5" />
+        <EntityTypeShape EntityType="HelpDeskModel.Tickets_Files" Width="1.5" PointX="11.25" PointY="14.625" />
+        <EntityTypeShape EntityType="HelpDeskModel.Tutores" Width="1.5" PointX="16" PointY="0.75" />
+        <EntityTypeShape EntityType="HelpDeskModel.User" Width="1.5" PointX="0.75" PointY="14.875" />
+        <EntityTypeShape EntityType="HelpDeskModel.usr_profile" Width="1.5" PointX="3" PointY="22.75" />
+        <AssociationConnector Association="HelpDeskModel.FK__Accesos__idEstud__0697FACD" />
+        <AssociationConnector Association="HelpDeskModel.FK__Accesos__idPunto__078C1F06" />
+        <AssociationConnector Association="HelpDeskModel.FK__Notificac__idAcc__0C50D423" />
         <AssociationConnector Association="HelpDeskModel.FK_Ticket_Categoria" />
         <AssociationConnector Association="HelpDeskModel.FK_Pendiente_Clasificacion_Pendiente" />
         <AssociationConnector Association="HelpDeskModel.FK_Comentario_User" />
         <AssociationConnector Association="HelpDeskModel.FK_Ticket_Comentario_Comentario" />
+        <AssociationConnector Association="HelpDeskModel.FK__Estudiant__idEsc__7D0E9093" />
+        <AssociationConnector Association="HelpDeskModel.FK__Estudiant__idEst__02C769E9" />
+        <AssociationConnector Association="HelpDeskModel.FK__Estudiant__idTut__03BB8E22" />
         <AssociationConnector Association="HelpDeskModel.FK_Pendiente_Files_Files" />
         <AssociationConnector Association="HelpDeskModel.FK_Tickets_Files_Files" />
         <AssociationConnector Association="HelpDeskModel.FK_Operacion_Modulo" />
+        <AssociationConnector Association="HelpDeskModel.FK__Notificac__idPad__0D44F85C" />
         <AssociationConnector Association="HelpDeskModel.FK_Roll_Operacion_Operacion" />
         <AssociationConnector Association="HelpDeskModel.FK_Pendiente_Files_Pendiente" />
         <AssociationConnector Association="HelpDeskModel.FK_Pendiente_Prioridad_de_Pendiente" />
@@ -44,6 +58,7 @@
         <AssociationConnector Association="HelpDeskModel.FK_Pendiente_Ticket" />
         <AssociationConnector Association="HelpDeskModel.FK_Pendiente_User" />
         <AssociationConnector Association="HelpDeskModel.FK_Pendiente_Record_Status_Status" />
+        <AssociationConnector Association="HelpDeskModel.FK__PuntosAcc__idPla__793DFFAF" />
         <AssociationConnector Association="HelpDeskModel.FK_Ticket_Prioridad_de_Pendiente" />
         <AssociationConnector Association="HelpDeskModel.FK_Roll_Operacion_Roll" />
         <AssociationConnector Association="HelpDeskModel.FK_User_Roll" />

@@ -12,15 +12,14 @@ namespace TAS360.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class Pendiente_Record_Status
+    public partial class EstudiantesXTutor
     {
         public int id { get; set; }
-        public Nullable<int> id_Pendiente { get; set; }
-        public Nullable<int> id_Status { get; set; }
-        public Nullable<System.DateTime> CreatedAt { get; set; }
-        public Nullable<System.DateTime> UpdateAt { get; set; }
+        public int idEstudiante { get; set; }
+        public int idTutor { get; set; }
+        public Nullable<System.DateTime> fechaHora { get; set; }
     
-        public virtual Pendiente Pendiente { get; set; }
-        public virtual Status Status { get; set; }
+        public virtual Estudiantes Estudiantes { get; set; }
+        public virtual Tutores Tutores { get; set; }
     }
 }

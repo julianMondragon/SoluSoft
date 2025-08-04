@@ -5,6 +5,17 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="HelpDeskModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Accesos">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="idEstudiante" Type="int" Nullable="false" />
+          <Property Name="idPuntoAcceso" Type="int" Nullable="false" />
+          <Property Name="fechaHora" Type="datetime" Nullable="false" />
+          <Property Name="motivo" Type="nvarchar" MaxLength="100" />
+          <Property Name="estado" Type="nvarchar" MaxLength="50" />
+        </EntityType>
         <EntityType Name="Categoria">
           <Key>
             <PropertyRef Name="id" />
@@ -30,6 +41,30 @@
           <Property Name="id_User" Type="int" />
           <Property Name="CreatedAt" Type="date" />
         </EntityType>
+        <EntityType Name="Estudiantes">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="idEscuela" Type="int" Nullable="false" />
+          <Property Name="nombre" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Grado" Type="nvarchar" MaxLength="20" />
+          <Property Name="correoPersonal" Type="nvarchar" MaxLength="100" />
+          <Property Name="correoTutor" Type="nvarchar" MaxLength="100" />
+          <Property Name="telefonoPersonal" Type="nvarchar" MaxLength="20" />
+          <Property Name="telefonoTutor" Type="nvarchar" MaxLength="20" />
+          <Property Name="id_externo" Type="nvarchar" MaxLength="10" />
+          <Property Name="fechaHoraRegistro" Type="datetime" />
+        </EntityType>
+        <EntityType Name="EstudiantesXTutor">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="idEstudiante" Type="int" Nullable="false" />
+          <Property Name="idTutor" Type="int" Nullable="false" />
+          <Property Name="fechaHora" Type="datetime" />
+        </EntityType>
         <EntityType Name="Files">
           <Key>
             <PropertyRef Name="id" />
@@ -45,6 +80,17 @@
           </Key>
           <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="nombre" Type="varchar" MaxLength="60" />
+        </EntityType>
+        <EntityType Name="Notificaciones">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="idAcceso" Type="int" Nullable="false" />
+          <Property Name="idPadreTutor" Type="int" Nullable="false" />
+          <Property Name="fechaHora" Type="datetime" />
+          <Property Name="texto" Type="nvarchar" MaxLength="500" />
+          <Property Name="estado" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="Operacion">
           <Key>
@@ -97,6 +143,18 @@
           <Property Name="CreatedAt" Type="datetime" />
           <Property Name="UpdateAt" Type="datetime" />
         </EntityType>
+        <EntityType Name="Planteles">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="nombre" Type="nvarchar" MaxLength="250" Nullable="false" />
+          <Property Name="telefono" Type="nvarchar" MaxLength="20" />
+          <Property Name="direccion" Type="nvarchar" MaxLength="200" />
+          <Property Name="administrador" Type="nvarchar" MaxLength="100" />
+          <Property Name="director" Type="nvarchar" MaxLength="100" />
+          <Property Name="FechaHoraRegistro" Type="datetime" />
+        </EntityType>
         <EntityType Name="Prioridad_de_Pendiente">
           <Key>
             <PropertyRef Name="id" />
@@ -105,6 +163,20 @@
           <Property Name="Nombre" Type="varchar" MaxLength="80" />
           <Property Name="Descripcion" Type="varchar" MaxLength="80" />
           <Property Name="clave" Type="varchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="PuntosAcceso">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="idPlantel" Type="int" Nullable="false" />
+          <Property Name="nombre" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="ubicacion" Type="nvarchar" MaxLength="600" />
+          <Property Name="FechaHoraInstalacion" Type="datetime" />
+          <Property Name="estado" Type="bit" />
+          <Property Name="apiServer" Type="nvarchar" MaxLength="400" Nullable="false" />
+          <Property Name="usuario" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="password" Type="nvarchar" MaxLength="200" Nullable="false" />
         </EntityType>
         <EntityType Name="Roll">
           <Key>
@@ -196,6 +268,16 @@
           <Property Name="id_Ticket" Type="int" />
           <Property Name="id_File" Type="int" />
         </EntityType>
+        <EntityType Name="Tutores">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Nombre" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="correo" Type="nvarchar" MaxLength="100" />
+          <Property Name="telefono" Type="nvarchar" MaxLength="20" />
+          <Property Name="id_externo" Type="nvarchar" MaxLength="50" />
+        </EntityType>
         <EntityType Name="User">
           <Key>
             <PropertyRef Name="id" />
@@ -213,18 +295,114 @@
             <PropertyRef Name="id" />
           </Key>
           <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="nombre" Type="varchar" MaxLength="100" />
-          <Property Name="email" Type="varchar" MaxLength="100" />
-          <Property Name="password" Type="varchar" MaxLength="100" />
+          <Property Name="nombre" Type="varchar" MaxLength="80" />
+          <Property Name="email" Type="varchar" MaxLength="50" />
+          <Property Name="password" Type="varchar" MaxLength="80" />
           <Property Name="createdAt" Type="date" />
           <Property Name="updateAt" Type="date" />
           <Property Name="fecha nacimeinto" Type="datetime" />
-          <Property Name="Cel" Type="varchar" MaxLength="50" />
-          <Property Name="Género" Type="varchar" MaxLength="50" />
-          <Property Name="Estado" Type="varchar" MaxLength="50" />
+          <Property Name="Cel" Type="varchar" MaxLength="1" />
+          <Property Name="Género" Type="varchar" MaxLength="1" />
+          <Property Name="Estado" Type="varchar" MaxLength="1" />
           <Property Name="Foto_usuario" Type="varbinary(max)" />
           <Property Name="id_User" Type="int" Nullable="false" />
         </EntityType>
+        <Association Name="FK__Accesos__idEstud__0697FACD">
+          <End Role="Estudiantes" Type="Self.Estudiantes" Multiplicity="1" />
+          <End Role="Accesos" Type="Self.Accesos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Estudiantes">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Accesos">
+              <PropertyRef Name="idEstudiante" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Accesos__idPunto__078C1F06">
+          <End Role="PuntosAcceso" Type="Self.PuntosAcceso" Multiplicity="1" />
+          <End Role="Accesos" Type="Self.Accesos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PuntosAcceso">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Accesos">
+              <PropertyRef Name="idPuntoAcceso" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Estudiant__idEsc__7D0E9093">
+          <End Role="Planteles" Type="Self.Planteles" Multiplicity="1" />
+          <End Role="Estudiantes" Type="Self.Estudiantes" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Planteles">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Estudiantes">
+              <PropertyRef Name="idEscuela" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Estudiant__idEst__02C769E9">
+          <End Role="Estudiantes" Type="Self.Estudiantes" Multiplicity="1" />
+          <End Role="EstudiantesXTutor" Type="Self.EstudiantesXTutor" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Estudiantes">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="EstudiantesXTutor">
+              <PropertyRef Name="idEstudiante" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Estudiant__idTut__03BB8E22">
+          <End Role="Tutores" Type="Self.Tutores" Multiplicity="1" />
+          <End Role="EstudiantesXTutor" Type="Self.EstudiantesXTutor" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tutores">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="EstudiantesXTutor">
+              <PropertyRef Name="idTutor" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Notificac__idAcc__0C50D423">
+          <End Role="Accesos" Type="Self.Accesos" Multiplicity="1" />
+          <End Role="Notificaciones" Type="Self.Notificaciones" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Accesos">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Notificaciones">
+              <PropertyRef Name="idAcceso" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Notificac__idPad__0D44F85C">
+          <End Role="Tutores" Type="Self.Tutores" Multiplicity="1" />
+          <End Role="Notificaciones" Type="Self.Notificaciones" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tutores">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Notificaciones">
+              <PropertyRef Name="idPadreTutor" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__PuntosAcc__idPla__793DFFAF">
+          <End Role="Planteles" Type="Self.Planteles" Multiplicity="1" />
+          <End Role="PuntosAcceso" Type="Self.PuntosAcceso" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Planteles">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="PuntosAcceso">
+              <PropertyRef Name="idPlantel" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Comentario_User">
           <End Role="User" Type="Self.User" Multiplicity="0..1" />
           <End Role="Comentario" Type="Self.Comentario" Multiplicity="*" />
@@ -573,17 +751,28 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        
+        
+        
+        
+        
         <EntityContainer Name="HelpDeskModelStoreContainer">
+          <EntitySet Name="Accesos" EntityType="Self.Accesos" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Categoria" EntityType="Self.Categoria" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Clasificacion_Pendiente" EntityType="Self.Clasificacion_Pendiente" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Comentario" EntityType="Self.Comentario" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Estudiantes" EntityType="Self.Estudiantes" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EstudiantesXTutor" EntityType="Self.EstudiantesXTutor" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Files" EntityType="Self.Files" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Modulo" EntityType="Self.Modulo" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Notificaciones" EntityType="Self.Notificaciones" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Operacion" EntityType="Self.Operacion" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Pendiente" EntityType="Self.Pendiente" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Pendiente_Files" EntityType="Self.Pendiente_Files" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Pendiente_Record_Status" EntityType="Self.Pendiente_Record_Status" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Planteles" EntityType="Self.Planteles" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Prioridad_de_Pendiente" EntityType="Self.Prioridad_de_Pendiente" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PuntosAcceso" EntityType="Self.PuntosAcceso" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Roll" EntityType="Self.Roll" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Roll_Operacion" EntityType="Self.Roll_Operacion" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Status" EntityType="Self.Status" Schema="dbo" store:Type="Tables" />
@@ -594,8 +783,41 @@
           <EntitySet Name="Ticket_Record_Status" EntityType="Self.Ticket_Record_Status" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Ticket_User" EntityType="Self.Ticket_User" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Tickets_Files" EntityType="Self.Tickets_Files" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Tutores" EntityType="Self.Tutores" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="usr_profile" EntityType="Self.usr_profile" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK__Accesos__idEstud__0697FACD" Association="Self.FK__Accesos__idEstud__0697FACD">
+            <End Role="Estudiantes" EntitySet="Estudiantes" />
+            <End Role="Accesos" EntitySet="Accesos" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Accesos__idPunto__078C1F06" Association="Self.FK__Accesos__idPunto__078C1F06">
+            <End Role="PuntosAcceso" EntitySet="PuntosAcceso" />
+            <End Role="Accesos" EntitySet="Accesos" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Estudiant__idEsc__7D0E9093" Association="Self.FK__Estudiant__idEsc__7D0E9093">
+            <End Role="Planteles" EntitySet="Planteles" />
+            <End Role="Estudiantes" EntitySet="Estudiantes" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Estudiant__idEst__02C769E9" Association="Self.FK__Estudiant__idEst__02C769E9">
+            <End Role="Estudiantes" EntitySet="Estudiantes" />
+            <End Role="EstudiantesXTutor" EntitySet="EstudiantesXTutor" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Estudiant__idTut__03BB8E22" Association="Self.FK__Estudiant__idTut__03BB8E22">
+            <End Role="Tutores" EntitySet="Tutores" />
+            <End Role="EstudiantesXTutor" EntitySet="EstudiantesXTutor" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Notificac__idAcc__0C50D423" Association="Self.FK__Notificac__idAcc__0C50D423">
+            <End Role="Accesos" EntitySet="Accesos" />
+            <End Role="Notificaciones" EntitySet="Notificaciones" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Notificac__idPad__0D44F85C" Association="Self.FK__Notificac__idPad__0D44F85C">
+            <End Role="Tutores" EntitySet="Tutores" />
+            <End Role="Notificaciones" EntitySet="Notificaciones" />
+          </AssociationSet>
+          <AssociationSet Name="FK__PuntosAcc__idPla__793DFFAF" Association="Self.FK__PuntosAcc__idPla__793DFFAF">
+            <End Role="Planteles" EntitySet="Planteles" />
+            <End Role="PuntosAcceso" EntitySet="PuntosAcceso" />
+          </AssociationSet>
           <AssociationSet Name="FK_Comentario_User" Association="Self.FK_Comentario_User">
             <End Role="User" EntitySet="User" />
             <End Role="Comentario" EntitySet="Comentario" />
@@ -748,16 +970,22 @@
             <Parameter Name="new_diagramname" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="sp_upgraddiagrams" />
+          <EntitySet Name="Accesos" EntityType="HelpDeskModel.Accesos" />
           <EntitySet Name="Categoria" EntityType="HelpDeskModel.Categoria" />
           <EntitySet Name="Clasificacion_Pendiente" EntityType="HelpDeskModel.Clasificacion_Pendiente" />
           <EntitySet Name="Comentario" EntityType="HelpDeskModel.Comentario" />
+          <EntitySet Name="Estudiantes" EntityType="HelpDeskModel.Estudiantes" />
+          <EntitySet Name="EstudiantesXTutor" EntityType="HelpDeskModel.EstudiantesXTutor" />
           <EntitySet Name="Files" EntityType="HelpDeskModel.Files" />
           <EntitySet Name="Modulo" EntityType="HelpDeskModel.Modulo" />
+          <EntitySet Name="Notificaciones" EntityType="HelpDeskModel.Notificaciones" />
           <EntitySet Name="Operacion" EntityType="HelpDeskModel.Operacion" />
           <EntitySet Name="Pendiente" EntityType="HelpDeskModel.Pendiente" />
           <EntitySet Name="Pendiente_Files" EntityType="HelpDeskModel.Pendiente_Files" />
           <EntitySet Name="Pendiente_Record_Status" EntityType="HelpDeskModel.Pendiente_Record_Status" />
+          <EntitySet Name="Planteles" EntityType="HelpDeskModel.Planteles" />
           <EntitySet Name="Prioridad_de_Pendiente" EntityType="HelpDeskModel.Prioridad_de_Pendiente" />
+          <EntitySet Name="PuntosAcceso" EntityType="HelpDeskModel.PuntosAcceso" />
           <EntitySet Name="Roll" EntityType="HelpDeskModel.Roll" />
           <EntitySet Name="Roll_Operacion" EntityType="HelpDeskModel.Roll_Operacion" />
           <EntitySet Name="Status" EntityType="HelpDeskModel.Status" />
@@ -768,8 +996,21 @@
           <EntitySet Name="Ticket_Record_Status" EntityType="HelpDeskModel.Ticket_Record_Status" />
           <EntitySet Name="Ticket_User" EntityType="HelpDeskModel.Ticket_User" />
           <EntitySet Name="Tickets_Files" EntityType="HelpDeskModel.Tickets_Files" />
+          <EntitySet Name="Tutores" EntityType="HelpDeskModel.Tutores" />
           <EntitySet Name="User" EntityType="HelpDeskModel.User" />
           <EntitySet Name="usr_profile" EntityType="HelpDeskModel.usr_profile" />
+          <AssociationSet Name="FK__Accesos__idEstud__0697FACD" Association="HelpDeskModel.FK__Accesos__idEstud__0697FACD">
+            <End Role="Estudiantes" EntitySet="Estudiantes" />
+            <End Role="Accesos" EntitySet="Accesos" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Accesos__idPunto__078C1F06" Association="HelpDeskModel.FK__Accesos__idPunto__078C1F06">
+            <End Role="PuntosAcceso" EntitySet="PuntosAcceso" />
+            <End Role="Accesos" EntitySet="Accesos" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Notificac__idAcc__0C50D423" Association="HelpDeskModel.FK__Notificac__idAcc__0C50D423">
+            <End Role="Accesos" EntitySet="Accesos" />
+            <End Role="Notificaciones" EntitySet="Notificaciones" />
+          </AssociationSet>
           <AssociationSet Name="FK_Ticket_Categoria" Association="HelpDeskModel.FK_Ticket_Categoria">
             <End Role="Categoria" EntitySet="Categoria" />
             <End Role="Ticket" EntitySet="Ticket" />
@@ -786,6 +1027,18 @@
             <End Role="Comentario" EntitySet="Comentario" />
             <End Role="Ticket_Comentario" EntitySet="Ticket_Comentario" />
           </AssociationSet>
+          <AssociationSet Name="FK__Estudiant__idEsc__7D0E9093" Association="HelpDeskModel.FK__Estudiant__idEsc__7D0E9093">
+            <End Role="Planteles" EntitySet="Planteles" />
+            <End Role="Estudiantes" EntitySet="Estudiantes" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Estudiant__idEst__02C769E9" Association="HelpDeskModel.FK__Estudiant__idEst__02C769E9">
+            <End Role="Estudiantes" EntitySet="Estudiantes" />
+            <End Role="EstudiantesXTutor" EntitySet="EstudiantesXTutor" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Estudiant__idTut__03BB8E22" Association="HelpDeskModel.FK__Estudiant__idTut__03BB8E22">
+            <End Role="Tutores" EntitySet="Tutores" />
+            <End Role="EstudiantesXTutor" EntitySet="EstudiantesXTutor" />
+          </AssociationSet>
           <AssociationSet Name="FK_Pendiente_Files_Files" Association="HelpDeskModel.FK_Pendiente_Files_Files">
             <End Role="Files" EntitySet="Files" />
             <End Role="Pendiente_Files" EntitySet="Pendiente_Files" />
@@ -797,6 +1050,10 @@
           <AssociationSet Name="FK_Operacion_Modulo" Association="HelpDeskModel.FK_Operacion_Modulo">
             <End Role="Modulo" EntitySet="Modulo" />
             <End Role="Operacion" EntitySet="Operacion" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Notificac__idPad__0D44F85C" Association="HelpDeskModel.FK__Notificac__idPad__0D44F85C">
+            <End Role="Tutores" EntitySet="Tutores" />
+            <End Role="Notificaciones" EntitySet="Notificaciones" />
           </AssociationSet>
           <AssociationSet Name="FK_Roll_Operacion_Operacion" Association="HelpDeskModel.FK_Roll_Operacion_Operacion">
             <End Role="Operacion" EntitySet="Operacion" />
@@ -837,6 +1094,10 @@
           <AssociationSet Name="FK_Pendiente_Record_Status_Status" Association="HelpDeskModel.FK_Pendiente_Record_Status_Status">
             <End Role="Status" EntitySet="Status" />
             <End Role="Pendiente_Record_Status" EntitySet="Pendiente_Record_Status" />
+          </AssociationSet>
+          <AssociationSet Name="FK__PuntosAcc__idPla__793DFFAF" Association="HelpDeskModel.FK__PuntosAcc__idPla__793DFFAF">
+            <End Role="Planteles" EntitySet="Planteles" />
+            <End Role="PuntosAcceso" EntitySet="PuntosAcceso" />
           </AssociationSet>
           <AssociationSet Name="FK_Ticket_Prioridad_de_Pendiente" Association="HelpDeskModel.FK_Ticket_Prioridad_de_Pendiente">
             <End Role="Prioridad_de_Pendiente" EntitySet="Prioridad_de_Pendiente" />
@@ -898,6 +1159,20 @@
           <Property Type="String" Name="Owner" Nullable="true" MaxLength="128" />
           <Property Type="Int32" Name="OwnerID" Nullable="false" />
         </ComplexType>
+        <EntityType Name="Accesos">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="idEstudiante" Type="Int32" Nullable="false" />
+          <Property Name="idPuntoAcceso" Type="Int32" Nullable="false" />
+          <Property Name="fechaHora" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="motivo" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="estado" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Estudiantes" Relationship="HelpDeskModel.FK__Accesos__idEstud__0697FACD" FromRole="Accesos" ToRole="Estudiantes" />
+          <NavigationProperty Name="PuntosAcceso" Relationship="HelpDeskModel.FK__Accesos__idPunto__078C1F06" FromRole="Accesos" ToRole="PuntosAcceso" />
+          <NavigationProperty Name="Notificaciones" Relationship="HelpDeskModel.FK__Notificac__idAcc__0C50D423" FromRole="Accesos" ToRole="Notificaciones" />
+        </EntityType>
         <EntityType Name="Categoria">
           <Key>
             <PropertyRef Name="id" />
@@ -927,6 +1202,35 @@
           <NavigationProperty Name="User" Relationship="HelpDeskModel.FK_Comentario_User" FromRole="Comentario" ToRole="User" />
           <NavigationProperty Name="Ticket_Comentario" Relationship="HelpDeskModel.FK_Ticket_Comentario_Comentario" FromRole="Comentario" ToRole="Ticket_Comentario" />
         </EntityType>
+        <EntityType Name="Estudiantes">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="idEscuela" Type="Int32" Nullable="false" />
+          <Property Name="nombre" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Grado" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="correoPersonal" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="correoTutor" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="telefonoPersonal" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="telefonoTutor" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="id_externo" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="fechaHoraRegistro" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Accesos" Relationship="HelpDeskModel.FK__Accesos__idEstud__0697FACD" FromRole="Estudiantes" ToRole="Accesos" />
+          <NavigationProperty Name="Planteles" Relationship="HelpDeskModel.FK__Estudiant__idEsc__7D0E9093" FromRole="Estudiantes" ToRole="Planteles" />
+          <NavigationProperty Name="EstudiantesXTutor" Relationship="HelpDeskModel.FK__Estudiant__idEst__02C769E9" FromRole="Estudiantes" ToRole="EstudiantesXTutor" />
+        </EntityType>
+        <EntityType Name="EstudiantesXTutor">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="idEstudiante" Type="Int32" Nullable="false" />
+          <Property Name="idTutor" Type="Int32" Nullable="false" />
+          <Property Name="fechaHora" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Estudiantes" Relationship="HelpDeskModel.FK__Estudiant__idEst__02C769E9" FromRole="EstudiantesXTutor" ToRole="Estudiantes" />
+          <NavigationProperty Name="Tutores" Relationship="HelpDeskModel.FK__Estudiant__idTut__03BB8E22" FromRole="EstudiantesXTutor" ToRole="Tutores" />
+        </EntityType>
         <EntityType Name="Files">
           <Key>
             <PropertyRef Name="id" />
@@ -945,6 +1249,19 @@
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="nombre" Type="String" MaxLength="60" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="Operacion" Relationship="HelpDeskModel.FK_Operacion_Modulo" FromRole="Modulo" ToRole="Operacion" />
+        </EntityType>
+        <EntityType Name="Notificaciones">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="idAcceso" Type="Int32" Nullable="false" />
+          <Property Name="idPadreTutor" Type="Int32" Nullable="false" />
+          <Property Name="fechaHora" Type="DateTime" Precision="3" />
+          <Property Name="texto" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="estado" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Accesos" Relationship="HelpDeskModel.FK__Notificac__idAcc__0C50D423" FromRole="Notificaciones" ToRole="Accesos" />
+          <NavigationProperty Name="Tutores" Relationship="HelpDeskModel.FK__Notificac__idPad__0D44F85C" FromRole="Notificaciones" ToRole="Tutores" />
         </EntityType>
         <EntityType Name="Operacion">
           <Key>
@@ -1012,6 +1329,20 @@
           <NavigationProperty Name="Pendiente" Relationship="HelpDeskModel.FK_Pendiente_Record_Status_Pendiente" FromRole="Pendiente_Record_Status" ToRole="Pendiente" />
           <NavigationProperty Name="Status" Relationship="HelpDeskModel.FK_Pendiente_Record_Status_Status" FromRole="Pendiente_Record_Status" ToRole="Status" />
         </EntityType>
+        <EntityType Name="Planteles">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="nombre" Type="String" Nullable="false" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="telefono" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="direccion" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="administrador" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="director" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="FechaHoraRegistro" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Estudiantes" Relationship="HelpDeskModel.FK__Estudiant__idEsc__7D0E9093" FromRole="Planteles" ToRole="Estudiantes" />
+          <NavigationProperty Name="PuntosAcceso" Relationship="HelpDeskModel.FK__PuntosAcc__idPla__793DFFAF" FromRole="Planteles" ToRole="PuntosAcceso" />
+        </EntityType>
         <EntityType Name="Prioridad_de_Pendiente">
           <Key>
             <PropertyRef Name="id" />
@@ -1022,6 +1353,22 @@
           <Property Name="clave" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="Pendiente" Relationship="HelpDeskModel.FK_Pendiente_Prioridad_de_Pendiente" FromRole="Prioridad_de_Pendiente" ToRole="Pendiente" />
           <NavigationProperty Name="Ticket" Relationship="HelpDeskModel.FK_Ticket_Prioridad_de_Pendiente" FromRole="Prioridad_de_Pendiente" ToRole="Ticket" />
+        </EntityType>
+        <EntityType Name="PuntosAcceso">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="idPlantel" Type="Int32" Nullable="false" />
+          <Property Name="nombre" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="ubicacion" Type="String" MaxLength="600" FixedLength="false" Unicode="true" />
+          <Property Name="FechaHoraInstalacion" Type="DateTime" Precision="3" />
+          <Property Name="estado" Type="Boolean" />
+          <Property Name="apiServer" Type="String" Nullable="false" MaxLength="400" FixedLength="false" Unicode="true" />
+          <Property Name="usuario" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="password" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Accesos" Relationship="HelpDeskModel.FK__Accesos__idPunto__078C1F06" FromRole="PuntosAcceso" ToRole="Accesos" />
+          <NavigationProperty Name="Planteles" Relationship="HelpDeskModel.FK__PuntosAcc__idPla__793DFFAF" FromRole="PuntosAcceso" ToRole="Planteles" />
         </EntityType>
         <EntityType Name="Roll">
           <Key>
@@ -1141,6 +1488,18 @@
           <NavigationProperty Name="Files" Relationship="HelpDeskModel.FK_Tickets_Files_Files" FromRole="Tickets_Files" ToRole="Files" />
           <NavigationProperty Name="Ticket" Relationship="HelpDeskModel.FK_Tickets_Files_Ticket" FromRole="Tickets_Files" ToRole="Ticket" />
         </EntityType>
+        <EntityType Name="Tutores">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Nombre" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="correo" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="telefono" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="id_externo" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="EstudiantesXTutor" Relationship="HelpDeskModel.FK__Estudiant__idTut__03BB8E22" FromRole="Tutores" ToRole="EstudiantesXTutor" />
+          <NavigationProperty Name="Notificaciones" Relationship="HelpDeskModel.FK__Notificac__idPad__0D44F85C" FromRole="Tutores" ToRole="Notificaciones" />
+        </EntityType>
         <EntityType Name="User">
           <Key>
             <PropertyRef Name="id" />
@@ -1163,19 +1522,55 @@
             <PropertyRef Name="id" />
           </Key>
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="nombre" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="email" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="password" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="nombre" Type="String" MaxLength="80" FixedLength="false" Unicode="false" />
+          <Property Name="email" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="password" Type="String" MaxLength="80" FixedLength="false" Unicode="false" />
           <Property Name="createdAt" Type="DateTime" Precision="0" />
           <Property Name="updateAt" Type="DateTime" Precision="0" />
           <Property Name="fecha_nacimeinto" Type="DateTime" Precision="3" />
-          <Property Name="Cel" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Género" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Estado" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Cel" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="Género" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="Estado" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
           <Property Name="Foto_usuario" Type="Binary" MaxLength="Max" FixedLength="false" />
           <Property Name="id_User" Type="Int32" Nullable="false" />
           <NavigationProperty Name="User" Relationship="HelpDeskModel.FK_usr_profile_User" FromRole="usr_profile" ToRole="User" />
         </EntityType>
+        <Association Name="FK__Accesos__idEstud__0697FACD">
+          <End Type="HelpDeskModel.Estudiantes" Role="Estudiantes" Multiplicity="1" />
+          <End Type="HelpDeskModel.Accesos" Role="Accesos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Estudiantes">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Accesos">
+              <PropertyRef Name="idEstudiante" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Accesos__idPunto__078C1F06">
+          <End Type="HelpDeskModel.PuntosAcceso" Role="PuntosAcceso" Multiplicity="1" />
+          <End Type="HelpDeskModel.Accesos" Role="Accesos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PuntosAcceso">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Accesos">
+              <PropertyRef Name="idPuntoAcceso" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Notificac__idAcc__0C50D423">
+          <End Type="HelpDeskModel.Accesos" Role="Accesos" Multiplicity="1" />
+          <End Type="HelpDeskModel.Notificaciones" Role="Notificaciones" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Accesos">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Notificaciones">
+              <PropertyRef Name="idAcceso" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Ticket_Categoria">
           <End Type="HelpDeskModel.Categoria" Role="Categoria" Multiplicity="0..1" />
           <End Type="HelpDeskModel.Ticket" Role="Ticket" Multiplicity="*" />
@@ -1224,6 +1619,42 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK__Estudiant__idEsc__7D0E9093">
+          <End Type="HelpDeskModel.Planteles" Role="Planteles" Multiplicity="1" />
+          <End Type="HelpDeskModel.Estudiantes" Role="Estudiantes" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Planteles">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Estudiantes">
+              <PropertyRef Name="idEscuela" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Estudiant__idEst__02C769E9">
+          <End Type="HelpDeskModel.Estudiantes" Role="Estudiantes" Multiplicity="1" />
+          <End Type="HelpDeskModel.EstudiantesXTutor" Role="EstudiantesXTutor" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Estudiantes">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="EstudiantesXTutor">
+              <PropertyRef Name="idEstudiante" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Estudiant__idTut__03BB8E22">
+          <End Type="HelpDeskModel.Tutores" Role="Tutores" Multiplicity="1" />
+          <End Type="HelpDeskModel.EstudiantesXTutor" Role="EstudiantesXTutor" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tutores">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="EstudiantesXTutor">
+              <PropertyRef Name="idTutor" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Pendiente_Files_Files">
           <End Type="HelpDeskModel.Files" Role="Files" Multiplicity="0..1" />
           <End Type="HelpDeskModel.Pendiente_Files" Role="Pendiente_Files" Multiplicity="*" />
@@ -1257,6 +1688,18 @@
             </Principal>
             <Dependent Role="Operacion">
               <PropertyRef Name="id_Modulo" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Notificac__idPad__0D44F85C">
+          <End Type="HelpDeskModel.Tutores" Role="Tutores" Multiplicity="1" />
+          <End Type="HelpDeskModel.Notificaciones" Role="Notificaciones" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tutores">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Notificaciones">
+              <PropertyRef Name="idPadreTutor" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1377,6 +1820,18 @@
             </Principal>
             <Dependent Role="Pendiente_Record_Status">
               <PropertyRef Name="id_Status" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__PuntosAcc__idPla__793DFFAF">
+          <End Type="HelpDeskModel.Planteles" Role="Planteles" Multiplicity="1" />
+          <End Type="HelpDeskModel.PuntosAcceso" Role="PuntosAcceso" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Planteles">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="PuntosAcceso">
+              <PropertyRef Name="idPlantel" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1530,6 +1985,18 @@
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="HelpDeskModelStoreContainer" CdmEntityContainer="HelpDesk_Entities1">
+          <EntitySetMapping Name="Accesos">
+            <EntityTypeMapping TypeName="HelpDeskModel.Accesos">
+              <MappingFragment StoreEntitySet="Accesos">
+                <ScalarProperty Name="estado" ColumnName="estado" />
+                <ScalarProperty Name="motivo" ColumnName="motivo" />
+                <ScalarProperty Name="fechaHora" ColumnName="fechaHora" />
+                <ScalarProperty Name="idPuntoAcceso" ColumnName="idPuntoAcceso" />
+                <ScalarProperty Name="idEstudiante" ColumnName="idEstudiante" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="Categoria">
             <EntityTypeMapping TypeName="HelpDeskModel.Categoria">
               <MappingFragment StoreEntitySet="Categoria">
@@ -1558,6 +2025,32 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="Estudiantes">
+            <EntityTypeMapping TypeName="HelpDeskModel.Estudiantes">
+              <MappingFragment StoreEntitySet="Estudiantes">
+                <ScalarProperty Name="fechaHoraRegistro" ColumnName="fechaHoraRegistro" />
+                <ScalarProperty Name="id_externo" ColumnName="id_externo" />
+                <ScalarProperty Name="telefonoTutor" ColumnName="telefonoTutor" />
+                <ScalarProperty Name="telefonoPersonal" ColumnName="telefonoPersonal" />
+                <ScalarProperty Name="correoTutor" ColumnName="correoTutor" />
+                <ScalarProperty Name="correoPersonal" ColumnName="correoPersonal" />
+                <ScalarProperty Name="Grado" ColumnName="Grado" />
+                <ScalarProperty Name="nombre" ColumnName="nombre" />
+                <ScalarProperty Name="idEscuela" ColumnName="idEscuela" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EstudiantesXTutor">
+            <EntityTypeMapping TypeName="HelpDeskModel.EstudiantesXTutor">
+              <MappingFragment StoreEntitySet="EstudiantesXTutor">
+                <ScalarProperty Name="fechaHora" ColumnName="fechaHora" />
+                <ScalarProperty Name="idTutor" ColumnName="idTutor" />
+                <ScalarProperty Name="idEstudiante" ColumnName="idEstudiante" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="Files">
             <EntityTypeMapping TypeName="HelpDeskModel.Files">
               <MappingFragment StoreEntitySet="Files">
@@ -1572,6 +2065,18 @@
             <EntityTypeMapping TypeName="HelpDeskModel.Modulo">
               <MappingFragment StoreEntitySet="Modulo">
                 <ScalarProperty Name="nombre" ColumnName="nombre" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Notificaciones">
+            <EntityTypeMapping TypeName="HelpDeskModel.Notificaciones">
+              <MappingFragment StoreEntitySet="Notificaciones">
+                <ScalarProperty Name="estado" ColumnName="estado" />
+                <ScalarProperty Name="texto" ColumnName="texto" />
+                <ScalarProperty Name="fechaHora" ColumnName="fechaHora" />
+                <ScalarProperty Name="idPadreTutor" ColumnName="idPadreTutor" />
+                <ScalarProperty Name="idAcceso" ColumnName="idAcceso" />
                 <ScalarProperty Name="id" ColumnName="id" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -1631,12 +2136,40 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="Planteles">
+            <EntityTypeMapping TypeName="HelpDeskModel.Planteles">
+              <MappingFragment StoreEntitySet="Planteles">
+                <ScalarProperty Name="FechaHoraRegistro" ColumnName="FechaHoraRegistro" />
+                <ScalarProperty Name="director" ColumnName="director" />
+                <ScalarProperty Name="administrador" ColumnName="administrador" />
+                <ScalarProperty Name="direccion" ColumnName="direccion" />
+                <ScalarProperty Name="telefono" ColumnName="telefono" />
+                <ScalarProperty Name="nombre" ColumnName="nombre" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="Prioridad_de_Pendiente">
             <EntityTypeMapping TypeName="HelpDeskModel.Prioridad_de_Pendiente">
               <MappingFragment StoreEntitySet="Prioridad_de_Pendiente">
                 <ScalarProperty Name="clave" ColumnName="clave" />
                 <ScalarProperty Name="Descripcion" ColumnName="Descripcion" />
                 <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PuntosAcceso">
+            <EntityTypeMapping TypeName="HelpDeskModel.PuntosAcceso">
+              <MappingFragment StoreEntitySet="PuntosAcceso">
+                <ScalarProperty Name="password" ColumnName="password" />
+                <ScalarProperty Name="usuario" ColumnName="usuario" />
+                <ScalarProperty Name="apiServer" ColumnName="apiServer" />
+                <ScalarProperty Name="estado" ColumnName="estado" />
+                <ScalarProperty Name="FechaHoraInstalacion" ColumnName="FechaHoraInstalacion" />
+                <ScalarProperty Name="ubicacion" ColumnName="ubicacion" />
+                <ScalarProperty Name="nombre" ColumnName="nombre" />
+                <ScalarProperty Name="idPlantel" ColumnName="idPlantel" />
                 <ScalarProperty Name="id" ColumnName="id" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -1737,6 +2270,17 @@
               <MappingFragment StoreEntitySet="Tickets_Files">
                 <ScalarProperty Name="id_File" ColumnName="id_File" />
                 <ScalarProperty Name="id_Ticket" ColumnName="id_Ticket" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Tutores">
+            <EntityTypeMapping TypeName="HelpDeskModel.Tutores">
+              <MappingFragment StoreEntitySet="Tutores">
+                <ScalarProperty Name="id_externo" ColumnName="id_externo" />
+                <ScalarProperty Name="telefono" ColumnName="telefono" />
+                <ScalarProperty Name="correo" ColumnName="correo" />
+                <ScalarProperty Name="Nombre" ColumnName="Nombre" />
                 <ScalarProperty Name="id" ColumnName="id" />
               </MappingFragment>
             </EntityTypeMapping>
