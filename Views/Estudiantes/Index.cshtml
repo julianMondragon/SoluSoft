@@ -1,0 +1,66 @@
+﻿@model List<TAS360.Models.ViewModel.HikvisionEstudiantesViewModel>
+@{
+    ViewBag.Title = "Estudiantes";
+    Layout = "~/Views/Shared/_Layout3.cshtml";
+}
+
+<div class="jumbotron">
+    <h1 class="display-4">Estudiantes</h1>
+    <p class="lead">Lista de estudiantes registrados.</p>
+    <p>
+        <a href="@Url.Action("Create", "Estudiantes")" class="btn btn-success">Agregar Estudiante »</a>
+    </p>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">Listado de Estudiantes</h3>
+    </div>
+
+    <div class="panel-body">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Escuela</th>
+                    <th>Nombre</th>
+                    <th>Grado</th>
+                    <th>Correo Personal</th>
+                    <th>Correo Tutor</th>
+                    @*<th>Teléfono Personal</th>*@
+                    <th>Teléfono Tutor</th>
+                    <th>ID Externo</th>
+                    <th>Fecha Registro</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.id</td>
+                        <td>@item.NombrePlantel</td>
+                        <td>@item.Nombre</td>
+                        <td>@item.Grado</td>
+                        <td>@item.CorreoPersonal</td>
+                        <td>@item.CorreoTutor</td>
+                        @*<td>@item.TelefonoPersonal</td>*@
+                        <td>@item.TelefonoTutor</td>
+                        <td>@item.IdExterno</td>
+                        <td>@item.FechaHoraRegistro.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td>
+                            <a href="@Url.Action("Edit", "Estudiantes", new { id = item.id })" class="btn btn-primary btn-sm">
+                                <i class="glyphicon glyphicon-edit"></i> Editar
+                            </a>
+                            <br>
+                            <a style="margin: 3px 0px 0px 0px" href="@Url.Action("Delete", "Estudiantes", new { id = item.id })" class="btn btn-danger btn-sm"
+                               onclick="return confirm('¿Estás seguro de eliminar este estudiante?');">
+                                <i class="glyphicon glyphicon-trash"></i> Eliminar
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

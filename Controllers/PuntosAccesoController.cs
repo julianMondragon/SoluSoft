@@ -54,7 +54,7 @@ namespace TAS360.Controllers
                 ViewBag.idPlantel = db.Planteles.Select(p => new SelectListItem
                 {
                     Value = p.id.ToString(),
-                    Text = p.id.ToString()
+                    Text = p.nombre.ToString()
                 }).ToList();
             }
 
@@ -77,7 +77,7 @@ namespace TAS360.Controllers
                     ViewBag.idPlantel = db.Planteles.Select(p => new SelectListItem
                     {
                         Value = p.id.ToString(),
-                        Text = p.id.ToString()
+                        Text = p.nombre.ToString()
                     }).ToList();
                 }
                 return View(model); // Vuelve a la vista con errores de validación

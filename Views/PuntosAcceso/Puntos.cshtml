@@ -1,0 +1,51 @@
+﻿@model List<TAS360.Models.ViewModel.HikvisionPuntosAccesoViewModel>
+@{
+    ViewBag.Title = "Puntos de Acceso";
+    Layout = "~/Views/Shared/_Layout3.cshtml";
+}
+
+<div class="jumbotron">
+    <h1 class="display-4">Puntos de Acceso</h1>
+    <p class="lead">Lista de puntos para el plantel seleccionado</p>
+    <p>
+       <a href="@Url.Action("Create", "PuntosAcceso")" class="btn btn-success">Agregar Acceso »</a>
+    </p>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">Listado de Puntos de Acceso</h3>
+    </div>
+
+    <div class="panel-body">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    @*<th>ID Plantel</th>*@
+                    <th>Nombre</th>
+                    <th>Ubicación</th>
+                    <th>Fecha Instalación</th>
+                    <th>Estado</th>
+                    <th>API Server</th>
+                    <th>Usuario</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var p in Model)
+                {
+                    <tr>
+                        <td>@p.id</td>
+                        @*<td>@p.idPlantel</td>*@
+                        <td>@p.nombre</td>
+                        <td>@p.ubicacion</td>
+                        <td>@(p.FechaHoraInstalacion?.ToString("dd/MM/yyyy HH:mm"))</td>
+                        <td>@(p.estado ? "Activo" : "Inactivo")</td>
+                        <td>@p.apiServer</td>
+                        <td>@p.usuario</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -25,11 +25,16 @@
                     @Html.AntiForgeryToken()
 
                     <div class="form-group">
-                        @Html.LabelFor(m => m.idPlantel, htmlAttributes: new { @class = "col-md-4 control-label" })
-                        <div class="col-md-8">
-                            @Html.DropDownList("idPlantel", new SelectList(ViewBag.idPlantel, "Value", "Value"), "Seleccione un Plantel", new { @class = "form-control" })
-                            @Html.ValidationMessageFor(m => m.idPlantel, "", new { @class = "text-danger" })
-                        </div>
+                      @Html.LabelFor(m => m.idPlantel, htmlAttributes: new { @class = "col-md-4 control-label" })
+                       <div class="col-md-8">
+                        @Html.DropDownListFor(
+                            m => m.idPlantel,
+                            (IEnumerable<SelectListItem>)ViewBag.idPlantel,
+                            "Seleccione un Plantel",
+                            new { @class = "form-control" }
+                        )
+                        @Html.ValidationMessageFor(m => m.idPlantel, "", new { @class = "text-danger" })
+                       </div>
                     </div>
 
                     <div class="form-group">

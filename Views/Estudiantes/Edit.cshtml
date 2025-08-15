@@ -1,0 +1,119 @@
+﻿@model TAS360.Models.ViewModel.HikvisionEstudiantesViewModel
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_Layout3.cshtml";
+}
+
+<div class="jumbotron">
+    <h1 class="display-4">Editar Estudiante</h1>
+    <p class="lead">Actualiza la información del estudiante registrado en el sistema.</p>
+</div>
+
+<div class="row">
+    <div class="col-md-8 col-md-offset-2">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <i class="glyphicon glyphicon-pencil"></i> Formulario de Edición
+                </h3>
+            </div>
+            <div class="panel-body">
+                @using (Html.BeginForm("Edit", "Estudiantes", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.HiddenFor(m => m.id)
+
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.IdEscuela, htmlAttributes: new { @class = "col-md-4 control-label" })
+                        <div class="col-md-8">
+                            @Html.DropDownListFor(
+                                m => m.IdEscuela,
+                                (IEnumerable<SelectListItem>)ViewBag.idEscuela,
+                                "Seleccione una Escuela",
+                                new { @class = "form-control" }
+                            )
+                            @Html.ValidationMessageFor(m => m.IdEscuela, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Nombre, htmlAttributes: new { @class = "col-md-4 control-label" })
+                        <div class="col-md-8">
+                            @Html.TextBoxFor(m => m.Nombre, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.Nombre, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Grado, htmlAttributes: new { @class = "col-md-4 control-label" })
+                        <div class="col-md-8">
+                            @Html.TextBoxFor(m => m.Grado, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.Grado, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.CorreoPersonal, htmlAttributes: new { @class = "col-md-4 control-label" })
+                        <div class="col-md-8">
+                            @Html.TextBoxFor(m => m.CorreoPersonal, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.CorreoPersonal, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.CorreoTutor, htmlAttributes: new { @class = "col-md-4 control-label" })
+                        <div class="col-md-8">
+                            @Html.TextBoxFor(m => m.CorreoTutor, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.CorreoTutor, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.TelefonoPersonal, htmlAttributes: new { @class = "col-md-4 control-label" })
+                        <div class="col-md-8">
+                            @Html.TextBoxFor(m => m.TelefonoPersonal, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.TelefonoPersonal, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.TelefonoTutor, htmlAttributes: new { @class = "col-md-4 control-label" })
+                        <div class="col-md-8">
+                            @Html.TextBoxFor(m => m.TelefonoTutor, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.TelefonoTutor, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.IdExterno, htmlAttributes: new { @class = "col-md-4 control-label" })
+                        <div class="col-md-8">
+                            @Html.TextBoxFor(m => m.IdExterno, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.IdExterno, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.FechaHoraRegistro, htmlAttributes: new { @class = "col-md-4 control-label" })
+                        <div class="col-md-8">
+                            @Html.TextBoxFor(m => m.FechaHoraRegistro, "{0:yyyy-MM-ddTHH:mm}", new { @class = "form-control", type = "datetime-local" })
+                            @Html.ValidationMessageFor(m => m.FechaHoraRegistro, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-offset-4 col-md-8">
+                            <button type="submit" class="btn btn-primary">Actualizar</button>
+                            @Html.ActionLink("Cancelar", "Index", null, new { @class = "btn btn-default" })
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
+
