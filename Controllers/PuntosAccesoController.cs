@@ -129,7 +129,7 @@ namespace TAS360.Controllers
                     nombre = entity.nombre,
                     ubicacion = entity.ubicacion,
                     FechaHoraInstalacion = entity.FechaHoraInstalacion,
-                    //estado = entity.estado,
+                    estado = entity.estado ?? true,
                     apiServer = entity.apiServer,
                     usuario = entity.usuario,
                     password = entity.password

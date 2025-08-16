@@ -36,7 +36,7 @@ namespace TAS360.Controllers
                              TelefonoPersonal = p.telefonoPersonal,
                              TelefonoTutor = p.telefonoTutor,
                              IdExterno = p.id_externo,
-                             //FechaHoraRegistro = p.FechaHoraRegistro
+                             FechaHoraRegistro = p.fechaHoraRegistro ?? DateTime.Now
                          }).ToList();
             }
             return View(lista);
@@ -94,7 +94,7 @@ namespace TAS360.Controllers
                     telefonoPersonal = model.TelefonoPersonal,
                     telefonoTutor = model.TelefonoTutor,
                     id_externo = model.IdExterno,
-                    //fechaHoraRegistro = model.fechaHoraRegistro ?? DateTime.Now
+                    fechaHoraRegistro = model.FechaHoraRegistro 
                 };
 
                 db.Estudiantes.Add(entity);
@@ -127,7 +127,7 @@ namespace TAS360.Controllers
                     TelefonoPersonal = entity.telefonoPersonal,
                     TelefonoTutor = entity.telefonoTutor,
                     IdExterno = entity.id_externo,
-                    //FechaHoraRegistro = entity.fechaHoraRegistro
+                    FechaHoraRegistro = entity.fechaHoraRegistro ?? DateTime.Now
                 };
 
                 // Aquí llenamos el ViewBag con la lista de planteles
@@ -179,7 +179,7 @@ namespace TAS360.Controllers
                 entity.telefonoPersonal = model.TelefonoPersonal;
                 entity.telefonoTutor = model.TelefonoTutor;
                 entity.id_externo = model.IdExterno;
-                //entity.fechaHoraRegistro = model.FechaHoraRegistro ?? DateTime.Now;
+                entity.fechaHoraRegistro = model.FechaHoraRegistro;
 
                 try
                 {
