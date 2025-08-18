@@ -157,18 +157,21 @@
     <Compile Include="Controllers\DanloadController.cs" />
     <Compile Include="Controllers\DocumentacionController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
+    <Compile Include="Controllers\EstudiantesController.cs" />
     <Compile Include="Controllers\HikVisionController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\logoutController.cs" />
     <Compile Include="Controllers\LSAController.cs" />
     <Compile Include="Controllers\PendientesController.cs" />
     <Compile Include="Controllers\PlantelController.cs" />
+    <Compile Include="Controllers\PuntosAccesoController.cs" />
     <Compile Include="Controllers\ReportsController.cs" />
     <Compile Include="Controllers\Rice_Lake920iController.cs" />
     <Compile Include="Controllers\Roles_and_PrivilegeController.cs" />
     <Compile Include="Controllers\TablaCubController.cs" />
     <Compile Include="Controllers\TerminalController.cs" />
     <Compile Include="Controllers\TicketsController.cs" />
+    <Compile Include="Controllers\TutorController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\ProfileController.cs" />
     <Compile Include="Controllers\WebAPIPemexController.cs" />
@@ -436,6 +439,9 @@
     <Compile Include="Models\ViewModel\G_TicketsByCategoriaViewModel.cs" />
     <Compile Include="Models\ViewModel\G_TicketsByStatusViewModel.cs" />
     <Compile Include="Models\ViewModel\G_TicketsByTerminalViewModel.cs" />
+    <Compile Include="Models\ViewModel\HikvisionEstudiantesViewModel.cs" />
+    <Compile Include="Models\ViewModel\HikvisionPuntosAccesoViewModel.cs" />
+    <Compile Include="Models\ViewModel\HikvisionTutorViewModel.cs" />
     <Compile Include="Models\ViewModel\HikvisionUserViewModel.cs" />
     <Compile Include="Models\ViewModel\HikVisionViewModel.cs" />
     <Compile Include="Models\ViewModel\ListUsuarioViewModel.cs" />
@@ -1016,6 +1022,15 @@
     <Content Include="Views\Plantel\Index.cshtml" />
     <Content Include="Views\Plantel\Create.cshtml" />
     <Content Include="Views\Plantel\Edit.cshtml" />
+    <Content Include="Views\PuntosAcceso\Create.cshtml" />
+    <Content Include="Views\PuntosAcceso\Edit.cshtml" />
+    <Content Include="Views\PuntosAcceso\Index.cshtml" />
+    <Content Include="Views\Estudiantes\Create.cshtml" />
+    <Content Include="Views\Estudiantes\Edit.cshtml" />
+    <Content Include="Views\Estudiantes\Index.cshtml" />
+    <Content Include="Views\Tutor\Create.cshtml" />
+    <Content Include="Views\Tutor\Edit.cshtml" />
+    <Content Include="Views\Tutor\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
