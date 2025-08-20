@@ -442,6 +442,7 @@
     <Compile Include="Models\ViewModel\HikvisionEstudiantesViewModel.cs" />
     <Compile Include="Models\ViewModel\HikvisionPuntosAccesoViewModel.cs" />
     <Compile Include="Models\ViewModel\HikvisionTutorViewModel.cs" />
+    <Compile Include="Models\ViewModel\TutorEstudianteViewModel.cs" />
     <Compile Include="Models\ViewModel\HikvisionUserViewModel.cs" />
     <Compile Include="Models\ViewModel\HikVisionViewModel.cs" />
     <Compile Include="Models\ViewModel\ListUsuarioViewModel.cs" />
@@ -1031,6 +1032,8 @@
     <Content Include="Views\Tutor\Create.cshtml" />
     <Content Include="Views\Tutor\Edit.cshtml" />
     <Content Include="Views\Tutor\Index.cshtml" />
+    <Content Include="Views\Tutor\Asesorias.cshtml" />
+    <Content Include="Views\Tutor\CreateAsesorias.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

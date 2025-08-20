@@ -15,25 +15,36 @@ namespace TAS360.Controllers
         /// </summary>
         /// <tipe>GET</tipe>
         /// <returns>List<HikvisionEstudiantesViewModel></returns>
-        public ActionResult Index()
+        public ActionResult Index(string searchString)
         {
             List<HikvisionTutorViewModel> lista;
 
             using (var db = new HelpDesk_Entities1())
             {
-                lista = (from p in db.Tutores
-                         select new HikvisionTutorViewModel
-                         {
-                             id = p.id,
-                             Nombre = p.Nombre,
-                             Correo = p.correo,
-                             Telefono = p.telefono,
-                             IdExterno = p.id_externo,
-                             //FechaHoraRegistro = p.FechaHoraRegistro
-                         }).ToList();
+                var query = from p in db.Tutores
+                            orderby p.id descending
+                            select new HikvisionTutorViewModel
+                            {
+                                id = p.id,
+                                Nombre = p.Nombre,
+                                Correo = p.correo,
+                                Telefono = p.telefono,
+                                IdExterno = p.id_externo
+                            };
+                if (!String.IsNullOrEmpty(searchString))
+                {
+                    query = query.Where(t =>
+                        t.Nombre.Contains(searchString) ||
+                        t.Correo.Contains(searchString) ||
+                        t.Telefono.Contains(searchString) ||
+                        t.IdExterno.Contains(searchString)
+                    );
+                }
+                lista = query.ToList();
             }
             return View(lista);
         }
+
 
         /// <summary>
         /// Muestra el formulario para crear un nuevo EStudiantes,
@@ -141,8 +152,6 @@ namespace TAS360.Controllers
                 return View(model);
             }
         }
-
-
         // GET: Tutor/Delete/5
         public ActionResult Delete(int id)
         {
@@ -164,5 +173,100 @@ namespace TAS360.Controllers
                 return View();
             }
         }
+
+        public ActionResult Asesorias()
+        {
+            using (var db = new HelpDesk_Entities1())
+            {
+                var lista = (from rel in db.EstudiantesXTutor
+                             join e in db.Estudiantes on rel.idEstudiante equals e.id
+                             join t in db.Tutores on rel.idTutor equals t.id
+                             select new TutorEstudianteViewModel
+                             {
+                                 Id = rel.id,
+                                 Tutor = t.id,
+                                 N_Tutor = t.Nombre,
+                                 Estudiante = e.id,
+                                 N_Estudiante = e.nombre,
+                                 fechaHora = rel.fechaHora
+                             })
+                             .OrderByDescending(x => x.fechaHora)
+                             .ToList();
+
+                return View(lista);
+            }
+        }
+
+        /// <summary>
+        /// Muestra el formulario para crear un nuevo EStudiantes,
+        /// cargando la lista de planteles disponibles en un dropdown.
+        /// </summary>
+        /// <type>GET</type>
+        /// <returns>HikvisionEstudiantesViewModel</returns>
+        public ActionResult CreateAsesorias(int? idTutor)
+        {
+            using (var db = new HelpDesk_Entities1())
+            {
+                // Preseleccionamos tutor si viene idTutor
+                ViewBag.Tutores = new SelectList(db.Tutores.ToList(), "id", "Nombre", idTutor);
+                ViewBag.Estudiantes = new SelectList(db.Estudiantes.ToList(), "id", "Nombre");
+            }
+
+            var model = new TutorEstudianteViewModel
+            {
+                Tutor = idTutor ?? 0, // Asignamos el tutor recibido
+                fechaHora = DateTime.Now
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult CreateAsesorias(TutorEstudianteViewModel model)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    using (var db = new HelpDesk_Entities1())
+                    {
+                        ViewBag.Tutores = new SelectList(db.Tutores.ToList(), "id", "Nombre", model.Tutor);
+                        ViewBag.Estudiantes = new SelectList(db.Estudiantes.ToList(), "id", "Nombre", model.Estudiante);
+                    }
+                    return View(model);
+                }
+
+                using (var db = new HelpDesk_Entities1())
+                {
+                    var entity = new EstudiantesXTutor
+                    {
+                        idTutor = model.Tutor,
+                        idEstudiante = model.Estudiante,
+                        fechaHora = model.fechaHora ?? DateTime.Now
+                    };
+                    db.EstudiantesXTutor.Add(entity);
+                    db.SaveChanges();
+                }
+
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                using (var db = new HelpDesk_Entities1())
+                {
+                    ViewBag.Tutores = new SelectList(db.Tutores.ToList(), "id", "Nombre", model.Tutor);
+                    ViewBag.Estudiantes = new SelectList(db.Estudiantes.ToList(), "id", "Nombre", model.Estudiante);
+                }
+                ModelState.AddModelError("", "Error: " + ex.Message);
+                return View(model);
+            }
+        }
+
+
+
+
+
+
+
     }
 }

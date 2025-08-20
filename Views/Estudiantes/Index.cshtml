@@ -13,8 +13,19 @@
 </div>
 
 <div class="panel panel-default">
-    <div class="panel-heading">
-        <h3 class="panel-title">Listado de Estudiantes</h3>
+    <div class="panel-heading clearfix">
+        <h3 class="panel-title pull-left" style="padding-top: 7.5px;">Listado de estudiantes</h3>
+        <div class="input-group pull-right" style="width: 300px;">
+            @using (Html.BeginForm("Index", "Estudiantes", FormMethod.Get))
+            {
+                <div class="input-group">
+                    <input type="text" name="searchString" class="form-control" placeholder="Búsqueda de Estudiantes..." value="@Request.QueryString["searchString"]" />
+                    <span class="input-group-btn">
+                        <button class="btn btn-primary" type="submit">Buscar</button>
+                    </span>
+                </div>
+            }
+        </div>
     </div>
 
     <div class="panel-body">
@@ -26,9 +37,9 @@
                     <th>Nombre</th>
                     <th>Grado</th>
                     <th>Correo Personal</th>
-                    <th>Correo Tutor</th>
+                    @*<th>Correo Tutor</th>*@
                     @*<th>Teléfono Personal</th>*@
-                    <th>Teléfono Tutor</th>
+                    @*<th>Teléfono Tutor</th>*@
                     <th>ID Externo</th>
                     <th>Fecha Registro</th>
                     <th>Acciones</th>
@@ -43,9 +54,9 @@
                         <td>@item.Nombre</td>
                         <td>@item.Grado</td>
                         <td>@item.CorreoPersonal</td>
-                        <td>@item.CorreoTutor</td>
+                        @*<td>@item.CorreoTutor</td>*@
                         @*<td>@item.TelefonoPersonal</td>*@
-                        <td>@item.TelefonoTutor</td>
+                        @*<td>@item.TelefonoTutor</td>*@
                         <td>@item.IdExterno</td>
                         <td>@item.FechaHoraRegistro.ToString("dd/MM/yyyy HH:mm")</td>
                         <td>

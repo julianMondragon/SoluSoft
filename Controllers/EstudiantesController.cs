@@ -15,32 +15,49 @@ namespace TAS360.Controllers
         /// </summary>
         /// <tipe>GET</tipe>
         /// <returns>List<HikvisionEstudiantesViewModel></returns>
-        public ActionResult Index()
+        public ActionResult Index(string searchString)
         {
             List<HikvisionEstudiantesViewModel> lista;
 
             using (var db = new HelpDesk_Entities1())
             {
-                lista = (from p in db.Estudiantes
-                         join pl in db.Planteles on p.idEscuela equals pl.id
-                         orderby p.id descending
-                         select new HikvisionEstudiantesViewModel
-                         {
-                             id = p.id,
-                             IdEscuela = p.idEscuela,
-                             NombrePlantel = pl.nombre,
-                             Nombre = p.nombre,
-                             Grado = p.Grado,
-                             CorreoPersonal = p.correoPersonal,
-                             CorreoTutor = p.correoTutor,
-                             TelefonoPersonal = p.telefonoPersonal,
-                             TelefonoTutor = p.telefonoTutor,
-                             IdExterno = p.id_externo,
-                             FechaHoraRegistro = p.fechaHoraRegistro ?? DateTime.Now
-                         }).ToList();
+                var query = from p in db.Estudiantes
+                            join pl in db.Planteles on p.idEscuela equals pl.id
+                            orderby p.id descending
+                            select new HikvisionEstudiantesViewModel
+                            {
+                                id = p.id,
+                                IdEscuela = p.idEscuela,
+                                NombrePlantel = pl.nombre,
+                                Nombre = p.nombre,
+                                Grado = p.Grado,
+                                CorreoPersonal = p.correoPersonal,
+                                CorreoTutor = p.correoTutor,
+                                TelefonoPersonal = p.telefonoPersonal,
+                                TelefonoTutor = p.telefonoTutor,
+                                IdExterno = p.id_externo,
+                                FechaHoraRegistro = p.fechaHoraRegistro ?? DateTime.Now
+                            };
+
+                // 🔍 Si viene un valor de búsqueda, filtramos
+                if (!String.IsNullOrEmpty(searchString))
+                {
+                    query = query.Where(e =>
+                        e.Nombre.Contains(searchString) ||
+                        e.NombrePlantel.Contains(searchString) ||
+                        e.CorreoPersonal.Contains(searchString) ||
+                        e.CorreoTutor.Contains(searchString) ||
+                        e.TelefonoPersonal.Contains(searchString) ||
+                        e.TelefonoTutor.Contains(searchString)
+                    );
+                }
+
+                lista = query.ToList();
             }
+
             return View(lista);
         }
+
         /// <summary>
         /// Muestra el formulario para crear un nuevo EStudiantes,
         /// cargando la lista de planteles disponibles en un dropdown.

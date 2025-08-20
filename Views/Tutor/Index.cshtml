@@ -9,12 +9,24 @@
     <p class="lead">Lista de Tutores registrados.</p>
     <p>
         <a href="@Url.Action("Create", "Tutor")" class="btn btn-success">Agregar Tutor »</a>
+        <a href="@Url.Action("Asesorias", "Tutor")" class="btn btn-info">Asesorias</a>
     </p>
 </div>
 
 <div class="panel panel-default">
-    <div class="panel-heading">
-        <h3 class="panel-title">Listado de Estudiantes</h3>
+    <div class="panel-heading clearfix">
+        <h3 class="panel-title pull-left" style="padding-top: 7.5px;">Listado de Tutores</h3>
+        <div class="input-group pull-right" style="width: 300px;">
+            @using (Html.BeginForm("Index", "Tutor", FormMethod.Get))
+            {
+                <div class="input-group">
+                    <input type="text" name="searchString" class="form-control" placeholder="Búsqueda de tutor..." value="@Request.QueryString["searchString"]" />
+                    <span class="input-group-btn">
+                        <button class="btn btn-primary" type="submit">Buscar</button>
+                    </span>
+                </div>
+            }
+        </div>
     </div>
 
     <div class="panel-body">
@@ -36,18 +48,18 @@
                         <td>@item.id</td>
                         <td>@item.Nombre</td>
                         <td>@item.Correo</td>
-                        @*<td>@item.TelefonoPersonal</td>*@
                         <td>@item.Telefono</td>
                         <td>@item.IdExterno</td>
                         <td>
                             <a href="@Url.Action("Edit", "Tutor", new { id = item.id })" class="btn btn-primary btn-sm">
                                 <i class="glyphicon glyphicon-edit"></i> Editar
                             </a>
-                            <br>
+
                             <a style="margin: 3px 0px 0px 0px" href="@Url.Action("Delete", "Estudiantes", new { id = item.id })" class="btn btn-danger btn-sm"
                                onclick="return confirm('¿Estás seguro de eliminar este estudiante?');">
                                 <i class="glyphicon glyphicon-trash"></i> Eliminar
                             </a>
+                            <a href="@Url.Action("CreateAsesorias", "Tutor", new { idTutor = item.id })" class="btn btn-info">Asignaciones »</a>
                         </td>
                     </tr>
                 }

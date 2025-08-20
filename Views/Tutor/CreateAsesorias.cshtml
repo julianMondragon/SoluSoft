@@ -1,0 +1,63 @@
+﻿@model TAS360.Models.ViewModel.TutorEstudianteViewModel
+@{
+    ViewBag.Title = "CreateAsesorias";
+    Layout = "~/Views/Shared/_Layout3.cshtml";
+}
+
+<div class="jumbotron">
+    <h1 class="display-4">Nueva Asesoría</h1>
+    <p class="lead">Registro de asesorías en el sistema.</p>
+</div>
+
+<div class="row">
+    <div class="col-md-8 col-md-offset-2">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <i class="glyphicon glyphicon-education"></i> Formulario de Registro de Asesorías
+                </h3>
+            </div>
+            <div class="panel-body">
+                @using (Html.BeginForm("CreateAsesorias", "Tutor", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                {
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                    <div class="form-group">
+                        @Html.Label("Tutor", new { @class = "col-md-4 control-label" })
+                        <div class="col-md-8">
+                            @Html.DropDownListFor(m => m.Tutor, (SelectList)ViewBag.Tutores, "Seleccione un tutor", new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.Tutor, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.Label("Estudiante", new { @class = "col-md-4 control-label" })
+                        <div class="col-md-8">
+                            @Html.DropDownListFor(m => m.Estudiante, (SelectList)ViewBag.Estudiantes, "Seleccione un estudiante", new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.Estudiante, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.fechaHora, new { @class = "col-md-4 control-label" })
+                        <div class="col-md-8">
+                            @Html.TextBoxFor(m => m.fechaHora, "{0:yyyy-MM-ddTHH:mm}", new { @class = "form-control", type = "datetime-local" })
+                            @Html.ValidationMessageFor(m => m.fechaHora, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-offset-4 col-md-8">
+                            <button type="submit" class="btn btn-success">Guardar</button>
+                            @Html.ActionLink("Cancelar", "Index", null, new { @class = "btn btn-default" })
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
