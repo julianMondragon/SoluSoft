@@ -1034,6 +1034,7 @@
     <Content Include="Views\Tutor\Index.cshtml" />
     <Content Include="Views\Tutor\Asesorias.cshtml" />
     <Content Include="Views\Tutor\CreateAsesorias.cshtml" />
+    <Content Include="Views\Tutor\EditAsesorias.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -39,7 +39,6 @@ namespace TAS360.Controllers
                                 FechaHoraRegistro = p.fechaHoraRegistro ?? DateTime.Now
                             };
 
-                // 🔍 Si viene un valor de búsqueda, filtramos
                 if (!String.IsNullOrEmpty(searchString))
                 {
                     query = query.Where(e =>
@@ -214,26 +213,33 @@ namespace TAS360.Controllers
 
 
 
-        // GET: Estudiantes/Delete/5
+        /// <summary>
+        /// Elimina un tutor directamente desde el listado
+        /// </summary>
+        /// <param name="id">Id del tutor</param>
+        /// <returns>Redirección al Index</returns>
         public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: Estudiantes/Delete/5
-        [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
         {
             try
             {
-                // TODO: Add delete logic here
+                using (var db = new HelpDesk_Entities1())
+                {
+                    var Estudi = db.Estudiantes.FirstOrDefault(t => t.id == id);
+                    if (Estudi == null)
+                        return HttpNotFound();
+
+                    db.Estudiantes.Remove(Estudi);
+                    db.SaveChanges();
+                }
 
                 return RedirectToAction("Index");
             }
-            catch
+            catch (Exception ex)
             {
-                return View();
+                TempData["Error"] = "Error al eliminar: " + ex.Message;
+                return RedirectToAction("Index");
             }
         }
+
     }
 }

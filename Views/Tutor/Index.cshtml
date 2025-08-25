@@ -9,7 +9,7 @@
     <p class="lead">Lista de Tutores registrados.</p>
     <p>
         <a href="@Url.Action("Create", "Tutor")" class="btn btn-success">Agregar Tutor »</a>
-        <a href="@Url.Action("Asesorias", "Tutor")" class="btn btn-info">Asesorias</a>
+        <a href="@Url.Action("Asesorias", "Tutor")" class="btn btn-info">Asignaciones »</a>
     </p>
 </div>
 
@@ -55,11 +55,11 @@
                                 <i class="glyphicon glyphicon-edit"></i> Editar
                             </a>
 
-                            <a style="margin: 3px 0px 0px 0px" href="@Url.Action("Delete", "Estudiantes", new { id = item.id })" class="btn btn-danger btn-sm"
-                               onclick="return confirm('¿Estás seguro de eliminar este estudiante?');">
+                            <a style="margin: 3px 0px 0px 0px" href="@Url.Action("Delete", "Tutor", new { id = item.id })" class="btn btn-danger btn-sm"
+                               onclick="return confirm('¿Estás seguro de eliminar este Tutor?');">
                                 <i class="glyphicon glyphicon-trash"></i> Eliminar
                             </a>
-                            <a href="@Url.Action("CreateAsesorias", "Tutor", new { idTutor = item.id })" class="btn btn-info">Asignaciones »</a>
+                            <a href="@Url.Action("CreateAsesorias", "Tutor", new { idTutor = item.id })" class="btn btn-info">Asignar »</a>
                         </td>
                     </tr>
                 }

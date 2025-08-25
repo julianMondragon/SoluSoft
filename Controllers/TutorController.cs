@@ -152,50 +152,42 @@ namespace TAS360.Controllers
                 return View(model);
             }
         }
-        // GET: Tutor/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
 
-        // POST: Tutor/Delete/5
-        [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
-        {
-            try
-            {
-                // TODO: Add delete logic here
 
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        public ActionResult Asesorias()
+        public ActionResult Asesorias(string searchString)
         {
             using (var db = new HelpDesk_Entities1())
             {
-                var lista = (from rel in db.EstudiantesXTutor
-                             join e in db.Estudiantes on rel.idEstudiante equals e.id
-                             join t in db.Tutores on rel.idTutor equals t.id
-                             select new TutorEstudianteViewModel
-                             {
-                                 Id = rel.id,
-                                 Tutor = t.id,
-                                 N_Tutor = t.Nombre,
-                                 Estudiante = e.id,
-                                 N_Estudiante = e.nombre,
-                                 fechaHora = rel.fechaHora
-                             })
-                             .OrderByDescending(x => x.fechaHora)
-                             .ToList();
+                var query = from rel in db.EstudiantesXTutor
+                            join e in db.Estudiantes on rel.idEstudiante equals e.id
+                            join t in db.Tutores on rel.idTutor equals t.id
+                            select new TutorEstudianteViewModel
+                            {
+                                Id = rel.id,
+                                Tutor = t.id,
+                                N_Tutor = t.Nombre,
+                                Estudiante = e.id,
+                                N_Estudiante = e.nombre,
+                                fechaHora = rel.fechaHora
+                            };
+
+                // 🔍 Filtro de búsqueda
+                if (!String.IsNullOrEmpty(searchString))
+                {
+                    query = query.Where(x =>
+                        x.N_Tutor.Contains(searchString) ||
+                        x.N_Estudiante.Contains(searchString)
+                    );
+                }
+
+                var lista = query
+                            .OrderByDescending(x => x.fechaHora)
+                            .ToList();
 
                 return View(lista);
             }
         }
+
 
         /// <summary>
         /// Muestra el formulario para crear un nuevo EStudiantes,
@@ -262,9 +254,137 @@ namespace TAS360.Controllers
             }
         }
 
+        /// <summary>
+        /// Muestra el formulario para editar la relación Tutor - Estudiante
+        /// </summary>
+        /// <param name="id">ID de la relación en EstudiantesXTutor</param>
+        /// <returns>TutorEstudianteViewModel</returns>
+        public ActionResult EditAsesorias(int id)
+        {
+            using (var db = new HelpDesk_Entities1())
+            {
+                var entity = db.EstudiantesXTutor.FirstOrDefault(x => x.id == id);
+                if (entity == null)
+                {
+                    return HttpNotFound();
+                }
+
+                var model = new TutorEstudianteViewModel
+                {
+                    Id = entity.id,
+                    Tutor = entity.idTutor,
+                    Estudiante = entity.idEstudiante,
+                    fechaHora = entity.fechaHora
+                };
+
+                ViewBag.Tutores = new SelectList(db.Tutores.ToList(), "id", "Nombre", model.Tutor);
+                ViewBag.Estudiantes = new SelectList(db.Estudiantes.ToList(), "id", "Nombre", model.Estudiante);
+
+                return View(model);
+            }
+        }
+
+        [HttpPost]
+        public ActionResult EditAsesorias(TutorEstudianteViewModel model)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    using (var db = new HelpDesk_Entities1())
+                    {
+                        ViewBag.Tutores = new SelectList(db.Tutores.ToList(), "id", "Nombre", model.Tutor);
+                        ViewBag.Estudiantes = new SelectList(db.Estudiantes.ToList(), "id", "Nombre", model.Estudiante);
+                    }
+                    return View(model);
+                }
+
+                using (var db = new HelpDesk_Entities1())
+                {
+                    var entity = db.EstudiantesXTutor.FirstOrDefault(x => x.id == model.Id);
+                    if (entity == null)
+                    {
+                        return HttpNotFound();
+                    }
+
+                    entity.idTutor = model.Tutor;
+                    entity.idEstudiante = model.Estudiante;
+                    entity.fechaHora = model.fechaHora ?? DateTime.Now;
+
+                    db.SaveChanges();
+                }
+
+                return RedirectToAction("Asesorias");
+            }
+            catch (Exception ex)
+            {
+                using (var db = new HelpDesk_Entities1())
+                {
+                    ViewBag.Tutores = new SelectList(db.Tutores.ToList(), "id", "Nombre", model.Tutor);
+                    ViewBag.Estudiantes = new SelectList(db.Estudiantes.ToList(), "id", "Nombre", model.Estudiante);
+                }
+                ModelState.AddModelError("", "Error: " + ex.Message);
+                return View(model);
+            }
+        }
 
 
+        /// <summary>
+        /// Elimina un tutor directamente desde el listado
+        /// </summary>
+        /// <param name="id">Id del tutor</param>
+        /// <returns>Redirección al Index</returns>
+        public ActionResult Delete(int id)
+        {
+            try
+            {
+                using (var db = new HelpDesk_Entities1())
+                {
+                    var tutor = db.Tutores.FirstOrDefault(t => t.id == id);
+                    if (tutor == null)
+                        return HttpNotFound();
 
+                    db.Tutores.Remove(tutor);
+                    db.SaveChanges();
+                }
+
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "Error al eliminar: " + ex.Message;
+                return RedirectToAction("Index");
+            }
+        }
+
+
+        /// <summary>
+        /// Elimina un tutor directamente desde el listado
+        /// </summary>
+        /// <param name="id">Id del tutor</param>
+        /// <returns>Redirección al Index</returns>
+        public ActionResult DeleteAsesoria(int id)
+        {
+            try
+            {
+                using (var db = new HelpDesk_Entities1())
+                {
+                    var tutor = db.EstudiantesXTutor.FirstOrDefault(t => t.id == id);
+                    if (tutor == null)
+                        return HttpNotFound();
+
+                    db.EstudiantesXTutor.Remove(tutor);
+                    db.SaveChanges();
+                }
+
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "Error al eliminar: " + ex.Message;
+                return RedirectToAction("Index");
+            }
+        }
 
 
 

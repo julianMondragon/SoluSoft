@@ -185,5 +185,35 @@ namespace TAS360.Controllers
 
             return RedirectToAction("Index");
         }
+
+        /// <summary>
+        /// Elimina un tutor directamente desde el listado
+        /// </summary>
+        /// <param name="id">Id del tutor</param>
+        /// <returns>Redirección al Index</returns>
+        public ActionResult Delete(int id)
+        {
+            try
+            {
+                using (var db = new HelpDesk_Entities1())
+                {
+                    var Punto = db.PuntosAcceso.FirstOrDefault(t => t.id == id);
+                    if (Punto == null)
+                        return HttpNotFound();
+
+                    db.PuntosAcceso.Remove(Punto);
+                    db.SaveChanges();
+                }
+
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "Error al eliminar: " + ex.Message;
+                return RedirectToAction("Index");
+            }
+        }
+
+
     }
 }
