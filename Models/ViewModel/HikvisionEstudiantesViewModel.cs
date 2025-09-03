@@ -22,11 +22,11 @@ namespace TAS360.Models.ViewModel
 
         public string CorreoPersonal { get; set; }
 
-        public string CorreoTutor { get; set; }
+        //public string CorreoTutor { get; set; }
 
         public string TelefonoPersonal { get; set; }
 
-        public string TelefonoTutor { get; set; }
+        //public string TelefonoTutor { get; set; }
 
         public string IdExterno { get; set; }
 

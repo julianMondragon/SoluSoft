@@ -32,9 +32,9 @@ namespace TAS360.Controllers
                                 Nombre = p.nombre,
                                 Grado = p.Grado,
                                 CorreoPersonal = p.correoPersonal,
-                                CorreoTutor = p.correoTutor,
+                                //CorreoTutor = p.correoTutor,
                                 TelefonoPersonal = p.telefonoPersonal,
-                                TelefonoTutor = p.telefonoTutor,
+                                //TelefonoTutor = p.telefonoTutor,
                                 IdExterno = p.id_externo,
                                 FechaHoraRegistro = p.fechaHoraRegistro ?? DateTime.Now
                             };
@@ -45,9 +45,9 @@ namespace TAS360.Controllers
                         e.Nombre.Contains(searchString) ||
                         e.NombrePlantel.Contains(searchString) ||
                         e.CorreoPersonal.Contains(searchString) ||
-                        e.CorreoTutor.Contains(searchString) ||
-                        e.TelefonoPersonal.Contains(searchString) ||
-                        e.TelefonoTutor.Contains(searchString)
+                        //e.CorreoTutor.Contains(searchString) ||
+                        e.TelefonoPersonal.Contains(searchString)
+                        //e.TelefonoTutor.Contains(searchString)
                     );
                 }
 
@@ -106,9 +106,9 @@ namespace TAS360.Controllers
                     nombre = model.Nombre,
                     Grado = model.Grado,
                     correoPersonal = model.CorreoPersonal,
-                    correoTutor = model.CorreoTutor,
+                    //correoTutor = model.CorreoTutor,
                     telefonoPersonal = model.TelefonoPersonal,
-                    telefonoTutor = model.TelefonoTutor,
+                    //telefonoTutor = model.TelefonoTutor,
                     id_externo = model.IdExterno,
                     fechaHoraRegistro = model.FechaHoraRegistro 
                 };
@@ -139,9 +139,9 @@ namespace TAS360.Controllers
                     Nombre = entity.nombre,
                     Grado = entity.Grado,
                     CorreoPersonal = entity.correoPersonal,
-                    CorreoTutor = entity.correoTutor,
+                    //CorreoTutor = entity.correoTutor,
                     TelefonoPersonal = entity.telefonoPersonal,
-                    TelefonoTutor = entity.telefonoTutor,
+                    //TelefonoTutor = entity.telefonoTutor,
                     IdExterno = entity.id_externo,
                     FechaHoraRegistro = entity.fechaHoraRegistro ?? DateTime.Now
                 };
@@ -191,9 +191,9 @@ namespace TAS360.Controllers
                 entity.nombre = model.Nombre;
                 entity.Grado = model.Grado;
                 entity.correoPersonal = model.CorreoPersonal;
-                entity.correoTutor = model.CorreoTutor;
+                //entity.correoTutor = model.CorreoTutor;
                 entity.telefonoPersonal = model.TelefonoPersonal;
-                entity.telefonoTutor = model.TelefonoTutor;
+                //entity.telefonoTutor = model.TelefonoTutor;
                 entity.id_externo = model.IdExterno;
                 entity.fechaHoraRegistro = model.FechaHoraRegistro;
 
