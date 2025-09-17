@@ -82,7 +82,8 @@ namespace TAS360.Controllers
             GetSummaryTKs();
             return View(tickets);
         }
-       
+        [HttpGet]
+        [AuthorizeUser(idOperacion: 27)]
         public ActionResult SLAReport()
         {
             List<TicketViewModel> tickets = new List<TicketViewModel>();
