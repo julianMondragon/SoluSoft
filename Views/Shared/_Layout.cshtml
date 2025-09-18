@@ -20,32 +20,56 @@
                 </button>
                 @Html.ActionLink("Control de acceso", "Index", "HikVision", new { area = "" }, new { @class = "navbar-brand" })
             </div>
-
             <div class="navbar-collapse collapse">
+                @using TAS360.Models;
+                @{
+                    User usuario = (User)HttpContext.Current.Session["user"];
+                }
                 <ul class="nav navbar-nav">
                     <li>@Html.ActionLink("Planteles", "Index", "Plantel")</li>
-                    <li>
-                        @using (Html.BeginForm("MainDashboard", "HikVision", FormMethod.Post, new { @class = "navbar-form", @style = "padding:0; margin:0;" }))
-                        {
-                            @Html.Hidden("APIServer", "http://192.168.0.5")
-                            @Html.Hidden("Usuario", "admin")
-                            @Html.Hidden("Password", "DS-K1T320")
-                            <button type="submit" class="btn btn-link" style="padding: 15px 15px; color: #9d9d9d; text-decoration: none;">Main DS-K1T320</button>
-                        }
-                    </li>
-                    @*<li>@Html.ActionLink("Dashboard 2", "Index", "HikVision")</li>
-                    <li>@Html.ActionLink("Dashboard 3", "Index", "HikVision")</li>*@
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Otras <span class="caret"></span></a>
-                        <ul class="dropdown-menu">                            
+                        <ul class="dropdown-menu">
                             <li>@Html.ActionLink("Puntos de Acceso", "Index", "PuntosAcceso")</li>
                             <li>@Html.ActionLink("Tutores", "Index", "Tutor")</li>
                             <li>@Html.ActionLink("Estudiantes", "Index", "Estudiantes")</li>
                             <li role="separator" class="divider"></li>
                             <li>@Html.ActionLink("Usuarios", "Index", "User")</li>
                             <li>@Html.ActionLink("Privilegios", "Index", "Roles_and_Privilege")</li>
+                            <li role="separator" class="divider"></li>
+                            <li>
+                                @using (Html.BeginForm("MainDashboard", "HikVision", FormMethod.Post, new { @class = "navbar-form", @style = "padding:0; margin:0;" }))
+                                {
+                                    @Html.Hidden("APIServer", "http://192.168.0.5")
+                                    @Html.Hidden("Usuario", "admin")
+                                    @Html.Hidden("Password", "DS-K1T320")
+                                    <button type="submit" class="btn btn-link" style="padding: 15px 15px; color: #9d9d9d; text-decoration: none;">Main DS-K1T320</button>
+                                }
+                            </li>
                         </ul>
                     </li>
+
+                    @if (usuario != null)
+                    {
+
+
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">@usuario.nombre <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li role="separator" class="divider"></li>
+                                <li>@Html.ActionLink("Perfil", "Index" , "Profile")</li>
+                                <li role="separator" class="divider"></li>
+
+                                <li class="nav-item px-lg-4"><a href="@Url.Content("~/logout/logout")">Cerrar Sesion</a></li>
+                            </ul>
+                        </li>
+
+                    }
+                    else
+                    {
+                        <li>@Html.ActionLink("Iniciar Sesion", "Login", "Acceso")</li>
+                    }
+
                 </ul>
             </div>
         </div>
