@@ -27,9 +27,9 @@
                     if (previousUrl1 && previousUrl2) {
                         switch (true) {
                             case previousUrl1.includes("Acceso/Login") && previousUrl2.includes("Acceso/Login"):
-                                window.location.href = "@Url.Action("Home", "Home")";
+                                window.location.href = "@Url.Action("Index", "Plantel")";
                                 break;
-                            case previousUrl1.includes("Home/Home") && previousUrl2.includes("Home/Home"):
+                            case previousUrl1.includes("Index", "Plantel") && previousUrl2.includes("Index", "Plantel"):
                                 window.location.reload();
                                 break;
                             default:
@@ -37,7 +37,7 @@
                                 break;
                         }
                     } else {
-                        window.location.href = "@Url.Action("Home", "Home")";
+                        window.location.href = "@Url.Action("Index", "Plantel")";
                     }
                 }
 
