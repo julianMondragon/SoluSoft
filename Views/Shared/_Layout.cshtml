@@ -6,10 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title - PTS </title>
     @Styles.Render("~/Content/css")
-    @Scripts.Render("~/bundles/modernizr")   
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="~/Scripts/autosize.js"></script>
-   
+    @Scripts.Render("~/bundles/modernizr")
+    @Styles.Render("~/bundles/datatables")
 </head>
 <body>
     <div class="navbar navbar-inverse navbar-fixed-top">
@@ -20,70 +18,34 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                @Html.ActionLink("PTS-TOOLS", "Home", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                @Html.ActionLink("Control de acceso", "Index", "HikVision", new { area = "" }, new { @class = "navbar-brand" })
             </div>
+
             <div class="navbar-collapse collapse">
-                @using TAS360.Models;
-                @{
-                    User usuario = (User)HttpContext.Current.Session["user"];
-                }
                 <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("SLA", "Index", "LSA")</li>
-                    <li>@Html.ActionLink("Tickets", "Index", "Tickets")</li>
-                    <li>@Html.ActionLink("Cálculo FCV", "Index", "Calculo_FCV")</li>
-                    <li>@Html.ActionLink("Conv.Tabla de Cubicación", "Index", "TablaCub")</li>
+                    <li>@Html.ActionLink("Planteles", "Index", "Plantel")</li>
+                    <li>
+                        @using (Html.BeginForm("MainDashboard", "HikVision", FormMethod.Post, new { @class = "navbar-form", @style = "padding:0; margin:0;" }))
+                        {
+                            @Html.Hidden("APIServer", "http://192.168.0.5")
+                            @Html.Hidden("Usuario", "admin")
+                            @Html.Hidden("Password", "DS-K1T320")
+                            <button type="submit" class="btn btn-link" style="padding: 15px 15px; color: #9d9d9d; text-decoration: none;">Main DS-K1T320</button>
+                        }
+                    </li>
+                    @*<li>@Html.ActionLink("Dashboard 2", "Index", "HikVision")</li>
+                    <li>@Html.ActionLink("Dashboard 3", "Index", "HikVision")</li>*@
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Otras <span class="caret"></span></a>
-                        <ul class="dropdown-menu">
-                            <li>@Html.ActionLink("Incidentes", "Index", "Pendientes")</li>
-                            <li role="separator" class="divider"></li>
-                            <li>@Html.ActionLink("Terminales", "Index", "Terminal")</li>
-                            <li role="separator" class="divider"></li>
-                            <li>@Html.ActionLink("HMI de Aditivación", "Index", "Aditivo")</li>
+                        <ul class="dropdown-menu">                            
+                            <li>@Html.ActionLink("Puntos de Acceso", "Index", "PuntosAcceso")</li>
+                            <li>@Html.ActionLink("Tutores", "Index", "Tutor")</li>
+                            <li>@Html.ActionLink("Estudiantes", "Index", "Estudiantes")</li>
                             <li role="separator" class="divider"></li>
                             <li>@Html.ActionLink("Usuarios", "Index", "User")</li>
-                            <li role="separator" class="divider"></li>
-                            <li>@Html.ActionLink("Roles & Privilegios", "Index", "Roles_and_Privilege")</li>
-                            @*<li role="separator" class="divider"></li>
-                    <li>@Html.ActionLink("Danload 6000", "Index", "Danload")</li>
-                    <li role="separator" class="divider"></li>
-                    <li>@Html.ActionLink("Accuload III", "Index", "Accuload")</li>
-                    <li role="separator" class="divider"></li>
-                    <li><a href="#">Reportes</a></li>
-                    <li>@Html.ActionLink("Carga", "Index", "Home")</li>
-                    <li>@Html.ActionLink("Tanques", "About", "Home")</li>
-                    <li role="separator" class="divider"></li>
-                    <li>@Html.ActionLink("Crear Reporte", "Create", "Reports")</li>
-                    <li>@Html.ActionLink("abrir conexion", "Index", "Reports")</li>
-                    <li role="separator" class="divider"></li>
-                    <li><a href="#">SIIC</a></li>
-                    <li>@Html.ActionLink("Entradas", "Index", "Home")</li>
-                    <li>@Html.ActionLink("Salidas", "About", "Home")</li>
-                    <li>@Html.ActionLink("Auditoria", "Contact", "Home")</li>
-                            *@
+                            <li>@Html.ActionLink("Privilegios", "Index", "Roles_and_Privilege")</li>
                         </ul>
                     </li>
-                    @if (usuario != null)
-                    {
-
-
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">@usuario.nombre <span class="caret"></span></a>
-                            <ul class="dropdown-menu">
-                                <li role="separator" class="divider"></li>
-                                <li>@Html.ActionLink("Perfil", "Index/3", "Profile")</li>
-                                <li role="separator" class="divider"></li>
-
-                                <li class="nav-item px-lg-4"><a href="@Url.Content("~/logout/logout")">Cerrar Sesion</a></li>
-                            </ul>
-                        </li>
-
-                    }
-                    else
-                    {
-                        <li>@Html.ActionLink("Iniciar Sesion", "Login", "Acceso")</li>
-                    }
-
                 </ul>
             </div>
         </div>
@@ -97,9 +59,11 @@
     </div>
 
     @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")   
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/datatables")
     @Scripts.Render("~/bundles/corecubi")
     @RenderSection("scripts", required: false)
-    <script src="~/Scripts/helper.js"></script>
-</body>    
+
+
+</body>
 </html>
