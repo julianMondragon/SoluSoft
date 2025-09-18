@@ -67,3 +67,28 @@
 
 </body>
 </html>
+    <script src="~/Scripts/helper.js"></script>
+    <script type="text/javascript">
+        // Intervalo en milisegundos (aquí configurado para cada 4 minutos)
+        var keepAliveInterval = 4 * 60 * 1000;
+
+        function keepSessionAlive() {
+            let currentUrl = window.location.href; // Captura la URL actual
+
+            fetch(`/Home/KeepAlive?currentUrl=${encodeURIComponent(currentUrl)}`, {
+                method: 'GET',
+                cache: 'no-cache'
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        console.error('Error manteniendo la sesión activa:', response.statusText);
+                    }
+                })
+                .catch(error => console.error('Error de red al intentar mantener la sesión activa:', error));
+        }
+        // Configura el intervalo para mantener la sesión activa
+        setInterval(keepSessionAlive, keepAliveInterval);
+    </script>
+
+</body>    
+</html>

@@ -31,7 +31,11 @@
     @if (Info != null)
     {
         <div class="alert alert-info" role="alert">
-            @Info
+            <strong>Información:</strong>
+            <details>
+                <summary>Haz clic para ver cómo funciona el filtro</summary>
+                <p style="white-space: pre-line;">@Info</p>
+            </details>
         </div>
     }
     @if (warning != null)

@@ -438,6 +438,8 @@
     <Compile Include="Models\ViewModel\FilterTicketsViewModel.cs" />
     <Compile Include="Models\ViewModel\G_TicketsByCategoriaViewModel.cs" />
     <Compile Include="Models\ViewModel\G_TicketsByStatusViewModel.cs" />
+    <Compile Include="Models\ViewModel\PDFViewModel.cs" />
+    <Compile Include="Models\ViewModel\G_TicketsModificadoViewModel.cs" />
     <Compile Include="Models\ViewModel\G_TicketsByTerminalViewModel.cs" />
     <Compile Include="Models\ViewModel\HikvisionEstudiantesViewModel.cs" />
     <Compile Include="Models\ViewModel\HikvisionPuntosAccesoViewModel.cs" />
@@ -454,6 +456,7 @@
     <Compile Include="Models\ViewModel\PlantelViewModel.cs" />
     <Compile Include="Models\ViewModel\PuertoSerialViewModel.cs" />
     <Compile Include="Models\ViewModel\RecetasViewModel.cs" />
+    <Compile Include="Models\ViewModel\ReporteModel.cs" />
     <Compile Include="Models\ViewModel\RepTotalizadoViewModel.cs" />
     <Compile Include="Models\ViewModel\RolesPrivilegesViewModel.cs" />
     <Compile Include="Models\ViewModel\RollViewModel.cs" />
@@ -471,7 +474,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\HikvisionService.cs" />
     <Compile Include="StorProc\LSA_Reportes.cs" />
-    <Compile Include="Views\Profile.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Backup_Database\Migraciones\Alter_Pendiente_Add_properties.sql" />
@@ -634,6 +636,7 @@
     <Content Include="fonts\Myriad Pro Bold.ttf" />
     <Content Include="fonts\Myriad Pro Italic.ttf" />
     <Content Include="fonts\PFBeauSansPro-LightItalic.ttf" />
+    <Content Include="ReportesSLAHistorico\010725.pdf" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\datatables\AutoFill-2.4.0\css\autoFill.bootstrap.css" />
     <Content Include="Scripts\datatables\AutoFill-2.4.0\css\autoFill.bootstrap.min.css" />
@@ -1035,6 +1038,11 @@
     <Content Include="Views\Tutor\Asesorias.cshtml" />
     <Content Include="Views\Tutor\CreateAsesorias.cshtml" />
     <Content Include="Views\Tutor\EditAsesorias.cshtml" />
+    <Content Include="Views\LSA\ReportHis.cshtml" />
+    <Content Include="Views\LSA\ReportePeriodico.cshtml" />
+    <Content Include="Views\Roles_and_Privilege\EditOperation.cshtml" />
+    <Content Include="Views\Roles_and_Privilege\EditModulos.cshtml" />
+    <Content Include="Views\Roles_and_Privilege\EditRol.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

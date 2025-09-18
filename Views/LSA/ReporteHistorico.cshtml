@@ -1,0 +1,63 @@
+﻿@*@{
+        ViewBag.Title = "ReporteHistorico";
+        var fechaActual = DateTime.Now;
+        var limiteMeses = fechaActual.Year == 2025 ? fechaActual.Month : 12;
+        var meses = new string[] { "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre" };
+    }
+    <h2>Reporte Histórico</h2>
+    <h3>Reportes 2025</h3>
+    <table class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <th>Mes</th>
+                <th>Reportes</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < limiteMeses; i++)
+            {
+                <tr>
+                    <td>@meses[i]</td>
+                    <td>
+                        <a class="btn btn-info" href="@Url.Action("Reporte1", "LSA", new { mes = meses[i], anio = 2025 })">Reporte 1°</a>
+                        <a class="btn btn-success" href="@Url.Action("Reporte15", "LSA", new { mes = meses[i], anio = 2025 })">Reporte 15°</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>*@
+
+
+
+@{
+    ViewBag.Title = "ReporteHistorico";
+    var fechaActual = DateTime.Now;
+    var limiteMeses = fechaActual.Year == 2025 ? fechaActual.Month : 12;
+    var meses = new string[] { "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre" };
+}
+<h2>Reporte Histórico</h2>
+<h3>Reportes 2025</h3>
+<table class="table table-striped table-bordered">
+    <thead>
+        <tr>
+            <th>Mes</th>
+            <th>Reportes</th>
+        </tr>
+    </thead>
+    <tbody>
+        @for (int i = 0; i < limiteMeses; i++)
+        {
+            var fechaReporte1 = new DateTime(2025, i + 1, 1);
+            var fechaReporte15 = new DateTime(2025, i + 1, 15);
+
+            <tr>
+                <td>@meses[i]</td>
+                <td>
+                    <a class="btn btn-info" href="@Url.Action("GenerarReporte", "LSA", new { fecha = fechaReporte1.ToString("yyyy-MM-dd") })">Reporte 1°</a>
+                    <a class="btn btn-success" href="@Url.Action("GenerarReporte", "LSA", new { fecha = fechaReporte15.ToString("yyyy-MM-dd") })">Reporte 15°</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+

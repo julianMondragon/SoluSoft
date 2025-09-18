@@ -138,8 +138,8 @@
     @foreach (var photo in Model.Files)
     {
         <div class="col-lg-4">
-            <div class="thumbnail">
-                <img src="@photo.URL" />
+            <div >
+                <img src="@photo.URL" style="max-height: 200px; max-width: 300px; min-height: 200px; min-width: 300px; " />
                 <div class="caption">
                     <h4>@photo.Nombre</h4>
                 </div>

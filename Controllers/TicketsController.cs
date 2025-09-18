@@ -20,6 +20,8 @@ using SpreadsheetLight;
 using DocumentFormat.OpenXml.Office2010.Excel;
 using System.Web.Services.Description;
 using System.EnterpriseServices.Internal;
+using System.Configuration;
+
 
  
 
@@ -79,7 +81,30 @@ namespace TAS360.Controllers
             List<ListbyFilterTicket> currentLists = new List<ListbyFilterTicket>();
             using (Models.HelpDesk_Entities1 db = new Models.HelpDesk_Entities1())
             {
-                var Tickets = (from s in db.Ticket where s.status != 12 orderby s.CreatedAt descending select s);
+                var usuarioLogeado = db.User.Find(((User)Session["User"]).id);
+
+                IQueryable<Ticket> Tickets;
+
+                if (usuarioLogeado.id_Roll == 1 || usuarioLogeado.id_Roll == 2)
+                {
+                    // Admin o Resp_Tec: ven todos los tickets abiertos
+                    Tickets = from s in db.Ticket
+                              where s.status != 12
+                              orderby s.CreatedAt descending
+                              select s;
+                    ViewBag.HeaderMessage = "Tickets abiertos";
+                    ViewBag.HeaderDescripMess = "Todos los tickets abiertos ordenados descendente";
+                }
+                else
+                {
+                    // Otros usuarios: solo ven sus tickets abiertos
+                    Tickets = from s in db.Ticket
+                              where s.status != 12 && s.id_User == usuarioLogeado.id
+                              orderby s.CreatedAt descending
+                              select s;
+                    ViewBag.HeaderMessage = "Mis tickets";
+                    ViewBag.HeaderDescripMess = "Tickets abiertos asignados a " + usuarioLogeado.nombre + ", ordenados descendente";
+                }
                 if (Tickets != null && Tickets.Any())
                 {
                     foreach (var t in Tickets)
@@ -463,9 +488,7 @@ namespace TAS360.Controllers
                             URL = (file.Files.URL.Replace("C:\\Inetpub\\vhosts\\pts-tools.com.mx\\httpdocs\\softwaretool", "")).Replace("\\", "/")
                         }); 
                     }
-                    //Comentarios
-
-                                     
+                    //Comentarios                                     
                     if (db.Ticket_Comentario.Where(c => c.id_Ticket == id).Any())
                     {
                         var coms = db.Ticket_Comentario.Where(c => c.id_Ticket == id);
@@ -1203,6 +1226,15 @@ namespace TAS360.Controllers
             GetStatus(1);
             GetCategories();
             GetUsuarios();
+            StringBuilder InfoMessage = new StringBuilder();
+            InfoMessage.AppendLine("");
+            InfoMessage.AppendLine("Este filtro funciona descartando los tickets que no coinciden con las propiedades seleccionadas, siguiendo este orden: Terminal, Categoría, Subsistema, Estatus y Usuario.");
+            InfoMessage.AppendLine("");
+            InfoMessage.AppendLine("Puedes incluir los tickets cerrados o buscar únicamente entre los cerrados, pero no ambas opciones al mismo tiempo.");
+            InfoMessage.AppendLine("");
+            InfoMessage.AppendLine("Si realizas una búsqueda por Id, todas las demás propiedades seleccionadas serán ignoradas en la consulta.");
+            ViewBag.InfoMessage = InfoMessage.ToString();
+
             return View(Filter);
         }
 
@@ -1252,15 +1284,15 @@ namespace TAS360.Controllers
 
                         if (Filter.is_closed)
                         {
-                            listFilter = db.Ticket.Take(92).ToList();
+                            listFilter = db.Ticket.ToList();
                         }
                         else if (Filter.just_closed)
                         {
-                            listFilter = db.Ticket.Where(x => x.status == 12).Take(92).ToList();
+                            listFilter = db.Ticket.Where(x => x.status == 12).ToList();
                         }
                         else
                         {
-                            listFilter = db.Ticket.Where(x => x.status != 12).Take(92).ToList();
+                            listFilter = db.Ticket.Where(x => x.status != 12).ToList();
                         }
                         if (Filter.isSelected_Terminal)
                         {
@@ -1309,8 +1341,7 @@ namespace TAS360.Controllers
 
                         if (Filter.isSelected_User)
                         {
-                            //Aquí también se establece un límite de 40 tickets a enviar a la lista de la vista
-                            listFilter = listFilter.Where(t => t.id_User == Filter.id_User).Take(40).ToList();
+                            listFilter = listFilter.Where(t => t.id_User == Filter.id_User).ToList();
                             if (listFilter.Count() < 1)
                             {
                                 //devuelve a la vista el modelo y un mensaje de busqueda sin resultados
@@ -1320,8 +1351,8 @@ namespace TAS360.Controllers
                             }
                         }
 
-                        //el resultado de la busqueda
-                        foreach (var item in listFilter)
+                        //el resultado de la busqueda solo toma 80 derivado de la URL.
+                        foreach (var item in listFilter.OrderByDescending(x => x.id).Take(80))
                         {
                             currentLists.Add(new ListbyFilterTicket() { id = item.id });
                         }
@@ -1333,7 +1364,7 @@ namespace TAS360.Controllers
                 ViewBag.warning = "Filtro no valido";
                 return View(Filter);
             }
-
+            
             // Objeto a enviar
             string encodedCurrentList = "";
             // Serialización y codificación
@@ -1387,6 +1418,38 @@ namespace TAS360.Controllers
                         NewTablaTickets.SetCellValue(Row, 7, ticket.Categoria.nombre);
                         NewTablaTickets.SetCellValue(Row, 8, ticket.Ticket_Record_Status.OrderByDescending(x => x.CreatedAt).FirstOrDefault()?.Status.descripcion);
                         NewTablaTickets.SetCellValue(Row, 9, ticket.id_externo);
+                        
+
+                        //Comentarios
+                        if (db.Ticket_Comentario.Where(c => c.id_Ticket == ticket.id).Any())
+                        {
+                            var coms = db.Ticket_Comentario.Where(c => c.id_Ticket == ticket.id).OrderByDescending(t => t.id).FirstOrDefault();
+
+
+                            if (coms.Comentario.Comentario1.Contains("Cambio de Status a:"))
+                            {
+                                string mensaje = ticket.mensaje + "\n Ultimo estatus del ticket \n" + coms.Comentario.Comentario1;
+                                NewTablaTickets.SetCellValue(Row, 3, mensaje);                               
+                            }
+                            else
+                            {
+                                string formattedDate = "********";
+                                if (coms.Comentario.CreatedAt != null)
+                                {
+                                    var Date = (DateTime)coms.Comentario.CreatedAt;
+                                    formattedDate = Date.ToString("dd-MM-yyyy");
+                                }
+                                string mensaje = ticket.mensaje + 
+                                    "\n Ultimo estatus del ticket \n" + 
+                                    "\n*****************************************************" +
+                                    "\n----------------------------------------- " +
+                                    formattedDate + "\n * Sin cambio de Status." +
+                                    "\n" + "---------------------------------------------------- \n" +
+                                    "***************************************************** \n" +
+                                    coms.Comentario.Comentario1 + "\n";
+                                NewTablaTickets.SetCellValue(Row, 3, mensaje);
+                            }
+                        }
                         Row++;
                     }
 
@@ -1466,10 +1529,17 @@ namespace TAS360.Controllers
                 }
 
                 // Configuración del cliente SMTP
-                SmtpClient clienteSmtp = new SmtpClient("smtp.gmail.com", 587)
+                SmtpClient clienteSmtp = new SmtpClient(
+                     ConfigurationManager.AppSettings["SmtpHost"],
+                     int.Parse(ConfigurationManager.AppSettings["SmtpPort"]))
                 {
-                    Credentials = new NetworkCredential("soporte.tas360@pts.mx", "03Jun#2024"),
-                    EnableSsl = true
+                    EnableSsl = bool.Parse(ConfigurationManager.AppSettings["EnableSsl"]),
+                    UseDefaultCredentials = false,
+                    Credentials = new NetworkCredential(
+                         ConfigurationManager.AppSettings["SmtpUser"],
+                         ConfigurationManager.AppSettings["SmtpPassword"]
+                     ),
+                    DeliveryMethod = SmtpDeliveryMethod.Network
                 };
 
                 // Crear el mensaje de correo
@@ -1550,10 +1620,17 @@ namespace TAS360.Controllers
                 }
 
                 // Configuración del cliente SMTP
-                SmtpClient clienteSmtp = new SmtpClient("smtp.gmail.com", 587)
+                SmtpClient clienteSmtp = new SmtpClient(
+                     ConfigurationManager.AppSettings["SmtpHost"],
+                     int.Parse(ConfigurationManager.AppSettings["SmtpPort"]))
                 {
-                    Credentials = new NetworkCredential("soporte.tas360@pts.mx", "03Jun#2024"),
-                    EnableSsl = true
+                    EnableSsl = bool.Parse(ConfigurationManager.AppSettings["EnableSsl"]),
+                    UseDefaultCredentials = false,
+                    Credentials = new NetworkCredential(
+                         ConfigurationManager.AppSettings["SmtpUser"],
+                         ConfigurationManager.AppSettings["SmtpPassword"]
+                     ),
+                    DeliveryMethod = SmtpDeliveryMethod.Network
                 };
 
                 // Crear el mensaje de correo
