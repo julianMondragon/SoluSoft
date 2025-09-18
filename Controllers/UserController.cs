@@ -58,7 +58,7 @@ namespace TAS360.Controllers
                                         </body>
                                         </html>";
         // GET: User/Index
-        [AuthorizeUser(idOperacion: 17)]
+        //[AuthorizeUser(idOperacion: 17)]
         public ActionResult Index()
         {
             List<ListUsuarioViewModel> lst;
@@ -80,7 +80,7 @@ namespace TAS360.Controllers
 
         // GET: User/Edit/5
         [HttpGet]
-        [AuthorizeUser(idOperacion: 18)]
+        //[AuthorizeUser(idOperacion: 18)]
         public ActionResult Edit(int id)
         {
 
@@ -102,7 +102,7 @@ namespace TAS360.Controllers
 
         // POST: User/Edit/5
         [HttpPost]
-        [AuthorizeUser(idOperacion: 18)]
+        //[AuthorizeUser(idOperacion: 18)]
         public ActionResult Edit(ListUsuarioViewModel model, string confirmPassword)
         {
             try
@@ -176,7 +176,7 @@ namespace TAS360.Controllers
         }
 
         // GET: User/Create
-        [AuthorizeUser(idOperacion: 20)]
+        //[AuthorizeUser(idOperacion: 20)]
         public ActionResult Create()
         {
             ListUsuarioViewModel usuario = new ListUsuarioViewModel();
@@ -213,7 +213,7 @@ namespace TAS360.Controllers
 
         // POST: User/Create
         [HttpPost]
-        [AuthorizeUser(idOperacion: 20)]
+        //[AuthorizeUser(idOperacion: 20)]
         public ActionResult Create(ListUsuarioViewModel model)
         {
             try
@@ -310,7 +310,7 @@ namespace TAS360.Controllers
 
         // GET: User/Delete/5
         [HttpGet]
-        [AuthorizeUser(idOperacion: 19)]
+        //[AuthorizeUser(idOperacion: 19)]
         public ActionResult Delete(int id)
         {
             try

@@ -49,6 +49,9 @@
                         <td>@item.Administrador</td>
                         <td>@item.Director</td>
                         <td>
+                            <a href="@Url.Action("Details", "Plantel", new { id = item.Id })" class="btn btn-default btn-sm">
+                                <i class="glyphicon glyphicon-exclamation-sign"></i> Detalles
+                            </a>
                             <a href="@Url.Action("Edit", "Plantel", new { id = item.Id })" class="btn btn-primary btn-sm">
                                 <i class="glyphicon glyphicon-edit"></i> Editar
                             </a>

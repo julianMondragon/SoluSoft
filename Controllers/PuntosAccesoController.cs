@@ -40,6 +40,36 @@ namespace TAS360.Controllers
             }
             return View(lista);
         }
+
+        /// <summary>
+        /// Metodo principal de Puntos de Acceso 
+        /// </summary>
+        /// <tipe>GET</tipe>
+        /// <returns>List<HikvisionPuntosAccesoViewModel></returns>
+        public ActionResult GetAPByPlantel(PlantelViewModel model)
+        {
+            List<HikvisionPuntosAccesoViewModel> lista;
+            using (var db = new HelpDesk_Entities1())
+            {
+                lista = (from p in db.PuntosAcceso
+                         join pl in db.Planteles on p.idPlantel equals pl.id
+                         where p.id == model.Id_AccessControlToView
+                         orderby p.id descending
+                         select new HikvisionPuntosAccesoViewModel
+                         {
+                             id = p.id,
+                             //idPlantel = p.idPlantel,
+                             NombrePlantel = pl.nombre,
+                             nombre = p.nombre,
+                             ubicacion = p.ubicacion,
+                             FechaHoraInstalacion = p.FechaHoraInstalacion,
+                             apiServer = p.apiServer,
+                             usuario = p.usuario,
+                             password = p.password
+                         }).ToList();
+            }
+            return View(lista);
+        }
         /// <summary>
         /// Muestra el formulario para crear un nuevo punto de acceso,
         /// cargando la lista de planteles disponibles en un dropdown.

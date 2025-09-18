@@ -127,5 +127,53 @@ namespace TAS360.Controllers
             return RedirectToAction("Index");
         }
 
+        public ActionResult Details(int id)
+        {
+            using (var db = new HelpDesk_Entities1())
+            {
+                var entity = db.Planteles.Find(id);
+                if (entity == null)
+                    return HttpNotFound();
+
+                var model = new PlantelViewModel
+                {
+                    Id = entity.id,
+                    Nombre = entity.nombre,
+                    Telefono = entity.telefono,
+                    Direccion = entity.direccion,
+                    Administrador = entity.administrador,
+                    Director = entity.director,
+                    FechaHoraRegistro = entity.FechaHoraRegistro
+                };
+                GetAccessControlByPlantel(id);
+                return View(model);
+            }
+        }
+
+        /// <summary>
+        /// Devuelve a la vista una lista de los puntos de acceso que pertenecen al plantel. del sistema 
+        /// </summary>
+        private void GetAccessControlByPlantel(int idPlantel)
+        {
+
+            List<SelectListItem> AccessControl = new List<SelectListItem>();
+            using (HelpDesk_Entities1 db = new HelpDesk_Entities1())
+            {
+                var aux = (from s in db.PuntosAcceso where s.idPlantel == idPlantel select s);
+                if (aux != null && aux.Any())
+                {
+                    foreach (var a in aux)
+                    {
+                        AccessControl.Add(new SelectListItem
+                        {
+                            Text = a.nombre,
+                            Value = a.id.ToString()
+
+                        });
+                    }
+                }
+            }
+            ViewBag.AccessControl = AccessControl;
+        }
     }
 }

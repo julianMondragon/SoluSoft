@@ -6,7 +6,8 @@ namespace TAS360.Models.ViewModel
     public class PlantelViewModel
     {
         public int Id { get; set; } // Solo requerido para edición
-
+        [Display(Name = "Punto de Acceso")]
+        public int Id_AccessControlToView { get; set; }
         [Required(ErrorMessage = "El nombre del plantel es obligatorio.")]
         [Display(Name = "Nombre del plantel")]
         [StringLength(100)]

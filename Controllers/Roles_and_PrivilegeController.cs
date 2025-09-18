@@ -16,7 +16,7 @@ namespace TAS360.Controllers
         ///  Metodo principal que muestra los modulos, roles y privilegios 
         /// </summary>
         /// <returns></returns>
-        [AuthorizeUser(idOperacion: 29)]
+        //[AuthorizeUser(idOperacion: 29)]
         public ActionResult Index()
         {
             
@@ -90,17 +90,17 @@ namespace TAS360.Controllers
                 }
                 else
                 {
-                    int count = 0;
-                    while (count < 3)
-                    {
-                        rolesPrivileges.Rol_OperacionVist.Add(new Roll_Operacion()
-                        {
-                            id = count,
-                            id_Roll = 4,
-                            id_Operacion = 4
-                        });
-                        count++;
-                    }
+                    //int count = 0;
+                    //while (count < 3)
+                    //{
+                    //    rolesPrivileges.Rol_OperacionVist.Add(new Roll_Operacion()
+                    //    {
+                    //        id = count,
+                    //        id_Roll = 1,
+                    //        id_Operacion = 1
+                    //    });
+                    //    count++;
+                    //}
                 }
 
             }
@@ -114,7 +114,7 @@ namespace TAS360.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        [AuthorizeUser(idOperacion: 33)]
+        //[AuthorizeUser(idOperacion: 33)]
         public ActionResult AddModule()
         {
             ModuloViewModel modulo = new ModuloViewModel();
@@ -126,7 +126,7 @@ namespace TAS360.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost]
-        [AuthorizeUser(idOperacion: 33)]
+        //[AuthorizeUser(idOperacion: 33)]
         public ActionResult AddModule(ModuloViewModel model)
         {
             User user = (User)Session["User"];
@@ -186,7 +186,7 @@ namespace TAS360.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        [AuthorizeUser(idOperacion: 30)]
+        [AuthorizeUser(idOperacion: 42)]
         public ActionResult AddOperation()
         {
             OperacionViewModel model = new OperacionViewModel();
@@ -198,7 +198,7 @@ namespace TAS360.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost]
-        [AuthorizeUser(idOperacion: 30)]
+        [AuthorizeUser(idOperacion: 42)]
         public ActionResult AddOperation(OperacionViewModel model)
         {
             User user = (User)Session["User"];
@@ -260,7 +260,7 @@ namespace TAS360.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        [AuthorizeUser(idOperacion: 36)]
+        //[AuthorizeUser(idOperacion: 36)]
         public ActionResult AddRol()
         {
             RollViewModel model = new RollViewModel();
@@ -271,7 +271,7 @@ namespace TAS360.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost]
-        [AuthorizeUser(idOperacion: 36)]
+        //[AuthorizeUser(idOperacion: 36)]
         public ActionResult AddRol(RollViewModel model)
         {
             User user = (User)Session["User"];
@@ -331,7 +331,7 @@ namespace TAS360.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        [AuthorizeUser(idOperacion: 39)]
+        //[AuthorizeUser(idOperacion: 39)]
         public ActionResult AddRol_Operacion()
         {
             GetRoles();
@@ -344,7 +344,7 @@ namespace TAS360.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost]
-        [AuthorizeUser(idOperacion: 39)]
+        //[AuthorizeUser(idOperacion: 39)]
         public ActionResult AddRol_Operacion(Rol_OperacionViewModel model)
         {
             GetRoles();
@@ -409,7 +409,7 @@ namespace TAS360.Controllers
         }
 
         [HttpPost]
-        [AuthorizeUser(idOperacion: 19)]
+        //[AuthorizeUser(idOperacion: 19)]
         public ActionResult DeleteRol_Operacion(int id)
         {
             User user = (User)Session["User"];
@@ -445,7 +445,7 @@ namespace TAS360.Controllers
 
         //Controlador de Editar Operación
         [HttpGet]
-        [AuthorizeUser(idOperacion: 30)]
+        //[AuthorizeUser(idOperacion: 30)]
         public ActionResult EditOperation(int id)
         {
             OperacionViewModel model = new OperacionViewModel(); // Cambiar a ModuloViewModel
@@ -464,7 +464,7 @@ namespace TAS360.Controllers
         }
 
         [HttpPost]
-        [AuthorizeUser(idOperacion: 18)]
+        //[AuthorizeUser(idOperacion: 18)]
         public ActionResult EditOperation(OperacionViewModel model)
         {
             User user = (User)Session["User"];
@@ -503,7 +503,7 @@ namespace TAS360.Controllers
         }
 
         [HttpPost]
-        [AuthorizeUser(idOperacion: 19)]
+        //[AuthorizeUser(idOperacion: 19)]
         public ActionResult DeleteOperacion(int id)
         {
             User user = (User)Session["User"];
@@ -537,7 +537,7 @@ namespace TAS360.Controllers
 
         //Controlador de editar Modulos
         [HttpGet]
-        [AuthorizeUser(idOperacion: 30)]
+        //[AuthorizeUser(idOperacion: 30)]
         public ActionResult EditModulos(int id)
         {
             ModuloViewModel model = new ModuloViewModel(); // Cambiar a ModuloViewModel
@@ -553,7 +553,7 @@ namespace TAS360.Controllers
         }
 
         [HttpPost]
-        [AuthorizeUser(idOperacion: 18)]
+        //[AuthorizeUser(idOperacion: 18)]
         public ActionResult EditModulos(ModuloViewModel model)
         {
             User user = (User)Session["User"];
@@ -592,7 +592,7 @@ namespace TAS360.Controllers
         }
 
         [HttpPost]
-        [AuthorizeUser(idOperacion: 19)]
+        //[AuthorizeUser(idOperacion: 19)]
         public ActionResult DeleteModulos(int id)
         {
             User user = (User)Session["User"];
@@ -610,16 +610,19 @@ namespace TAS360.Controllers
                         //ModuloToDelete.nombre = null;
                         db.Modulo.Remove(ModuloToDelete);
                         db.SaveChanges();
+                        TempData["Success"] = "Se elimino la operación " + ModuloToDelete.nombre + ", la accion fue realizada por el usuario: " + user.nombre;
                     }
                     else
                     {
                         return HttpNotFound();
                     }
                 }
+
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
+                TempData["Error"] =  ex.Message;
                 ViewBag.ExceptionMessage = ex.Message;
                 return RedirectToAction("Index");
             }
@@ -628,7 +631,7 @@ namespace TAS360.Controllers
 
         //Controlador de editar Modulos
         [HttpGet]
-        [AuthorizeUser(idOperacion: 30)]
+        //[AuthorizeUser(idOperacion: 30)]
         public ActionResult EditRol(int id)
         {
             RollViewModel model = new RollViewModel(); // Cambiar a ModuloViewModel
@@ -648,7 +651,7 @@ namespace TAS360.Controllers
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
-        [AuthorizeUser(idOperacion: 18)]
+        //[AuthorizeUser(idOperacion: 18)]
         public ActionResult EditRol(RollViewModel model)
         {
             User user = (User)Session["User"];
@@ -692,7 +695,7 @@ namespace TAS360.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpPost]
-        [AuthorizeUser(idOperacion: 19)]
+        //[AuthorizeUser(idOperacion: 19)]
         public ActionResult DeleteRoll(int id)
         {
             User user = (User)Session["User"];

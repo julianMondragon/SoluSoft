@@ -1,0 +1,95 @@
+﻿
+@model TAS360.Models.ViewModel.PlantelViewModel
+
+@{
+    ViewBag.Title = "Detalles del Plantel";
+    List<SelectListItem> AccessControl = (List<SelectListItem>)ViewBag.AccessControl;
+}
+
+<div class="jumbotron">
+    <h1 class="display-4">@Model.Nombre</h1>
+    <p class="lead">Información del plantel registrado en el sistema.</p>
+</div>
+
+<div class="row">
+    <div class="col-md-8 col-md-offset-2">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <i class="glyphicon glyphicon-education"></i> Datos del plantel 
+                </h3>
+            </div>
+            <div class="panel-body">
+                @using (Html.BeginForm("GetAPByPlantel", "PuntosAcceso", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.HiddenFor(m => m.Id)
+
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Nombre, htmlAttributes: new { @class = "col-md-4 control-label" })
+                        <div class="col-md-8">
+                            @Html.TextBoxFor(m => m.Nombre, new { @class = "form-control", @readonly = "true" })
+                            @Html.ValidationMessageFor(m => m.Nombre, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Telefono, htmlAttributes: new { @class = "col-md-4 control-label" })
+                        <div class="col-md-8">
+                            @Html.TextBoxFor(m => m.Telefono, new { @class = "form-control", @readonly = "true" })
+                            @Html.ValidationMessageFor(m => m.Telefono, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Direccion, htmlAttributes: new { @class = "col-md-4 control-label" })
+                        <div class="col-md-8">
+                            @Html.TextBoxFor(m => m.Direccion, new { @class = "form-control", @readonly = "true" })
+                            @Html.ValidationMessageFor(m => m.Direccion, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Administrador, htmlAttributes: new { @class = "col-md-4 control-label" })
+                        <div class="col-md-8">
+                            @Html.TextBoxFor(m => m.Administrador, new { @class = "form-control", @readonly = "true" })
+                            @Html.ValidationMessageFor(m => m.Administrador, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Director, htmlAttributes: new { @class = "col-md-4 control-label" })
+                        <div class="col-md-8">
+                            @Html.TextBoxFor(m => m.Director, new { @class = "form-control", @readonly = "true" })
+                            @Html.ValidationMessageFor(m => m.Director, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Id_AccessControlToView, htmlAttributes: new { @class = "col-md-4 control-label" })
+                        @if (AccessControl != null && AccessControl.Any())
+                        {
+                            @Html.DropDownListFor(model => model.Id_AccessControlToView, AccessControl, "Seleccione ...", htmlAttributes: new { @class = "col-md-4 control-label" })
+                        }
+                        else
+                        {
+                            @Html.DropDownListFor(model => model.Id_AccessControlToView, AccessControl, "Seleccione ...", htmlAttributes: new { @class = "col-md-4 control-label" })
+                        }
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-offset-4 col-md-8">
+                            <button type="submit" class="btn btn-primary">Consultar</button>
+                            @Html.ActionLink("Cancelar", "Index", null, new { @class = "btn btn-default" })
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+

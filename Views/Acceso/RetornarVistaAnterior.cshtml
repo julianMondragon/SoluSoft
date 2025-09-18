@@ -12,7 +12,7 @@
                 sessionStorage.removeItem("previousUrl1");
                 sessionStorage.removeItem("previousUrl2");
                 // Redirigir a Home
-                window.location.href = "@Url.Action("Home", "Home")";
+                window.location.href = "@Url.Action("Index", "Plantel")";
             } else {
                 // Obtener las URLs previas almacenadas en sessionStorage
                 const previousUrl1 = sessionStorage.getItem("previousUrl1");

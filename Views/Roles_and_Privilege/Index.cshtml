@@ -11,12 +11,7 @@
     <h1>Roles & Privilegios</h1>
     <p class="lead">Tod@s las Operaciones, Modulos, Usuarios, Roles & Privilegios del sistema </p>
     <p class="lead">
-        @*<a onclick="document.location.href = '@Url.Content("~/Tickets/CreateTicket")'" class="btn btn-success">Crear un Ticket &raquo;</a>*@
-        @*Se agrega un botón para que de Index de tickets te envíe a la vista del
-            filtro de tickets*@
-        @*<button onclick="document.location.href = '@Url.Content("~/Tickets/Filter_Tickets")'" type="button" class="btn btn-warning" data-toggle="tooltip" title="Realiza un filtrado personalizado de los pendientes ">
-                Filtrado &fnof;
-            </button>*@
+        @Html.Partial("_Alert")
     </p>
     @if (exception != null)
     {
@@ -30,6 +25,7 @@
             @Info
         </div>
     }
+
     @*<div class="row">
             <div class="col-md-8"></div>
             <div class="col-md-4">
@@ -345,7 +341,7 @@
         <div class="panel panel-success">
             <div class="panel-heading clearfix">
                 <div class="pull-left">
-                    <b>Privilegios de <br /> Contacto_PMX (@Model.Rol_OperacionContac.Count)</b>
+                    <b>Privilegios de <br /> Maestro (@Model.Rol_OperacionContac.Count)</b>
                 </div>
                 <div class="pull-right">
                     <button onclick="document.location.href='@Url.Content("~/Roles_and_Privilege/AddRol_Operacion/")'" class="btn btn-success" data-toggle="tooltip" title="Agregar Privilegios">
@@ -406,7 +402,7 @@
         <div class="panel panel-default">
             <div class="panel-heading clearfix">
                 <div class="pull-left">
-                    <b>Privilegios de <br /> Contacto_TAD (@Model.Rol_OperacionVist.Count)</b>
+                    <b>Privilegios de <br /> Estudiante (@Model.Rol_OperacionVist.Count)</b>
                 </div>
                 <div class="pull-right">
                     <button onclick="document.location.href='@Url.Content("~/Roles_and_Privilege/AddRol_Operacion/")'" class="btn btn-default" data-toggle="tooltip" title="Agregar Privilegios">

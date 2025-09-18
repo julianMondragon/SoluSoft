@@ -1043,6 +1043,8 @@
     <Content Include="Views\Roles_and_Privilege\EditOperation.cshtml" />
     <Content Include="Views\Roles_and_Privilege\EditModulos.cshtml" />
     <Content Include="Views\Roles_and_Privilege\EditRol.cshtml" />
+    <Content Include="Views\Plantel\Details.cshtml" />
+    <Content Include="Views\PuntosAcceso\GetAPByPlantel.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
