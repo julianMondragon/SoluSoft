@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace TAS360.Models.ViewModel
@@ -33,5 +34,9 @@ namespace TAS360.Models.ViewModel
         [Display(Name = "Fecha de Registro")]
         [DataType(DataType.DateTime)]
         public DateTime? FechaHoraRegistro { get; set; } = DateTime.Now;
+
+        public List<HikvisionPuntosAccesoViewModel> PuntosAcceso { get; set; }
+
+        public List<HikvisionEstudiantesViewModel> Estudiantes { get; set; }
     }
 }

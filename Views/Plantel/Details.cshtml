@@ -11,85 +11,155 @@
     <p class="lead">Información del plantel registrado en el sistema.</p>
 </div>
 
-<div class="row">
-    <div class="col-md-8 col-md-offset-2">
-        <div class="panel panel-primary">
-            <div class="panel-heading">
-                <h3 class="panel-title">
-                    <i class="glyphicon glyphicon-education"></i> Datos del plantel 
-                </h3>
-            </div>
-            <div class="panel-body">
-                @using (Html.BeginForm("GetAPByPlantel", "PuntosAcceso", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
-                {
-                    @Html.AntiForgeryToken()
-                    @Html.HiddenFor(m => m.Id)
 
-                    <div class="form-group">
-                        @Html.LabelFor(m => m.Nombre, htmlAttributes: new { @class = "col-md-4 control-label" })
-                        <div class="col-md-8">
-                            @Html.TextBoxFor(m => m.Nombre, new { @class = "form-control", @readonly = "true" })
-                            @Html.ValidationMessageFor(m => m.Nombre, "", new { @class = "text-danger" })
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        @Html.LabelFor(m => m.Telefono, htmlAttributes: new { @class = "col-md-4 control-label" })
-                        <div class="col-md-8">
-                            @Html.TextBoxFor(m => m.Telefono, new { @class = "form-control", @readonly = "true" })
-                            @Html.ValidationMessageFor(m => m.Telefono, "", new { @class = "text-danger" })
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        @Html.LabelFor(m => m.Direccion, htmlAttributes: new { @class = "col-md-4 control-label" })
-                        <div class="col-md-8">
-                            @Html.TextBoxFor(m => m.Direccion, new { @class = "form-control", @readonly = "true" })
-                            @Html.ValidationMessageFor(m => m.Direccion, "", new { @class = "text-danger" })
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        @Html.LabelFor(m => m.Administrador, htmlAttributes: new { @class = "col-md-4 control-label" })
-                        <div class="col-md-8">
-                            @Html.TextBoxFor(m => m.Administrador, new { @class = "form-control", @readonly = "true" })
-                            @Html.ValidationMessageFor(m => m.Administrador, "", new { @class = "text-danger" })
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        @Html.LabelFor(m => m.Director, htmlAttributes: new { @class = "col-md-4 control-label" })
-                        <div class="col-md-8">
-                            @Html.TextBoxFor(m => m.Director, new { @class = "form-control", @readonly = "true" })
-                            @Html.ValidationMessageFor(m => m.Director, "", new { @class = "text-danger" })
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        @Html.LabelFor(model => model.Id_AccessControlToView, htmlAttributes: new { @class = "col-md-4 control-label" })
-                        @if (AccessControl != null && AccessControl.Any())
-                        {
-                            @Html.DropDownListFor(model => model.Id_AccessControlToView, AccessControl, "Seleccione ...", htmlAttributes: new { @class = "col-md-4 control-label" })
-                        }
-                        else
-                        {
-                            @Html.DropDownListFor(model => model.Id_AccessControlToView, AccessControl, "Seleccione ...", htmlAttributes: new { @class = "col-md-4 control-label" })
-                        }
-                    </div>
-
-                    <div class="form-group">
-                        <div class="col-md-offset-4 col-md-8">
-                            <button type="submit" class="btn btn-primary">Consultar</button>
-                            @Html.ActionLink("Cancelar", "Index", null, new { @class = "btn btn-default" })
-                        </div>
-                    </div>
-                }
-            </div>
-        </div>
+<div class="panel panel-default">
+    <div class="panel-heading">Información del Plantel</div>
+    <div class="panel-body">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Nombre</th>
+                    <th>Teléfono</th>
+                    <th>Administrador</th>
+                    <th>Director</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>@Model.Id</td>
+                    <td>@Model.Nombre</td>
+                    <td>@Model.Telefono</td>
+                    <td>@Model.Administrador</td>
+                    <td>@Model.Director</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 </div>
 
+<div class="panel panel-default">
+    <div class="panel-heading clearfix">
+        <h3 class="panel-title pull-left" style="padding-top: 7.5px;">Puntos de Acceso</h3>
+        <div class="row">
+            <div class="col-md-8"></div>
+            <div class="col-md-4 pull-right">
+                <div class="d-flex justify-content-end">
+                    <input type="text" id="searchPuntos" placeholder="Buscar en Puntos de Acceso">
+                    <button onclick="filterTable('searchPuntos','tblPuntosAcceso')" class="btn btn-primary">Buscar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel-body">
+        <table id="tblPuntosAcceso" class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Nombre</th>
+                    <th>Ubicación</th>
+                    <th>Estado</th>
+                    <th>Api Server</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var pa in Model.PuntosAcceso)
+                {
+                    <tr>
+                        <td>@pa.id</td>
+                        <td>@pa.nombre</td>
+                        <td>@pa.ubicacion</td>
+                        <td>@(pa.estado ? "Activo" : "Inactivo")</td>
+                        <td>@pa.apiServer</td>
+                        <td>
+                            <a href="@Url.Action("Details", "PuntosAcceso", new { id = pa.id })" class="btn btn-default btn-sm">
+                                <i class="glyphicon glyphicon-exclamation-sign"></i> Detalles
+                            </a>
+                            <a href="@Url.Action("Edit", "PuntosAcceso", new { id = pa.id })" class="btn btn-primary btn-sm">
+                                <i class="glyphicon glyphicon-edit"></i> Editar
+                            </a>
+                        </td>
+
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading clearfix">
+        <h3 class="panel-title pull-left" style="padding-top: 7.5px;">Estudiantes</h3>
+        <div class="row">
+            <div class="col-md-8"></div>
+            <div class="col-md-4 pull-right">
+                <div class="d-flex justify-content-end">
+                    <input type="text" id="searchEstudiantes" placeholder="Buscar en Estudiantes">
+                    <button onclick="filterTable('searchEstudiantes','tblEstudiantes')" class="btn btn-primary">Buscar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel-body">
+        <table id="tblEstudiantes" class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Nombre</th>
+                    <th>IdExterno</th>
+                    <th>Correo</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var Es in Model.Estudiantes)
+                {
+                    <tr>
+                        <td>@Es.id</td>
+                        <td>@Es.Nombre</td>
+                        <td>@Es.IdExterno</td>
+                        <th>@Es.CorreoPersonal</th>
+                        <td>
+                            <a href="@Url.Action("Details", "Plantel", new { id = Es.id })" class="btn btn-default btn-sm">
+                                <i class="glyphicon glyphicon-exclamation-sign"></i> Detalles
+                            </a>
+                            <a href="@Url.Action("Edit", "Estudiantes", new { id = Es.id })" class="btn btn-primary btn-sm">
+                                <i class="glyphicon glyphicon-edit"></i> Editar
+                            </a>
+                        </td>
+
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<script>
+    function filterTable(inputId, tableId) {
+        var input, filter, table, tr, td, i, j, txtValue, found;
+        input = document.getElementById(inputId);
+        filter = input.value.toUpperCase();
+        table = document.getElementById(tableId);
+        tr = table.getElementsByTagName("tr");
+
+        for (i = 1; i < tr.length; i++) {
+            found = false;
+            td = tr[i].getElementsByTagName("td");
+            for (j = 0; j < td.length; j++) {
+                txtValue = td[j].textContent || td[j].innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    found = true;
+                    break;
+                }
+            }
+            tr[i].style.display = found ? "" : "none";
+        }
+    }
+
+</script>
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
+
 }
 

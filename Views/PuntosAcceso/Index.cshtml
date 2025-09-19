@@ -25,7 +25,7 @@
                     @*<th>Nombre Plantel</th>*@
                     <th>Nombre</th>
                     <th>Ubicación</th>
-                    <th>Fecha Instalación</th>
+                    @*<th>Fecha Instalación</th>*@
                     <th>Estado</th>
                     <th>API Server</th>
                     <th>Usuario</th>
@@ -41,11 +41,14 @@
                         <td>@item.NombrePlantel</td>
                         <td>@item.nombre</td>
                         <td>@item.ubicacion</td>
-                        <td>@(item.FechaHoraInstalacion?.ToString("dd/MM/yyyy HH:mm"))</td>
+                        @*<td>@(item.FechaHoraInstalacion?.ToString("dd/MM/yyyy HH:mm"))</td>*@
                         <td>@(item.estado ? "Activo" : "Inactivo")</td>
                         <td>@item.apiServer</td>
                         <td>@item.usuario</td>
                         <td>
+                            <a href="@Url.Action("Details", "PuntosAcceso", new { id = item.id })" class="btn btn-default btn-sm">
+                                <i class="glyphicon glyphicon-exclamation-sign"></i> Detalles
+                            </a>
                             <a href="@Url.Action("Edit", "PuntosAcceso", new { id = item.id })" class="btn btn-primary btn-sm">
                                 <i class="glyphicon glyphicon-edit"></i> Editar
                             </a>

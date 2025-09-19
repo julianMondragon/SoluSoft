@@ -12,35 +12,49 @@ namespace TAS360.Controllers
     public class PlantelController : Controller
     {
         // TODO: "Agregar el decorador AutorizedUser para cada metodo"
-        // [AuthorizeUser(idOperacion: 21)]  Usa el idOperacion correspondiente a Planteles
+         [AuthorizeUser(idOperacion: 14)]  //Usa el idOperacion correspondiente a Planteles
 
         /// <summary>
         /// Metodo principal de Planteles (Obtiene planteles)
         /// </summary>
         /// <tipe>GET</tipe>
         /// <returns>List<PlantelViewModel></returns>
-        public ActionResult Index()
+        public ActionResult Index(string searchString)
         {
             List<PlantelViewModel> lst;
 
-            using (var db = new HelpDesk_Entities1()) 
+            using (var db = new HelpDesk_Entities1())
             {
-                lst = (from p in db.Planteles
-                       select new PlantelViewModel
-                       {
-                           Id = p.id,
-                           Nombre = p.nombre,
-                           Telefono = p.telefono,
-                           Direccion = p.direccion,
-                           Administrador = p.administrador,
-                           Director = p.director,
-                           FechaHoraRegistro = p.FechaHoraRegistro
-                       }).ToList();
+                var query = from p in db.Planteles
+                            select new PlantelViewModel
+                            {
+                                Id = p.id,
+                                Nombre = p.nombre,
+                                Telefono = p.telefono,
+                                Direccion = p.direccion,
+                                Administrador = p.administrador,
+                                Director = p.director,
+                                FechaHoraRegistro = p.FechaHoraRegistro
+                            };
+
+                if (!String.IsNullOrEmpty(searchString))
+                {
+                    query = query.Where(p =>
+                        p.Nombre.Contains(searchString) ||
+                        p.Administrador.Contains(searchString) ||
+                        p.Director.Contains(searchString) ||
+                        p.Telefono.Contains(searchString)
+                    );
+                }
+
+                lst = query.ToList();
             }
 
             return View(lst);
         }
+
         // GET: Plantel/Create
+        [AuthorizeUser(idOperacion: 15)]
         public ActionResult Create()
         {
             var model = new PlantelViewModel(); 
@@ -48,7 +62,7 @@ namespace TAS360.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        //[AuthorizeUser(idOperacion: 21)]
+        [AuthorizeUser(idOperacion: 15)]
         public ActionResult Create(PlantelViewModel model)
         {
             if (!ModelState.IsValid)
@@ -75,7 +89,7 @@ namespace TAS360.Controllers
             return RedirectToAction("Index"); // <- debería redirigir si todo fue exitoso
         }
         // GET: Plantel/Edit/5
-        //[AuthorizeUser(idOperacion: 21)]
+        [AuthorizeUser(idOperacion: 16)]
         public ActionResult Edit(int id)
         {
             using (var db = new HelpDesk_Entities1())
@@ -101,7 +115,7 @@ namespace TAS360.Controllers
         // POST: Plantel/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        //[AuthorizeUser(idOperacion: 21)]
+        [AuthorizeUser(idOperacion: 16)]
         public ActionResult Edit(PlantelViewModel model)
         {
             if (!ModelState.IsValid)
@@ -126,7 +140,8 @@ namespace TAS360.Controllers
 
             return RedirectToAction("Index");
         }
-
+        [HttpGet]
+        [AuthorizeUser(idOperacion: 18)]
         public ActionResult Details(int id)
         {
             using (var db = new HelpDesk_Entities1())
@@ -135,6 +150,8 @@ namespace TAS360.Controllers
                 if (entity == null)
                     return HttpNotFound();
 
+                var puntosAccesoQuery = db.PuntosAcceso.Where(pa => pa.idPlantel == id);
+                var estudiantesQuery = db.Estudiantes.Where(es => es.idEscuela == id);
                 var model = new PlantelViewModel
                 {
                     Id = entity.id,
@@ -143,9 +160,31 @@ namespace TAS360.Controllers
                     Direccion = entity.direccion,
                     Administrador = entity.administrador,
                     Director = entity.director,
-                    FechaHoraRegistro = entity.FechaHoraRegistro
+                    FechaHoraRegistro = entity.FechaHoraRegistro,
+
+                    PuntosAcceso = puntosAccesoQuery.Select(pa => new HikvisionPuntosAccesoViewModel
+                    {
+                        id = pa.id,
+                        idPlantel = pa.idPlantel,
+                        nombre = pa.nombre,
+                        NombrePlantel = entity.nombre,
+                        ubicacion = pa.ubicacion,
+                        FechaHoraInstalacion = pa.FechaHoraInstalacion,
+                        apiServer = pa.apiServer,
+                        usuario = pa.usuario,
+                        password = pa.password
+                    }).ToList(),
+
+                    Estudiantes = estudiantesQuery.Select(es => new HikvisionEstudiantesViewModel
+                    {
+                        id = es.id,
+                        IdEscuela = es.idEscuela,
+                        Nombre = es.nombre,
+                        CorreoPersonal = es.correoPersonal,
+                        IdExterno = es.id_externo
+                    }).ToList()
                 };
-                GetAccessControlByPlantel(id);
+
                 return View(model);
             }
         }
