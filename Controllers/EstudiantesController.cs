@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using TAS360.Filters;
 using TAS360.Models;
 using TAS360.Models.ViewModel;
 
@@ -240,6 +241,92 @@ namespace TAS360.Controllers
                 return RedirectToAction("Index");
             }
         }
+
+
+        //[HttpGet]
+        //[AuthorizeUser(idOperacion: 18)]
+        //public ActionResult Details(int id)
+        //{
+        //    using (var db = new HelpDesk_Entities1())
+        //    {
+        //        var entity = db.Estudiantes.Find(id);
+        //        if (entity == null)
+        //            return HttpNotFound();
+
+        //        var TutorQuery = db.Tutores.Where(pa => pa.idPlantel == id);
+        //        var estudiantesQuery = db.Estudiantes.Where(es => es.idEscuela == id);
+        //        var model = new PlantelViewModel
+        //        {
+        //            Id = entity.id,
+        //            Nombre = entity.nombre,
+        //            Telefono = entity.telefonoPersonal,
+        //            Direccion = entity.correoPersonal,
+
+        //            Tutor = puntosAccesoQuery.Select(pa => new HikvisionTutorViewModel
+        //            {
+        //                id = pa.id,
+        //                idPlantel = pa.idPlantel,
+        //                nombre = pa.nombre,
+        //                NombrePlantel = entity.nombre,
+        //                ubicacion = pa.ubicacion,
+        //                FechaHoraInstalacion = pa.FechaHoraInstalacion,
+        //                apiServer = pa.apiServer,
+        //                usuario = pa.usuario,
+        //                password = pa.password
+        //            }).ToList(),
+
+        //            Estudiantes = estudiantesQuery.Select(es => new HikvisionEstudiantesViewModel
+        //            {
+        //                id = es.id,
+        //                IdEscuela = es.idEscuela,
+        //                Nombre = es.nombre,
+        //                CorreoPersonal = es.correoPersonal,
+        //                IdExterno = es.id_externo
+        //            }).ToList()
+        //        };
+
+        //        return View(model);
+        //    }
+        //}
+
+        [HttpGet]
+        //[AuthorizeUser(idOperacion: 18)]
+        public ActionResult Details(int id)
+        {
+            using (var db = new HelpDesk_Entities1())
+            {
+                // Buscar al estudiante
+                var entity = db.Estudiantes.Find(id);
+                if (entity == null)
+                    return HttpNotFound();
+
+                // Buscar tutores asociados al estudiante por la tabla intermedia
+                var tutoresQuery = from rel in db.EstudiantesXTutor
+                                   join t in db.Tutores on rel.idTutor equals t.id
+                                   where rel.idEstudiante == id
+                                   select new HikvisionTutorViewModel
+                                   {
+                                       id = t.id,
+                                       Nombre = t.Nombre,
+                                       Correo = t.correo,
+                                       Telefono = t.telefono
+                                   };
+
+                // Armar el ViewModel
+                var model = new HikvisionEstudiantesViewModel
+                {
+                    id = entity.id,
+                    Nombre = entity.nombre,
+                    CorreoPersonal = entity.correoPersonal,
+                    TelefonoPersonal = entity.telefonoPersonal,
+                    Tutor = tutoresQuery.ToList()
+                };
+
+                return View(model);
+            }
+        }
+
+
 
     }
 }

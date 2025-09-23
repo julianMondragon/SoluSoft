@@ -31,5 +31,7 @@ namespace TAS360.Models.ViewModel
         public string IdExterno { get; set; }
 
         public DateTime FechaHoraRegistro { get; set; }
+
+        public List<HikvisionTutorViewModel> Tutor { get; set; }
     }
 }

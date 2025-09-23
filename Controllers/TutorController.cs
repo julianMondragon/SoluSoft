@@ -195,21 +195,19 @@ namespace TAS360.Controllers
         /// </summary>
         /// <type>GET</type>
         /// <returns>HikvisionEstudiantesViewModel</returns>
-        public ActionResult CreateAsesorias(int? idTutor)
+        public ActionResult CreateAsesorias(int? idTutor, int? idEstudiante)
         {
             using (var db = new HelpDesk_Entities1())
             {
-                // Preseleccionamos tutor si viene idTutor
                 ViewBag.Tutores = new SelectList(db.Tutores.ToList(), "id", "Nombre", idTutor);
-                ViewBag.Estudiantes = new SelectList(db.Estudiantes.ToList(), "id", "Nombre");
+                ViewBag.Estudiantes = new SelectList(db.Estudiantes.ToList(), "id", "Nombre", idEstudiante);
             }
-
             var model = new TutorEstudianteViewModel
             {
-                Tutor = idTutor ?? 0, // Asignamos el tutor recibido
+                Tutor = idTutor ?? 0,
+                Estudiante = idEstudiante ?? 0,
                 fechaHora = DateTime.Now
             };
-
             return View(model);
         }
 
@@ -230,6 +228,22 @@ namespace TAS360.Controllers
 
                 using (var db = new HelpDesk_Entities1())
                 {
+                    // 🔎 Validar si ya existe la relación
+                    var existeRelacion = db.EstudiantesXTutor.Any(x =>
+                        x.idTutor == model.Tutor &&
+                        x.idEstudiante == model.Estudiante
+                    );
+
+                    if (existeRelacion)
+                    {
+                        ViewBag.Tutores = new SelectList(db.Tutores.ToList(), "id", "Nombre", model.Tutor);
+                        ViewBag.Estudiantes = new SelectList(db.Estudiantes.ToList(), "id", "Nombre", model.Estudiante);
+
+                        ModelState.AddModelError("", "⚠️ La relación entre este tutor y estudiante ya existe.");
+                        return View(model);
+                    }
+
+                    // Si no existe, crear la nueva relación
                     var entity = new EstudiantesXTutor
                     {
                         idTutor = model.Tutor,
@@ -240,7 +254,8 @@ namespace TAS360.Controllers
                     db.SaveChanges();
                 }
 
-                return RedirectToAction("Index");
+                //return RedirectToAction("Edit");
+                return RedirectToAction("Details", "Estudiantes", new { id = model.Estudiante });
             }
             catch (Exception ex)
             {
@@ -253,6 +268,7 @@ namespace TAS360.Controllers
                 return View(model);
             }
         }
+
 
         /// <summary>
         /// Muestra el formulario para editar la relación Tutor - Estudiante
