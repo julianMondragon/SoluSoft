@@ -42,20 +42,31 @@
         @*tabla Operaciones *@
         <div class="col-md-5">
             <div class="panel panel-default">
-                <div class="panel-heading clearfix">
-                    <div class="pull-left">
+                <div class="panel-heading d-flex justify-content-between align-items-center">
+                    <div>
                         <b>Operación</b>
                     </div>
-                    <div class="pull-right">
-                        <button onclick="document.location.href='@Url.Content("~/Roles_and_Privilege/AddOperation/")'" class="btn btn-success" data-toggle="tooltip" title="Agregar Operacion">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="16" fill="currentColor" class="bi bi-hammer" viewBox="0 0 16 16">
+                    <div class="input-group input-group-sm" style="width: 450px;">
+                        <input type="text" id="searchPuntos" class="form-control" placeholder="Buscar Operacion">
+
+                        <button onclick="filterTable('searchPuntos','OperationTable')"
+                                class="btn btn-primary" type="button">
+                            Buscar
+                        </button>
+
+                        <button onclick="document.location.href='@Url.Content("~/Roles_and_Privilege/AddOperation/")'"
+                                class="btn btn-success" type="button" data-toggle="tooltip" title="Agregar Operación">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="16" fill="currentColor"
+                                 class="bi bi-hammer" viewBox="0 0 16 16">
                                 <path d="M9.972 2.508a.5.5 0 0 0-.16-.556l-.178-.129a5 5 0 0 0-2.076-.783C6.215.862 4.504 1.229 2.84 3.133H1.786a.5.5 0 0 0-.354.147L.146 4.567a.5.5 0 0 0 0 .706l2.571 2.579a.5.5 0 0 0 .708 0l1.286-1.29a.5.5 0 0 0 .146-.353V5.57l8.387 8.873A.5.5 0 0 0 14 14.5l1.5-1.5a.5.5 0 0 0 .017-.689l-9.129-8.63c.747-.456 1.772-.839 3.112-.839a.5.5 0 0 0 .472-.334" />
                             </svg>
                         </button>
                     </div>
+
+
                 </div>
                 <div class="panel-body" style="max-height: 50vh; overflow-y: auto;">
-                    <table id="ticketsTable" class="table table-success table-striped" style="width: 100%;">
+                    <table id="OperationTable" class="table table-success table-striped" style="width: 100%;">
                         <thead>
                             <tr>
                                 <th style="width: 5%;">#</th>
@@ -459,3 +470,30 @@
 
 
 </div>
+<script>
+    function filterTable(inputId, tableId) {
+        var input, filter, table, tr, td, i, j, txtValue, found;
+        input = document.getElementById(inputId);
+        filter = input.value.toUpperCase();
+        table = document.getElementById(tableId);
+        tr = table.getElementsByTagName("tr");
+
+        for (i = 1; i < tr.length; i++) {
+            found = false;
+            td = tr[i].getElementsByTagName("td");
+            for (j = 0; j < td.length; j++) {
+                txtValue = td[j].textContent || td[j].innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    found = true;
+                    break;
+                }
+            }
+            tr[i].style.display = found ? "" : "none";
+        }
+    }
+
+</script>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+

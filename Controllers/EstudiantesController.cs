@@ -16,6 +16,7 @@ namespace TAS360.Controllers
         /// </summary>
         /// <tipe>GET</tipe>
         /// <returns>List<HikvisionEstudiantesViewModel></returns>
+        [AuthorizeUser(idOperacion: 28)]
         public ActionResult Index(string searchString)
         {
             List<HikvisionEstudiantesViewModel> lista;
@@ -64,6 +65,7 @@ namespace TAS360.Controllers
         /// </summary>
         /// <type>GET</type>
         /// <returns>HikvisionEstudiantesViewModel</returns>
+        [AuthorizeUser(idOperacion: 29)]
         public ActionResult Create()
         {
             var model = new HikvisionEstudiantesViewModel();
@@ -83,6 +85,7 @@ namespace TAS360.Controllers
         /// y guarda la información en la base de datos.
         /// </summary>
         /// <type>POST</type>
+        [AuthorizeUser(idOperacion: 29)]
         [HttpPost]
         public ActionResult Create(HikvisionEstudiantesViewModel model)
         {
@@ -125,6 +128,7 @@ namespace TAS360.Controllers
         /// Muestra el formulario para editar un estudiante existente
         /// cargando los datos actuales y la lista de escuelas disponibles.
         /// </summary>
+        [AuthorizeUser(idOperacion: 30)]
         public ActionResult Edit(int id)
         {
             using (var db = new HelpDesk_Entities1())
@@ -164,6 +168,7 @@ namespace TAS360.Controllers
         /// Procesa el formulario de edición para un estudiante existente
         /// y actualiza los datos en la base de datos.
         /// </summary>
+        [AuthorizeUser(idOperacion: 30)]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(HikvisionEstudiantesViewModel model)
@@ -219,6 +224,7 @@ namespace TAS360.Controllers
         /// </summary>
         /// <param name="id">Id del tutor</param>
         /// <returns>Redirección al Index</returns>
+        [AuthorizeUser(idOperacion: 31)]
         public ActionResult Delete(int id)
         {
             try

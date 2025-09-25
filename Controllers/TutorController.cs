@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using TAS360.Models.ViewModel;
 using TAS360.Models;
+using TAS360.Filters;
 
 namespace TAS360.Controllers
 {
@@ -15,6 +16,7 @@ namespace TAS360.Controllers
         /// </summary>
         /// <tipe>GET</tipe>
         /// <returns>List<HikvisionEstudiantesViewModel></returns>
+        [AuthorizeUser(idOperacion: 24)]
         public ActionResult Index(string searchString)
         {
             List<HikvisionTutorViewModel> lista;
@@ -52,6 +54,7 @@ namespace TAS360.Controllers
         /// </summary>
         /// <type>GET</type>
         /// <returns>HikvisionEstudiantesViewModel</returns>
+        [AuthorizeUser(idOperacion: 25)]
         public ActionResult Create()
         {
             var model = new HikvisionTutorViewModel();
@@ -64,6 +67,7 @@ namespace TAS360.Controllers
         /// </summary>
         /// <type>POST</type>
         [HttpPost]
+        [AuthorizeUser(idOperacion: 25)]
         public ActionResult Create(HikvisionTutorViewModel model)
         {
             try
@@ -98,6 +102,7 @@ namespace TAS360.Controllers
         /// </summary>
         /// <param name="id">ID del tutor a editar</param>
         /// <returns>HikvisionTutorViewModel</returns>
+        [AuthorizeUser(idOperacion: 26)]
         public ActionResult Edit(int id)
         {
             using (var db = new HelpDesk_Entities1())
@@ -123,6 +128,7 @@ namespace TAS360.Controllers
         /// Procesa el formulario para actualizar un tutor existente en la base de datos.
         /// </summary>
         [HttpPost]
+        [AuthorizeUser(idOperacion: 26)]
         public ActionResult Edit(HikvisionTutorViewModel model)
         {
             try
@@ -350,6 +356,7 @@ namespace TAS360.Controllers
         /// </summary>
         /// <param name="id">Id del tutor</param>
         /// <returns>Redirección al Index</returns>
+        [AuthorizeUser(idOperacion: 27)]
         public ActionResult Delete(int id)
         {
             try

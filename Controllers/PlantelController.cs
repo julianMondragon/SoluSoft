@@ -214,5 +214,26 @@ namespace TAS360.Controllers
             }
             ViewBag.AccessControl = AccessControl;
         }
+  
+
+        // POST: Plantel/Delete/5
+        //[AuthorizeUser(idOperacion: 17)] // Cambia el idOperacion según corresponda
+        public ActionResult Delete(int id)
+        {
+            using (var db = new HelpDesk_Entities1())
+            {
+                var entity = db.Planteles.Find(id);
+                if (entity == null)
+                    return HttpNotFound();
+
+                db.Planteles.Remove(entity);
+                db.SaveChanges();
+            }
+
+            return RedirectToAction("Index");
+        }
+
+
+
     }
 }

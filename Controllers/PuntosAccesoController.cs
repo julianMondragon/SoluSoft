@@ -16,6 +16,7 @@ namespace TAS360.Controllers
         /// </summary>
         /// <tipe>GET</tipe>
         /// <returns>List<HikvisionPuntosAccesoViewModel></returns>
+        [AuthorizeUser(idOperacion: 20)]
         public ActionResult Index()
         {
             List<HikvisionPuntosAccesoViewModel> lista;
@@ -76,6 +77,7 @@ namespace TAS360.Controllers
         /// </summary>
         /// <type>GET</type>
         /// <returns>HikvisionPuntosAccesoViewModel</returns>
+        [AuthorizeUser(idOperacion: 21)]
         public ActionResult Create()
         {
             var model = new HikvisionPuntosAccesoViewModel();
@@ -98,6 +100,7 @@ namespace TAS360.Controllers
         /// <type>POST</type>
         /// <returns></returns>
         [HttpPost]
+        [AuthorizeUser(idOperacion: 21)]
         public ActionResult Create(HikvisionPuntosAccesoViewModel model)
         {
             if (!ModelState.IsValid)
@@ -140,6 +143,7 @@ namespace TAS360.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
+        [AuthorizeUser(idOperacion: 22)]
         public ActionResult Edit(int id)
         {
             using (var db = new HelpDesk_Entities1())
@@ -181,6 +185,7 @@ namespace TAS360.Controllers
         /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [AuthorizeUser(idOperacion: 22)]
         public ActionResult Edit(HikvisionPuntosAccesoViewModel model)
         {
             if (!ModelState.IsValid)
@@ -221,6 +226,7 @@ namespace TAS360.Controllers
         /// </summary>
         /// <param name="id">Id del tutor</param>
         /// <returns>Redirección al Index</returns>
+        [AuthorizeUser(idOperacion: 23)]
         public ActionResult Delete(int id)
         {
             try
