@@ -1,4 +1,6 @@
-﻿using System;
+﻿using DocumentFormat.OpenXml.EMMA;
+using DocumentFormat.OpenXml.Vml.Office;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -77,6 +79,8 @@ namespace TAS360.Controllers
                     Text = p.nombre
                 }).ToList();
             }
+
+
             return View(model);
         }
 
@@ -120,7 +124,11 @@ namespace TAS360.Controllers
                 db.Estudiantes.Add(entity);
                 db.SaveChanges();
             }
-
+            string path = Server.MapPath("~/Logs/Estudiantes/");
+            Log oLog = new Log(path);
+            oLog.Add("El usuario " + ((User)Session["User"]).nombre +
+                     " registro un nuevo alumno a nombre de: " + model.Nombre);
+            oLog = null;
             return RedirectToAction("Index");
         }
 
@@ -159,6 +167,11 @@ namespace TAS360.Controllers
                         Text = e.nombre
                     }).ToList();
 
+                //string path = Server.MapPath("~/Logs/Estudiantes/");
+                //Log oLog = new Log(path);
+                //oLog.Add("El usuario " + ((User)Session["User"]).nombre +
+                //         " edito los datos del alumno: " + model.Nombre);
+                //oLog = null;
                 return View(model);
             }
         }
@@ -173,48 +186,53 @@ namespace TAS360.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit(HikvisionEstudiantesViewModel model)
         {
-            if (!ModelState.IsValid)
-            {
-                using (var db = new HelpDesk_Entities1())
-                {
-                    ViewBag.IdEscuela = db.Planteles
-                        .Select(e => new SelectListItem
-                        {
-                            Value = e.id.ToString(),
-                            Text = e.nombre
-                        }).ToList();
-                }
-                return View(model);
-            }
-
             using (var db = new HelpDesk_Entities1())
             {
                 var entity = db.Estudiantes.Find(model.id);
                 if (entity == null)
                     return HttpNotFound();
 
+                // --- Datos antes de la edición ---
+                string datosAntes = $"ID: {entity.id}, " +
+                                    $"Nombre: {entity.nombre}, " +
+                                    $"Grado: {entity.Grado}, " +
+                                    $"CorreoPersonal: {entity.correoPersonal}, " +
+                                    $"TelefonoPersonal: {entity.telefonoPersonal}, " +
+                                    $"IdExterno: {entity.id_externo}, " +
+                                    $"IdEscuela: {entity.idEscuela}";
+
+                // Actualizamos entidad con nuevos valores
                 entity.idEscuela = model.IdEscuela;
                 entity.nombre = model.Nombre;
                 entity.Grado = model.Grado;
                 entity.correoPersonal = model.CorreoPersonal;
-                //entity.correoTutor = model.CorreoTutor;
                 entity.telefonoPersonal = model.TelefonoPersonal;
-                //entity.telefonoTutor = model.TelefonoTutor;
                 entity.id_externo = model.IdExterno;
                 entity.fechaHoraRegistro = model.FechaHoraRegistro;
 
-                try
-                {
-                    db.SaveChanges();
-                }
-                catch (System.Data.Entity.Infrastructure.DbUpdateException ex)
-                {
-                    var inner = ex.InnerException?.InnerException?.Message;
-                    throw new Exception("Error al guardar: " + inner, ex);
-                }
-            }
+                // --- Datos después de la edición ---
+                string datosDespues = $"ID: {entity.id}, " +
+                                      $"Nombre: {entity.nombre}, " +
+                                      $"Grado: {entity.Grado}, " +
+                                      $"CorreoPersonal: {entity.correoPersonal}, " +
+                                      $"TelefonoPersonal: {entity.telefonoPersonal}, " +
+                                      $"IdExterno: {entity.id_externo}, " +
+                                      $"IdEscuela: {entity.idEscuela}";
 
-            return RedirectToAction("Index");
+                // Guardamos cambios
+                db.SaveChanges();
+
+                // --- LOG ---
+                string path = Server.MapPath("~/Logs/Estudiantes/");
+                Log oLog = new Log(path);
+                oLog.Add($"Usuario: {((User)Session["User"]).nombre} editó al estudiante con ID {entity.id} \n" +
+                         $"--- DATOS ORIGINALES ---\n{datosAntes}\n" +
+                         $"--- DATOS MODIFICADO ---\n{datosDespues}\n" +
+                         $"Fecha: {DateTime.Now}");
+                oLog = null;
+
+                return RedirectToAction("Index");
+            }
         }
 
 
@@ -234,11 +252,17 @@ namespace TAS360.Controllers
                     var Estudi = db.Estudiantes.FirstOrDefault(t => t.id == id);
                     if (Estudi == null)
                         return HttpNotFound();
-
+                    string EstuNombre = Estudi.nombre;
                     db.Estudiantes.Remove(Estudi);
                     db.SaveChanges();
-                }
 
+
+                    string path = Server.MapPath("~/Logs/Estudiantes/");
+                    Log oLog = new Log(path);
+                    oLog.Add("El usuario " + ((User)Session["User"]).nombre +
+                             " elimino el registro del alumno: " + EstuNombre);
+                    oLog = null;
+                }
                 return RedirectToAction("Index");
             }
             catch (Exception ex)

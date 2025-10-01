@@ -46,14 +46,12 @@
                     <div>
                         <b>Operación</b>
                     </div>
-                    <div class="input-group input-group-sm" style="width: 450px;">
-                        <input type="text" id="searchPuntos" class="form-control" placeholder="Buscar Operacion">
-
+                    <div>
+                        <input type="text" style="width: 310px" id="searchPuntos" placeholder="Buscar Operacion">
                         <button onclick="filterTable('searchPuntos','OperationTable')"
                                 class="btn btn-primary" type="button">
                             Buscar
                         </button>
-
                         <button onclick="document.location.href='@Url.Content("~/Roles_and_Privilege/AddOperation/")'"
                                 class="btn btn-success" type="button" data-toggle="tooltip" title="Agregar Operación">
                             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="16" fill="currentColor"
@@ -62,8 +60,9 @@
                             </svg>
                         </button>
                     </div>
+                    <div class="input-group input-group-sm" style="width: 450px;">
 
-
+                    </div>
                 </div>
                 <div class="panel-body" style="max-height: 50vh; overflow-y: auto;">
                     <table id="OperationTable" class="table table-success table-striped" style="width: 100%;">

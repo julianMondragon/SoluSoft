@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using TAS360.Filters;
 using TAS360.Models.ViewModel;
 using TAS360.Models;
+using DocumentFormat.OpenXml.EMMA;
 
 namespace TAS360.Controllers
 {
@@ -86,6 +87,11 @@ namespace TAS360.Controllers
                 db.SaveChanges();
             }
 
+            string path = Server.MapPath("~/Logs/Plantel/");
+            Log oLog = new Log(path);
+            oLog.Add("El usuario " + ((User)Session["User"]).nombre + " hizo el registro del plantel " + model.Nombre);
+            oLog = null;
+
             return RedirectToAction("Index"); // <- debería redirigir si todo fue exitoso
         }
         // GET: Plantel/Edit/5
@@ -129,13 +135,39 @@ namespace TAS360.Controllers
                 if (entity == null)
                     return HttpNotFound();
 
+                // --- DATOS ANTES ---
+                string datosAntes = $"ID: {entity.id}, " +
+                                    $"Nombre: {entity.nombre}, " +
+                                    $"Teléfono: {entity.telefono}, " +
+                                    $"Dirección: {entity.direccion}, " +
+                                    $"Administrador: {entity.administrador}, " +
+                                    $"Director: {entity.director}";
+
+                // Actualizamos entidad con los nuevos datos
                 entity.nombre = model.Nombre;
                 entity.telefono = model.Telefono;
                 entity.direccion = model.Direccion;
                 entity.administrador = model.Administrador;
                 entity.director = model.Director;
 
+                // --- DATOS DESPUÉS ---
+                string datosDespues = $"ID: {entity.id}, " +
+                                      $"Nombre: {entity.nombre}, " +
+                                      $"Teléfono: {entity.telefono}, " +
+                                      $"Dirección: {entity.direccion}, " +
+                                      $"Administrador: {entity.administrador}, " +
+                                      $"Director: {entity.director}";
+
                 db.SaveChanges();
+
+                // --- LOG ---
+                string path = Server.MapPath("~/Logs/Plantel/");
+                Log oLog = new Log(path);
+                oLog.Add($"Usuario: {((User)Session["User"]).nombre} modificó el plantel con ID {entity.id}\n" +
+                         $"--- DATOS ANTES ---\n{datosAntes}\n" +
+                         $"--- DATOS DESPUÉS ---\n{datosDespues}\n" +
+                         $"Fecha: {DateTime.Now}");
+                oLog = null;
             }
 
             return RedirectToAction("Index");
@@ -214,7 +246,7 @@ namespace TAS360.Controllers
             }
             ViewBag.AccessControl = AccessControl;
         }
-  
+
 
         // POST: Plantel/Delete/5
         //[AuthorizeUser(idOperacion: 17)] // Cambia el idOperacion según corresponda
@@ -226,12 +258,21 @@ namespace TAS360.Controllers
                 if (entity == null)
                     return HttpNotFound();
 
+                string plantelNombre = entity.nombre;
+
                 db.Planteles.Remove(entity);
                 db.SaveChanges();
+
+                string path = Server.MapPath("~/Logs/Plantel/");
+                Log oLog = new Log(path);
+                oLog.Add("El usuario " + ((User)Session["User"]).nombre +
+                         " eliminó el registro del plantel: " + plantelNombre);
+                oLog = null;
             }
 
             return RedirectToAction("Index");
         }
+
 
 
 

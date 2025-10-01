@@ -6,6 +6,8 @@ using System.Web.Mvc;
 using TAS360.Models.ViewModel;
 using TAS360.Models;
 using TAS360.Filters;
+using DocumentFormat.OpenXml.Vml.Office;
+using DocumentFormat.OpenXml.EMMA;
 
 namespace TAS360.Controllers
 {
@@ -88,7 +90,11 @@ namespace TAS360.Controllers
                     db.Tutores.Add(entity);
                     db.SaveChanges();
                 }
-
+                string path = Server.MapPath("~/Logs/Tutores/");
+                Log oLog = new Log(path);
+                oLog.Add("El usuario " + ((User)Session["User"]).nombre +
+                         " registro un nuevo Tutor a nombre de: " + model.Nombre);
+                oLog = null;
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
@@ -128,7 +134,6 @@ namespace TAS360.Controllers
         /// Procesa el formulario para actualizar un tutor existente en la base de datos.
         /// </summary>
         [HttpPost]
-        [AuthorizeUser(idOperacion: 26)]
         public ActionResult Edit(HikvisionTutorViewModel model)
         {
             try
@@ -142,12 +147,36 @@ namespace TAS360.Controllers
                     if (entity == null)
                         return HttpNotFound();
 
+                    // --- DATOS ANTES DE LA EDICIÓN ---
+                    string datosAntes = $"ID: {entity.id}, " +
+                                        $"Nombre: {entity.Nombre}, " +
+                                        $"Correo: {entity.correo}, " +
+                                        $"Teléfono: {entity.telefono}, " +
+                                        $"IdExterno: {entity.id_externo}";
+
+                    // Actualizamos con los nuevos datos
                     entity.Nombre = model.Nombre;
                     entity.correo = model.Correo;
                     entity.telefono = model.Telefono;
                     entity.id_externo = model.IdExterno;
 
+                    // --- DATOS DESPUÉS DE LA EDICIÓN ---
+                    string datosDespues = $"ID: {entity.id}, " +
+                                          $"Nombre: {entity.Nombre}, " +
+                                          $"Correo: {entity.correo}, " +
+                                          $"Teléfono: {entity.telefono}, " +
+                                          $"IdExterno: {entity.id_externo}";
+
                     db.SaveChanges();
+
+                    // --- LOG ---
+                    string path = Server.MapPath("~/Logs/Tutores/");
+                    Log oLog = new Log(path);
+                    oLog.Add($"Usuario: {((User)Session["User"]).nombre} modificó el registro del tutor con ID {entity.id}\n" +
+                             $"--- DATOS ANTES ---\n{datosAntes}\n" +
+                             $"--- DATOS DESPUÉS ---\n{datosDespues}\n" +
+                             $"Fecha: {DateTime.Now}");
+                    oLog = null;
                 }
 
                 return RedirectToAction("Index");
@@ -207,14 +236,15 @@ namespace TAS360.Controllers
             {
                 ViewBag.Tutores = new SelectList(db.Tutores.ToList(), "id", "Nombre", idTutor);
                 ViewBag.Estudiantes = new SelectList(db.Estudiantes.ToList(), "id", "Nombre", idEstudiante);
-            }
-            var model = new TutorEstudianteViewModel
-            {
+                var model = new TutorEstudianteViewModel
+                {
                 Tutor = idTutor ?? 0,
                 Estudiante = idEstudiante ?? 0,
                 fechaHora = DateTime.Now
-            };
-            return View(model);
+                };
+
+                 return View(model);
+             }
         }
 
         [HttpPost]
@@ -234,7 +264,7 @@ namespace TAS360.Controllers
 
                 using (var db = new HelpDesk_Entities1())
                 {
-                    // 🔎 Validar si ya existe la relación
+                    // Validar si ya existe la relación
                     var existeRelacion = db.EstudiantesXTutor.Any(x =>
                         x.idTutor == model.Tutor &&
                         x.idEstudiante == model.Estudiante
@@ -249,7 +279,7 @@ namespace TAS360.Controllers
                         return View(model);
                     }
 
-                    // Si no existe, crear la nueva relación
+                    // Crear la nueva relación
                     var entity = new EstudiantesXTutor
                     {
                         idTutor = model.Tutor,
@@ -258,9 +288,22 @@ namespace TAS360.Controllers
                     };
                     db.EstudiantesXTutor.Add(entity);
                     db.SaveChanges();
+
+                    // Obtener nombres para el log
+                    var tutor = db.Tutores.FirstOrDefault(t => t.id == model.Tutor);
+                    var estudiante = db.Estudiantes.FirstOrDefault(e => e.id == model.Estudiante);
+
+                    string nombreTutor = tutor != null ? tutor.Nombre : "(Tutor no encontrado)";
+                    string nombreEstudiante = estudiante != null ? estudiante.nombre : "(Estudiante no encontrado)";
+
+                    // Registrar en log
+                    string path = Server.MapPath("~/Logs/Tutores/");
+                    Log oLog = new Log(path);
+                    oLog.Add("El usuario " + ((User)Session["User"]).nombre +
+                             " designó a " + nombreTutor + " como tutor de " + nombreEstudiante);
+                    oLog = null;
                 }
 
-                //return RedirectToAction("Edit");
                 return RedirectToAction("Details", "Estudiantes", new { id = model.Estudiante });
             }
             catch (Exception ex)
@@ -274,6 +317,7 @@ namespace TAS360.Controllers
                 return View(model);
             }
         }
+
 
 
         /// <summary>
@@ -302,6 +346,18 @@ namespace TAS360.Controllers
                 ViewBag.Tutores = new SelectList(db.Tutores.ToList(), "id", "Nombre", model.Tutor);
                 ViewBag.Estudiantes = new SelectList(db.Estudiantes.ToList(), "id", "Nombre", model.Estudiante);
 
+                var Tutor = db.Tutores.FirstOrDefault(t => t.id == entity.idTutor);
+                var estudiante = db.Estudiantes.FirstOrDefault(e => e.id == entity.idEstudiante);
+
+                string nombreTutor = Tutor != null ? Tutor.Nombre : "(Tutor no encontrado)";
+                string nombreEstudiante = estudiante != null ? estudiante.nombre : "(Estudiante no encontrado)";
+
+                //string path = Server.MapPath("~/Logs/Tutores/");
+                //Log oLog = new Log(path);
+                //oLog.Add("El usuario " + ((User)Session["User"]).nombre +
+                // " modifico la asesoria de: " + nombreTutor + " a " + nombreEstudiante);
+                //oLog = null;
+
                 return View(model);
             }
         }
@@ -329,11 +385,40 @@ namespace TAS360.Controllers
                         return HttpNotFound();
                     }
 
+                    // Obtener nombres actuales desde la BD (por si no vienen en el modelo)
+                    var tutorAntes = db.Tutores.FirstOrDefault(t => t.id == entity.idTutor)?.Nombre ?? "N/A";
+                    var estudianteAntes = db.Estudiantes.FirstOrDefault(e => e.id == entity.idEstudiante)?.nombre ?? "N/A";
+
+                    // --- DATOS ANTES ---
+                    string datosAntes = $"ID: {entity.id}, " +
+                                        $"Tutor: {tutorAntes}, " +
+                                        $"Estudiante: {estudianteAntes}, " +
+                                        $"FechaHora: {entity.fechaHora}";
+
+                    // Actualizamos valores
                     entity.idTutor = model.Tutor;
                     entity.idEstudiante = model.Estudiante;
                     entity.fechaHora = model.fechaHora ?? DateTime.Now;
 
+                    var tutorDespues = db.Tutores.FirstOrDefault(t => t.id == model.Tutor)?.Nombre ?? "N/A";
+                    var estudianteDespues = db.Estudiantes.FirstOrDefault(e => e.id == model.Estudiante)?.nombre ?? "N/A";
+
+                    // --- DATOS DESPUÉS ---
+                    string datosDespues = $"ID: {entity.id}, " +
+                                          $"Tutor: {tutorDespues}, " +
+                                          $"Estudiante: {estudianteDespues}, " +
+                                          $"FechaHora: {entity.fechaHora}";
+
                     db.SaveChanges();
+
+                    // --- LOG ---
+                    string path = Server.MapPath("~/Logs/Asesorias/");
+                    Log oLog = new Log(path);
+                    oLog.Add($"Usuario: {((User)Session["User"]).nombre} modificó la relación Tutor-Estudiante con ID {entity.id}\n" +
+                             $"--- DATOS ANTES ---\n{datosAntes}\n" +
+                             $"--- DATOS DESPUÉS ---\n{datosDespues}\n" +
+                             $"Fecha: {DateTime.Now}");
+                    oLog = null;
                 }
 
                 return RedirectToAction("Asesorias");
@@ -369,8 +454,14 @@ namespace TAS360.Controllers
 
                     db.Tutores.Remove(tutor);
                     db.SaveChanges();
-                }
+                    string TutorNombre = tutor.Nombre;
 
+                    string path = Server.MapPath("~/Logs/Tutores/");
+                    Log oLog = new Log(path);
+                    oLog.Add("El usuario " + ((User)Session["User"]).nombre +
+                         " elimino el registro del Tutor: " + TutorNombre);
+                    oLog = null;
+                 }
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
@@ -398,9 +489,20 @@ namespace TAS360.Controllers
 
                     db.EstudiantesXTutor.Remove(tutor);
                     db.SaveChanges();
-                }
+                
+                    var Tutor = db.Tutores.FirstOrDefault(t => t.id == tutor.idTutor);
+                    var estudiante = db.Estudiantes.FirstOrDefault(e => e.id == tutor.idEstudiante);
 
-                return RedirectToAction("Index");
+                    string nombreTutor = Tutor != null ? Tutor.Nombre : "(Tutor no encontrado)";
+                    string nombreEstudiante = estudiante != null ? estudiante.nombre : "(Estudiante no encontrado)";
+
+                    string path = Server.MapPath("~/Logs/Tutores/");
+                    Log oLog = new Log(path);
+                    oLog.Add("El usuario " + ((User)Session["User"]).nombre +
+                     " elimino la asesoria de: " + nombreTutor + " a " + nombreEstudiante);
+                    oLog = null;
+                    return RedirectToAction("Index");
+                }
             }
             catch (Exception ex)
             {
