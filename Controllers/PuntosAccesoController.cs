@@ -314,5 +314,48 @@ namespace TAS360.Controllers
                             JsonRequestBehavior.AllowGet);
             }
         }
+
+        /// <summary>
+        /// Recupera en formato JSON los eventos del día generados por el punto de acceso seleccionado.
+        /// </summary>
+        /// <param name="id">Identificador del punto de acceso en la base de datos.</param>
+        /// <param name="maxResults">Número máximo de eventos a consultar.</param>
+        /// <returns>Listado de eventos del día o un mensaje de error en caso de no poder comunicarse con el dispositivo.</returns>
+        [HttpGet]
+        public async Task<JsonResult> GetTodayEvents(int id, int maxResults = 50)
+        {
+            using (var db = new HelpDesk_Entities1())
+            {
+                var puntoAcceso = db.PuntosAcceso.FirstOrDefault(p => p.id == id);
+                if (puntoAcceso == null)
+                {
+                    return Json(new { ok = false, error = "Punto de acceso no encontrado" }, JsonRequestBehavior.AllowGet);
+                }
+
+                var inicio = DateTime.Today;
+                var fin = DateTime.Now;
+
+                try
+                {
+                    var events = await _hikvisionService.GetEventsAsync(puntoAcceso.apiServer, puntoAcceso.usuario, puntoAcceso.password, inicio, fin, maxResults);
+                    var projection = events.Select(e => new
+                    {
+                        employeeNo = e.EmployeeNo,
+                        personName = e.PersonName,
+                        cardNumber = e.CardNumber,
+                        majorEventType = e.MajorEventType,
+                        minorEventType = e.MinorEventType,
+                        eventTime = e.EventTime?.ToString("yyyy-MM-dd HH:mm:ss"),
+                        sourceName = e.SourceName
+                    });
+
+                    return Json(new { ok = true, events = projection }, JsonRequestBehavior.AllowGet);
+                }
+                catch (Exception ex)
+                {
+                    return Json(new { ok = false, error = ex.Message }, JsonRequestBehavior.AllowGet);
+                }
+            }
+        }
     }
 }
