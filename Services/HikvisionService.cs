@@ -12,7 +12,7 @@ using System.Diagnostics;
 
 namespace TAS360.Services
 {
-    public class HikvisionService
+    public class HikvisionService : IHikvisionService
     {
         public async Task<string> ConsumeISAPI(string url, string user, string pass)
         {
@@ -269,13 +269,6 @@ namespace TAS360.Services
                     return new DeviceCheckResult { Online = false, Error = ex.Message, LatencyMs = sw.ElapsedMilliseconds };
                 }
             }
-        }
-        public sealed class DeviceCheckResult
-        {
-            public bool Online { get; set; }
-            public int? StatusCode { get; set; }
-            public long LatencyMs { get; set; }
-            public string Error { get; set; }
         }
 
     }

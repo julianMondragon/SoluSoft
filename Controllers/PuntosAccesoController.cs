@@ -16,8 +16,18 @@ namespace TAS360.Controllers
 {
     public class PuntosAccesoController : Controller
     {
+        private readonly IHikvisionService _hikvisionService;
         private string GetSessionValue(string key) => Session[key] as string ?? string.Empty;
         private void SetSessionValue(string key, string value) => Session[key] = value;
+        public PuntosAccesoController()
+            : this(new HikvisionService())
+        {
+        }
+
+        public PuntosAccesoController(IHikvisionService hikvisionService)
+        {
+            _hikvisionService = hikvisionService ?? throw new ArgumentNullException(nameof(hikvisionService));
+        }
         /// <summary>
         /// Metodo principal de Puntos de Acceso 
         /// </summary>
@@ -279,9 +289,6 @@ namespace TAS360.Controllers
             }
             return View(model);
         }
-
-        // Si quieres, deja una sola instancia; si no, crea dentro del método.
-        private readonly HikvisionService _hikvisionService = new HikvisionService();
 
         [HttpGet]
         public async Task<JsonResult> CheckStatus(int id, string host, bool https = false, int? port = null)

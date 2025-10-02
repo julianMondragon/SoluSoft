@@ -472,7 +472,9 @@
       <DependentUpon>AditivoBD.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\DeviceCheckResult.cs" />
     <Compile Include="Services\HikvisionService.cs" />
+    <Compile Include="Services\IHikvisionService.cs" />
     <Compile Include="StorProc\LSA_Reportes.cs" />
   </ItemGroup>
   <ItemGroup>
