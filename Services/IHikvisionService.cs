@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using TAS360.Models.ViewModel;
@@ -95,5 +96,17 @@ namespace TAS360.Services
         /// <param name="timeoutMs">Tiempo máximo de espera en milisegundos para la operación.</param>
         /// <returns>Resultado detallado del chequeo que indica disponibilidad, código de estado y errores.</returns>
         Task<DeviceCheckResult> CheckStatusAsync(string baseUrl, string user, string pass, int timeoutMs = 2500);
+
+        /// <summary>
+        /// Recupera el historial de eventos registrado por el dispositivo Hikvision dentro del intervalo indicado.
+        /// </summary>
+        /// <param name="apiServer">Dirección base del servidor ISAPI.</param>
+        /// <param name="user">Usuario con permisos para consultar el historial de eventos.</param>
+        /// <param name="pass">Contraseña asociada al usuario autorizado.</param>
+        /// <param name="start">Fecha y hora inicial (incluida) para acotar la búsqueda.</param>
+        /// <param name="end">Fecha y hora final (incluida) para acotar la búsqueda.</param>
+        /// <param name="maxResults">Cantidad máxima de eventos a recuperar.</param>
+        /// <returns>Listado de eventos convertidos a un modelo de presentación.</returns>
+        Task<IReadOnlyCollection<HikvisionEventViewModel>> GetEventsAsync(string apiServer, string user, string pass, DateTime start, DateTime end, int maxResults = 100);
     }
 }

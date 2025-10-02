@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using TAS360.Models.ViewModel;
 using System.Linq;
 using System.Diagnostics;
+using System.Globalization;
 
 namespace TAS360.Services
 {
@@ -243,6 +244,99 @@ namespace TAS360.Services
                     throw new Exception($"Error al eliminar usuario: {response.StatusCode} - {responseBody}");
 
                 return true;
+            }
+        }
+
+        /// <summary>
+        /// Consulta el API de eventos de Hikvision y proyecta la respuesta al modelo de presentación.
+        /// </summary>
+        /// <param name="apiServer">Dirección base del servidor ISAPI.</param>
+        /// <param name="user">Usuario con permisos para leer eventos.</param>
+        /// <param name="pass">Contraseña del usuario con permisos.</param>
+        /// <param name="start">Fecha y hora de inicio del intervalo a consultar.</param>
+        /// <param name="end">Fecha y hora de fin del intervalo a consultar.</param>
+        /// <param name="maxResults">Número máximo de eventos que se desean recuperar.</param>
+        /// <returns>Lista inmutable de eventos representados mediante <see cref="HikvisionEventViewModel"/>.</returns>
+        public async Task<IReadOnlyCollection<HikvisionEventViewModel>> GetEventsAsync(string apiServer, string user, string pass, DateTime start, DateTime end, int maxResults = 100)
+        {
+            if (string.IsNullOrWhiteSpace(apiServer))
+                throw new ArgumentException("La dirección del servidor no puede ser vacía", nameof(apiServer));
+
+            if (string.IsNullOrWhiteSpace(user))
+                throw new ArgumentException("El usuario es obligatorio", nameof(user));
+
+            if (string.IsNullOrWhiteSpace(pass))
+                throw new ArgumentException("La contraseña es obligatoria", nameof(pass));
+
+            if (maxResults <= 0)
+                throw new ArgumentOutOfRangeException(nameof(maxResults), "El número máximo de resultados debe ser mayor que cero");
+
+            var handler = new HttpClientHandler
+            {
+                Credentials = new NetworkCredential(user, pass)
+            };
+
+            using (var client = new HttpClient(handler))
+            {
+                var url = $"{apiServer.TrimEnd('/')}/ISAPI/AccessControl/AcsEvent?format=json";
+                var payload = new
+                {
+                    AcsEventSearchCond = new
+                    {
+                        searchID = "1",
+                        searchResultPosition = 0,
+                        maxResults = maxResults,
+                        major = 0,
+                        minor = 0,
+                        startTime = start.ToString("yyyy-MM-dd'T'HH:mm:ss", CultureInfo.InvariantCulture),
+                        endTime = end.ToString("yyyy-MM-dd'T'HH:mm:ss", CultureInfo.InvariantCulture)
+                    }
+                };
+
+                var json = JsonConvert.SerializeObject(payload);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                var response = await client.PostAsync(url, content).ConfigureAwait(false);
+                if (!response.IsSuccessStatusCode)
+                {
+                    var reason = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    throw new Exception($"No se pudo obtener el historial de eventos: {(int)response.StatusCode} - {reason}");
+                }
+
+                var body = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                var parsed = JObject.Parse(body);
+                var eventsToken = parsed["AcsEventSearchResult"]?["AcsEvent"];
+                if (eventsToken == null)
+                    return Array.Empty<HikvisionEventViewModel>();
+
+                if (eventsToken.Type != JTokenType.Array)
+                {
+                    eventsToken = new JArray(eventsToken);
+                }
+
+                var result = new List<HikvisionEventViewModel>();
+                foreach (var item in eventsToken)
+                {
+                    DateTime? eventTime = null;
+                    var eventTimeString = item.Value<string>("eventTime");
+                    if (!string.IsNullOrWhiteSpace(eventTimeString) && DateTime.TryParse(eventTimeString, CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal, out var parsedDate))
+                    {
+                        eventTime = parsedDate;
+                    }
+
+                    result.Add(new HikvisionEventViewModel
+                    {
+                        EmployeeNo = item.Value<string>("employeeNoString") ?? item.Value<string>("employeeNo"),
+                        PersonName = item.Value<string>("name"),
+                        CardNumber = item.Value<string>("cardNo"),
+                        MajorEventType = item.Value<string>("majorEventType") ?? item.Value<string>("major") ?? string.Empty,
+                        MinorEventType = item.Value<string>("minorEventType") ?? item.Value<string>("minor") ?? string.Empty,
+                        EventTime = eventTime,
+                        SourceName = item.Value<string>("readerName") ?? item.Value<string>("doorNoString") ?? item.Value<string>("doorName")
+                    });
+                }
+
+                return result;
             }
         }
 

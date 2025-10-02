@@ -49,6 +49,37 @@
         </table>
     </div>
 </div>
+
+<div class="panel panel-default">
+    <div class="panel-heading clearfix">
+        <h3 class="panel-title pull-left" style="padding-top: 7.5px;">Eventos del día</h3>
+        <button id="btn-refresh-events" type="button" class="btn btn-default btn-sm pull-right">
+            <span class="glyphicon glyphicon-refresh"></span> Actualizar
+        </button>
+    </div>
+    <div class="panel-body">
+        <div id="events-error" class="alert alert-danger hidden" role="alert"></div>
+        <div class="table-responsive">
+            <table id="tblEvents" class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>No. empleado</th>
+                        <th>Nombre</th>
+                        <th>Evento</th>
+                        <th>Tipo</th>
+                        <th>Fuente</th>
+                        <th>Hora</th>
+                    </tr>
+                </thead>
+                <tbody id="events-body">
+                    <tr>
+                        <td colspan="6" class="text-center text-muted">Cargando eventos...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 <script>
     function filterTable(inputId, tableId) {
         var input, filter, table, tr, td, i, j, txtValue, found;
@@ -76,39 +107,107 @@
 @section scripts {
     @Scripts.Render("~/bundles/jqueryval")
     <script>
-         (function () {
-           var url = '@Url.Action("CheckStatus","PuntosAcceso", new { id = Model.id })';
-           var $led  = $("#conn-led");
-           var $meta = $("#conn-meta");
+        (function () {
+            var url = '@Url.Action("CheckStatus","PuntosAcceso", new { id = Model.id })';
+            var $led = $("#conn-led");
+            var $meta = $("#conn-meta");
 
-           function setState(cls, text, meta) {
-             $led.removeClass("label-default label-success label-danger label-warning")
-                 .addClass(cls).text(text);
-             if (meta) $meta.text(meta);
-           }
+            function setState(cls, text, meta) {
+                $led.removeClass("label-default label-success label-danger label-warning")
+                    .addClass(cls).text(text);
+                if (meta) $meta.text(meta);
+            }
 
-           function ping() {
-             var host  = $("#pa-host").val();
-             var port  = $("#pa-port").val();
-             var https = $("#pa-https").val() === "True" || $("#pa-https").val() === "true";
+            function ping() {
+                var host = $("#pa-host").val();
+                var port = $("#pa-port").val();
+                var https = $("#pa-https").val() === "True" || $("#pa-https").val() === "true";
 
-             $.getJSON(url, { host: host, port: port, https: https })
-              .done(function (r) {
-                if (r.online) {
-                  setState("label-success", "En línea", "latencia: " + r.latencyMs + " ms • " + new Date().toLocaleTimeString());
-                } else {
-                  var note = (r.statusCode ? ("HTTP " + r.statusCode) : (r.error || "Sin respuesta"));
-                  setState("label-danger", "Sin comunicación", note + " • " + new Date().toLocaleTimeString());
+                $.getJSON(url, { host: host, port: port, https: https })
+                    .done(function (r) {
+                        if (r.online) {
+                            setState("label-success", "En línea", "latencia: " + r.latencyMs + " ms • " + new Date().toLocaleTimeString());
+                        } else {
+                            var note = (r.statusCode ? ("HTTP " + r.statusCode) : (r.error || "Sin respuesta"));
+                            setState("label-danger", "Sin comunicación", note + " • " + new Date().toLocaleTimeString());
+                        }
+                    })
+                    .fail(function () {
+                        setState("label-warning", "Intermitente", "Fallo de red • " + new Date().toLocaleTimeString());
+                    });
+            }
+
+            ping();                 // primer chequeo
+            setInterval(ping, 20000); // cada 20s
+        })();
+
+        (function () {
+            var eventsUrl = '@Url.Action("GetTodayEvents", "PuntosAcceso", new { id = Model.id })';
+            var $tableBody = $("#events-body");
+            var $error = $("#events-error");
+            var $refresh = $("#btn-refresh-events");
+            var loadingRow = '<tr><td colspan="6" class="text-center text-muted">Actualizando eventos...</td></tr>';
+
+            function renderRows(events) {
+                if (!events || !events.length) {
+                    $tableBody.html('<tr><td colspan="6" class="text-center text-muted">Sin eventos registrados para el día de hoy.</td></tr>');
+                    return;
                 }
-              })
-              .fail(function () {
-                setState("label-warning", "Intermitente", "Fallo de red • " + new Date().toLocaleTimeString());
-              });
-           }
 
-           ping();                 // primer chequeo
-           setInterval(ping, 20000); // cada 20s
-         })();
+                var rows = $.map(events, function (evt) {
+                    var time = evt.eventTime ? evt.eventTime : '';
+                    var major = evt.majorEventType || '';
+                    var minor = evt.minorEventType || '';
+                    var description = $.trim([major, minor].filter(Boolean).join(' / '));
+
+                    return '<tr>' +
+                        '<td>' + (evt.employeeNo || '-') + '</td>' +
+                        '<td>' + (evt.personName || '-') + '</td>' +
+                        '<td>' + (description || '-') + '</td>' +
+                        '<td>' + (major || '-') + '</td>' +
+                        '<td>' + (evt.sourceName || '-') + '</td>' +
+                        '<td>' + (time || '-') + '</td>' +
+                        '</tr>';
+                });
+
+                $tableBody.html(rows.join(''));
+            }
+
+            function showError(message) {
+                $error.text(message || 'No fue posible obtener los eventos del dispositivo.').removeClass('hidden');
+            }
+
+            function hideError() {
+                $error.addClass('hidden').text('');
+            }
+
+            function loadEvents() {
+                hideError();
+                $tableBody.html(loadingRow);
+
+                $.getJSON(eventsUrl)
+                    .done(function (response) {
+                        if (!response || response.ok !== true) {
+                            showError((response && response.error) ? response.error : 'Respuesta inválida del servidor.');
+                            $tableBody.html('<tr><td colspan="6" class="text-center text-muted">Sin datos disponibles.</td></tr>');
+                            return;
+                        }
+
+                        renderRows(response.events);
+                    })
+                    .fail(function () {
+                        showError('Error de comunicación con el servidor.');
+                        $tableBody.html('<tr><td colspan="6" class="text-center text-muted">Error al actualizar la información.</td></tr>');
+                    });
+            }
+
+            $refresh.on('click', function () {
+                loadEvents();
+            });
+
+            loadEvents();
+            setInterval(loadEvents, 15000);
+        })();
     </script>
 }
 
