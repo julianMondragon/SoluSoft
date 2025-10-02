@@ -20,9 +20,19 @@ namespace TAS360.Controllers
 {
     public class HikVisionController : Controller
     {
+        private readonly IHikvisionService _hikvisionService;
         // Se encapsular acceso seguro del dispositivo a la sesión del usuario
         private string GetSessionValue(string key) => Session[key] as string ?? string.Empty;
         private void SetSessionValue(string key, string value) => Session[key] = value;
+        public HikVisionController()
+            : this(new HikvisionService())
+        {
+        }
+
+        public HikVisionController(IHikvisionService hikvisionService)
+        {
+            _hikvisionService = hikvisionService ?? throw new ArgumentNullException(nameof(hikvisionService));
+        }
         /// <summary>
         /// Metodo encargado probar la comunicacion con un equipo
         /// </summary>
@@ -160,7 +170,6 @@ namespace TAS360.Controllers
             try
             {
                 // 1. Obtiene la informacion de la Dispositivo (Control de Acceso DS-K1T320)
-                HikvisionService service = new HikvisionService();
                 string url = $"{apiServer}/ISAPI/System/deviceInfo";
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
                 var handler = new HttpClientHandler { Credentials = new NetworkCredential(user, pass) };
@@ -186,7 +195,7 @@ namespace TAS360.Controllers
                 }
 
                 // 🔎 2. Obtener la informacion de la Red
-                string xmlNetwork = await service.GetNetworkInterfaces(apiServer, user, pass);
+                string xmlNetwork = await _hikvisionService.GetNetworkInterfaces(apiServer, user, pass);
                 var docNet = XDocument.Parse(xmlNetwork);
                 XNamespace nsNet = docNet.Root.GetDefaultNamespace();
                 var interfaces = docNet.Descendants(nsNet + "NetworkInterface");
@@ -227,7 +236,7 @@ namespace TAS360.Controllers
                 }
 
                 // 🧍‍♂️ 3. Obtener la informacion de Personas
-                (var people, int numMatches, int totalMatches) = await service.GetPeopleInfoAsync(apiServer, user, pass);
+                (var people, int numMatches, int totalMatches) = await _hikvisionService.GetPeopleInfoAsync(apiServer, user, pass);
                 model.Personas = people;
                 model.NumPersonas = numMatches;
                 model.TotalPersonas = totalMatches;
@@ -273,8 +282,7 @@ namespace TAS360.Controllers
                 return RedirectToAction("Index");
             }
 
-            var service = new HikvisionService();
-            bool success = await service.CrearUsuarioDispositivoAsync(model, apiServer, user, pass);
+            bool success = await _hikvisionService.CrearUsuarioDispositivoAsync(model, apiServer, user, pass);
 
             if (success)
             {
@@ -301,10 +309,9 @@ namespace TAS360.Controllers
             string user = GetSessionValue("HikUser");
             string pass = GetSessionValue("HikPass");
 
-            var service = new HikvisionService();
             try
             {
-                var usuario = await service.ObtenerUsuarioPorIdAsync(apiServer, user, pass, id);
+                var usuario = await _hikvisionService.ObtenerUsuarioPorIdAsync(apiServer, user, pass, id);
                 if (usuario == null)
                     return HttpNotFound();
 
@@ -345,8 +352,7 @@ namespace TAS360.Controllers
             string user = GetSessionValue("HikUser");
             string pass = GetSessionValue("HikPass");
 
-            var service = new HikvisionService();
-            bool actualizado = await service.EditarUsuarioDispositivoAsync(model, apiServer, user, pass);
+            bool actualizado = await _hikvisionService.EditarUsuarioDispositivoAsync(model, apiServer, user, pass);
 
             if (actualizado)
             {
@@ -375,8 +381,7 @@ namespace TAS360.Controllers
                     return RedirectToAction("MainDashboard");
                 }
 
-                var service = new HikvisionService();
-                var eliminado = await service.EliminarUsuarioDispositivoAsync(apiServer, user, pass, id);
+                var eliminado = await _hikvisionService.EliminarUsuarioDispositivoAsync(apiServer, user, pass, id);
 
                 if (eliminado)
                 {
