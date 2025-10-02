@@ -17,8 +17,6 @@ namespace TAS360.Controllers
     public class PuntosAccesoController : Controller
     {
         private readonly IHikvisionService _hikvisionService;
-        private string GetSessionValue(string key) => Session[key] as string ?? string.Empty;
-        private void SetSessionValue(string key, string value) => Session[key] = value;
         public PuntosAccesoController()
             : this(new HikvisionService())
         {
@@ -293,22 +291,28 @@ namespace TAS360.Controllers
         [HttpGet]
         public async Task<JsonResult> CheckStatus(int id, string host, bool https = false, int? port = null)
         {
-            string apiServer = GetSessionValue("HikApiServer");
-            string user = GetSessionValue("HikUser");
-            string pass = GetSessionValue("HikPass");
-            if (string.IsNullOrWhiteSpace(host))
-                return Json(new { online = false, error = "Host no recibido" }, JsonRequestBehavior.AllowGet);
+            using (var db = new HelpDesk_Entities1())
+            {
+                var puntoAcceso = db.PuntosAcceso.FirstOrDefault(p => p.id == id);
+                if (puntoAcceso == null)
+                {
+                    return Json(new { online = false, error = "Punto de acceso no encontrado" }, JsonRequestBehavior.AllowGet);
+                }
 
-            var scheme = https ? "https" : "http";
-            var baseUrl = port.HasValue ? $"{scheme}://{host}:{port.Value}" : $"{scheme}://{host}";
+                var scheme = https ? "https" : "http";
+                var apiServer = string.IsNullOrWhiteSpace(host)
+                    ? puntoAcceso.apiServer
+                    : (port.HasValue ? $"{scheme}://{host}:{port.Value}" : $"{scheme}://{host}");
 
-            // Lee tus credenciales desde Web.config (usa tus keys reales)
-            //var user = ConfigurationManager.AppSettings["HikvisionUser"];
-            //var pass = ConfigurationManager.AppSettings["HikvisionPass"];
+                if (string.IsNullOrWhiteSpace(apiServer))
+                {
+                    return Json(new { online = false, error = "Host no disponible" }, JsonRequestBehavior.AllowGet);
+                }
 
-            var r = await _hikvisionService.CheckStatusAsync(apiServer, user, pass, 2500);
-            return Json(new { online = r.Online, latencyMs = r.LatencyMs, statusCode = r.StatusCode, error = r.Error },
-                        JsonRequestBehavior.AllowGet);
+                var r = await _hikvisionService.CheckStatusAsync(apiServer, puntoAcceso.usuario, puntoAcceso.password, 2500);
+                return Json(new { online = r.Online, latencyMs = r.LatencyMs, statusCode = r.StatusCode, error = r.Error },
+                            JsonRequestBehavior.AllowGet);
+            }
         }
     }
 }
