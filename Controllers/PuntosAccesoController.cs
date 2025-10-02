@@ -279,11 +279,15 @@ namespace TAS360.Controllers
                     return HttpNotFound();
                 model.apiServer = entity.apiServer;
                 model.password = entity.password;
+                model.usuario = entity.usuario;
                 model.nombre = entity.nombre;
                 model.idPlantel = entity.idPlantel;
                 model.id = entity.id;
                 model.FechaHoraInstalacion = entity.FechaHoraInstalacion;
                 model.ubicacion = entity.ubicacion;
+                model.estado = entity.estado ?? false;
+                model.NombrePlantel = entity.Planteles?.nombre ??
+                    db.Planteles.Where(p => p.id == entity.idPlantel).Select(p => p.nombre).FirstOrDefault();
             }
             return View(model);
         }

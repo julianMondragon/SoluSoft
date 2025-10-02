@@ -339,7 +339,8 @@ namespace TAS360.Services
 
             using (var client = new HttpClient(handler))
             {
-                var url = $"{apiServer.TrimEnd('/')}/ISAPI/AccessControl/AcsEvent?format=json";
+                var baseUri = BuildBaseUri(apiServer);
+                var requestUri = new Uri(baseUri, "/ISAPI/AccessControl/AcsEvent?format=json");
                 var payload = new
                 {
                     AcsEventSearchCond = new
@@ -357,7 +358,7 @@ namespace TAS360.Services
                 var json = JsonConvert.SerializeObject(payload);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-                var response = await client.PostAsync(url, content).ConfigureAwait(false);
+                var response = await client.PostAsync(requestUri, content).ConfigureAwait(false);
                 if (!response.IsSuccessStatusCode)
                 {
                     var reason = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
