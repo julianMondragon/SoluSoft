@@ -443,6 +443,7 @@
     <Compile Include="Models\ViewModel\G_TicketsByTerminalViewModel.cs" />
     <Compile Include="Models\ViewModel\HikvisionEstudiantesViewModel.cs" />
     <Compile Include="Models\ViewModel\HikvisionPuntosAccesoViewModel.cs" />
+    <Compile Include="Models\ViewModel\HikvisionEventViewModel.cs" />
     <Compile Include="Models\ViewModel\HikvisionTutorViewModel.cs" />
     <Compile Include="Models\ViewModel\TutorEstudianteViewModel.cs" />
     <Compile Include="Models\ViewModel\HikvisionUserViewModel.cs" />
