@@ -204,9 +204,19 @@ namespace TAS360.Controllers
                     });
                     if (model.NetworkInterfaces.FirstOrDefault(m => m.Id == id).WirelessStatus == "true")
                     {
-                        model.NetworkInterfaces.FirstOrDefault(m => m.Id == id).Name = iface.Element(nsNet + "Wireless").Element(nsNet + "ssid").Value;
-                        model.NetworkInterfaces.FirstOrDefault(m => m.Id == id).ConnectionType = "Wireless";
-                        model.NetworkInterfaces.FirstOrDefault(m => m.Id == id).LinkStatus = "True";
+                        if(!string.IsNullOrEmpty(model.NetworkInterfaces.FirstOrDefault(m => m.Id == id).Name))
+                        {
+                            model.NetworkInterfaces.FirstOrDefault(m => m.Id == id).Name = iface.Element(nsNet + "Wireless").Element(nsNet + "ssid").Value;
+                            model.NetworkInterfaces.FirstOrDefault(m => m.Id == id).ConnectionType = "Wireless";
+                            model.NetworkInterfaces.FirstOrDefault(m => m.Id == id).LinkStatus = "True";
+                        }
+                        else
+                        {
+                            model.NetworkInterfaces.FirstOrDefault(m => m.Id == id).Name = "N/A";
+                            model.NetworkInterfaces.FirstOrDefault(m => m.Id == id).ConnectionType = "LAN";
+                            model.NetworkInterfaces.FirstOrDefault(m => m.Id == id).LinkStatus = "False";
+                        }
+
                     }
                     else
                     {

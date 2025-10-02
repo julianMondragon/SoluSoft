@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using System.Collections.Generic;
 using TAS360.Models.ViewModel;
 using System.Linq;
+using System.Diagnostics;
 
 namespace TAS360.Services
 {
@@ -243,6 +244,38 @@ namespace TAS360.Services
 
                 return true;
             }
+        }
+
+        public async Task<DeviceCheckResult> CheckStatusAsync(string baseUrl, string user, string pass, int timeoutMs = 2500)
+        {
+            var handler = new HttpClientHandler { Credentials = new NetworkCredential(user, pass) };
+            using (var http = new HttpClient(handler) { Timeout = TimeSpan.FromMilliseconds(timeoutMs) })
+            {
+                var url = $"{baseUrl.TrimEnd('/')}/ISAPI/Security/userCheck";
+                var sw = Stopwatch.StartNew();
+                try
+                {
+                    var resp = await http.GetAsync(url).ConfigureAwait(false);
+                    sw.Stop();
+                    return new DeviceCheckResult
+                    {
+                        Online = resp.IsSuccessStatusCode,
+                        StatusCode = (int)resp.StatusCode,
+                        LatencyMs = sw.ElapsedMilliseconds
+                    };
+                }
+                catch (Exception ex)
+                {
+                    return new DeviceCheckResult { Online = false, Error = ex.Message, LatencyMs = sw.ElapsedMilliseconds };
+                }
+            }
+        }
+        public sealed class DeviceCheckResult
+        {
+            public bool Online { get; set; }
+            public int? StatusCode { get; set; }
+            public long LatencyMs { get; set; }
+            public string Error { get; set; }
         }
 
     }

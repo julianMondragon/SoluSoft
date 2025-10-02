@@ -1046,6 +1046,7 @@
     <Content Include="Views\Plantel\Details.cshtml" />
     <Content Include="Views\PuntosAcceso\GetAPByPlantel.cshtml" />
     <Content Include="Views\Estudiantes\Details.cshtml" />
+    <Content Include="Views\PuntosAcceso\Details.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

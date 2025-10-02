@@ -27,8 +27,7 @@
                         <div class="col-md-8">
                             @Html.DropDownListFor(
                                 m => m.idPlantel,
-                                (IEnumerable<SelectListItem>)ViewBag.idPlantel,
-                                "Seleccione un Plantel",
+                                (IEnumerable<SelectListItem>)ViewBag.ListaDePlanteles,
                                 new { @class = "form-control" }
                             )
                             @Html.ValidationMessageFor(m => m.idPlantel, "", new { @class = "text-danger" })

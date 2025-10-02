@@ -1,16 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
+using System.Net;
+using System.Net.Http;
 using System.Web.Mvc;
 using TAS360.Filters;
 using TAS360.Models;
 using TAS360.Models.ViewModel;
+using TAS360.Services;
 
 namespace TAS360.Controllers
 {
     public class PuntosAccesoController : Controller
     {
+        private string GetSessionValue(string key) => Session[key] as string ?? string.Empty;
+        private void SetSessionValue(string key, string value) => Session[key] = value;
         /// <summary>
         /// Metodo principal de Puntos de Acceso 
         /// </summary>
@@ -168,10 +175,12 @@ namespace TAS360.Controllers
                     usuario = entity.usuario,
                     password = entity.password
                 };
-                ViewBag.idPlantel = db.Planteles.Select(p => new SelectListItem
+                ViewBag.ListaDePlanteles = db.Planteles.Select(p => new SelectListItem
                 {
                     Value = p.id.ToString(),
-                    Text = p.nombre.ToString()
+                    Text = p.nombre.ToString(),
+                    Selected = p.id == entity.idPlantel ? true : false
+
                 }).ToList();
                 return View(model);
             }
@@ -218,7 +227,7 @@ namespace TAS360.Controllers
                 db.SaveChanges();
             }
 
-            return RedirectToAction("Index");
+            return RedirectToAction("Details/" + model.id);
         }
 
         /// <summary>
@@ -250,6 +259,49 @@ namespace TAS360.Controllers
             }
         }
 
+        [HttpGet]
+        //[AuthorizeUser(idOperacion: 18)]
+        public ActionResult Details(int id)
+        {
+            HikvisionPuntosAccesoViewModel model = new HikvisionPuntosAccesoViewModel();
+            using (var db = new HelpDesk_Entities1())
+            {
+                var entity = db.PuntosAcceso.Find(id);
+                if (entity == null)
+                    return HttpNotFound();
+                model.apiServer = entity.apiServer;
+                model.password = entity.password;
+                model.nombre = entity.nombre;
+                model.idPlantel = entity.idPlantel;
+                model.id = entity.id;
+                model.FechaHoraInstalacion = entity.FechaHoraInstalacion;
+                model.ubicacion = entity.ubicacion;
+            }
+            return View(model);
+        }
 
+        // Si quieres, deja una sola instancia; si no, crea dentro del método.
+        private readonly HikvisionService _hikvisionService = new HikvisionService();
+
+        [HttpGet]
+        public async Task<JsonResult> CheckStatus(int id, string host, bool https = false, int? port = null)
+        {
+            string apiServer = GetSessionValue("HikApiServer");
+            string user = GetSessionValue("HikUser");
+            string pass = GetSessionValue("HikPass");
+            if (string.IsNullOrWhiteSpace(host))
+                return Json(new { online = false, error = "Host no recibido" }, JsonRequestBehavior.AllowGet);
+
+            var scheme = https ? "https" : "http";
+            var baseUrl = port.HasValue ? $"{scheme}://{host}:{port.Value}" : $"{scheme}://{host}";
+
+            // Lee tus credenciales desde Web.config (usa tus keys reales)
+            //var user = ConfigurationManager.AppSettings["HikvisionUser"];
+            //var pass = ConfigurationManager.AppSettings["HikvisionPass"];
+
+            var r = await _hikvisionService.CheckStatusAsync(apiServer, user, pass, 2500);
+            return Json(new { online = r.Online, latencyMs = r.LatencyMs, statusCode = r.StatusCode, error = r.Error },
+                        JsonRequestBehavior.AllowGet);
+        }
     }
 }
