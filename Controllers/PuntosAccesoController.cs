@@ -276,6 +276,12 @@ namespace TAS360.Controllers
                 model.id = entity.id;
                 model.FechaHoraInstalacion = entity.FechaHoraInstalacion;
                 model.ubicacion = entity.ubicacion;
+                model.usuario = entity.usuario;
+                model.estado = entity.estado ?? true;
+
+                SetSessionValue("HikApiServer", entity.apiServer);
+                SetSessionValue("HikUser", entity.usuario);
+                SetSessionValue("HikPass", entity.password);
             }
             return View(model);
         }
@@ -302,6 +308,44 @@ namespace TAS360.Controllers
             var r = await _hikvisionService.CheckStatusAsync(apiServer, user, pass, 2500);
             return Json(new { online = r.Online, latencyMs = r.LatencyMs, statusCode = r.StatusCode, error = r.Error },
                         JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
+        /// Obtiene los eventos del día actual para el punto de acceso especificado.
+        /// </summary>
+        /// <param name="id">Identificador del punto de acceso.</param>
+        /// <returns>Listado de eventos en formato JSON.</returns>
+        [HttpGet]
+        public async Task<JsonResult> GetTodayEvents(int id)
+        {
+            try
+            {
+                using (var db = new HelpDesk_Entities1())
+                {
+                    var entity = db.PuntosAcceso.Find(id);
+                    if (entity == null)
+                    {
+                        Response.StatusCode = (int)HttpStatusCode.NotFound;
+                        return Json(new { success = false, message = "Punto de acceso no encontrado." }, JsonRequestBehavior.AllowGet);
+                    }
+
+                    var result = await _hikvisionService.GetEventsForTodayAsync(entity.apiServer, entity.usuario, entity.password);
+
+                    return Json(new
+                    {
+                        success = true,
+                        data = result.Events,
+                        total = result.TotalMatches,
+                        matches = result.NumOfMatches,
+                        timestamp = DateTime.Now.ToString("o")
+                    }, JsonRequestBehavior.AllowGet);
+                }
+            }
+            catch (Exception ex)
+            {
+                Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                return Json(new { success = false, message = ex.Message }, JsonRequestBehavior.AllowGet);
+            }
         }
     }
 }
