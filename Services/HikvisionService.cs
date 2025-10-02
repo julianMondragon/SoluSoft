@@ -15,19 +15,39 @@ namespace TAS360.Services
 {
     public class HikvisionService : IHikvisionService
     {
+        private static Uri BuildBaseUri(string apiServer)
+        {
+            if (string.IsNullOrWhiteSpace(apiServer))
+                throw new ArgumentException("El parámetro apiServer no puede estar vacío.", nameof(apiServer));
+
+            var trimmed = apiServer.Trim();
+            if (!trimmed.Contains("://"))
+            {
+                trimmed = $"http://{trimmed}";
+            }
+
+            if (!Uri.TryCreate(trimmed, UriKind.Absolute, out var baseUri))
+            {
+                throw new ArgumentException("La dirección del servidor Hikvision no es válida.", nameof(apiServer));
+            }
+
+            return baseUri;
+        }
+
         public async Task<string> ConsumeISAPI(string url, string user, string pass)
         {
+            var endpointUri = BuildBaseUri(url);
             var handler = new HttpClientHandler()
             {
                 Credentials = new CredentialCache
                 {
-                    { new Uri(url), "Digest", new NetworkCredential(user, pass) }
+                    { endpointUri, "Digest", new NetworkCredential(user, pass) }
                 }
             };
 
             using (var client = new HttpClient(handler))
             {
-                var response = await client.GetAsync(url);
+                var response = await client.GetAsync(endpointUri);
                 if (response.IsSuccessStatusCode)
                     return await response.Content.ReadAsStringAsync();
                 else
@@ -37,14 +57,54 @@ namespace TAS360.Services
 
         public async Task<string> GetDeviceInfo(string apiServer, string user, string pass)
         {
-            string url = $"{apiServer}/ISAPI/System/deviceInfo";
-            return await ConsumeISAPI(url, user, pass);
+            var baseUri = BuildBaseUri(apiServer);
+            var requestUri = new Uri(baseUri, "/ISAPI/System/deviceInfo");
+            return await ConsumeISAPI(requestUri.ToString(), user, pass);
         }
 
         public async Task<string> GetNetworkInterfaces(string apiServer, string user, string pass)
         {
-            string url = $"{apiServer}/ISAPI/System/Network/interfaces";
-            return await ConsumeISAPI(url, user, pass);
+            var baseUri = BuildBaseUri(apiServer);
+            var requestUri = new Uri(baseUri, "/ISAPI/System/Network/interfaces");
+            return await ConsumeISAPI(requestUri.ToString(), user, pass);
+        }
+
+        public async Task<JObject> GetEventsAsync(string apiServer, string user, string password, object eventSearch = null)
+        {
+            var handler = new HttpClientHandler
+            {
+                Credentials = new NetworkCredential(user, password)
+            };
+
+            using (var client = new HttpClient(handler))
+            {
+                var baseUri = BuildBaseUri(apiServer);
+                var requestUri = new Uri(baseUri, "/ISAPI/AccessControl/AcsEvent?format=json");
+
+                var body = eventSearch ?? new
+                {
+                    AcsEventSearchCond = new
+                    {
+                        searchID = "1",
+                        searchResultPosition = 0,
+                        maxResults = 30
+                    }
+                };
+
+                var jsonBody = JsonConvert.SerializeObject(body);
+
+                using (var content = new StringContent(jsonBody, Encoding.UTF8, "application/json"))
+                {
+                    var response = await client.PostAsync(requestUri, content).ConfigureAwait(false);
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        throw new Exception("No se pudo obtener la información de eventos del dispositivo.");
+                    }
+
+                    var responseBody = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    return JObject.Parse(responseBody);
+                }
+            }
         }
 
 
@@ -67,7 +127,8 @@ namespace TAS360.Services
 
             using (var client = new HttpClient(handler))
             {
-                var url = $"{apiServer.TrimEnd('/')}/ISAPI/AccessControl/UserInfo/Search?format=json";
+                var baseUri = BuildBaseUri(apiServer);
+                var requestUri = new Uri(baseUri, "/ISAPI/AccessControl/UserInfo/Search?format=json");
                 var body = new
                 {
                     UserInfoSearchCond = new
@@ -80,7 +141,7 @@ namespace TAS360.Services
                 var jsonBody = JsonConvert.SerializeObject(body);
                 var content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
 
-                var response = await client.PostAsync(url, content);
+                var response = await client.PostAsync(requestUri, content);
                 if (!response.IsSuccessStatusCode)
                     throw new Exception("No se pudo obtener la información de personas.");
 
@@ -132,10 +193,10 @@ namespace TAS360.Services
 
             using (var client = new HttpClient(handler))
             {
-                string url = $"{apiServer.TrimEnd('/')}/ISAPI/AccessControl/UserInfo/Record?format=json";
+                var requestUri = new Uri(BuildBaseUri(apiServer), "/ISAPI/AccessControl/UserInfo/Record?format=json");
                 var json = JsonConvert.SerializeObject(payload);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
-                var response = await client.PostAsync(url, content);
+                var response = await client.PostAsync(requestUri, content);
                 return response.IsSuccessStatusCode;
             }
         }
@@ -149,7 +210,7 @@ namespace TAS360.Services
 
             using (var client = new HttpClient(handler))
             {
-                string url = $"{apiServer.TrimEnd('/')}/ISAPI/AccessControl/UserInfo/Search?format=json";
+                var requestUri = new Uri(BuildBaseUri(apiServer), "/ISAPI/AccessControl/UserInfo/Search?format=json");
 
                 var body = new
                 {
@@ -164,7 +225,7 @@ namespace TAS360.Services
                 var jsonBody = JsonConvert.SerializeObject(body);
                 var content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
 
-                var response = await client.PostAsync(url, content);
+                var response = await client.PostAsync(requestUri, content);
                 if (!response.IsSuccessStatusCode)
                     throw new Exception("No se pudo obtener la lista de usuarios.");
 
@@ -205,10 +266,10 @@ namespace TAS360.Services
 
             using (var client = new HttpClient(handler))
             {
-                string url = $"{apiServer.TrimEnd('/')}/ISAPI/AccessControl/UserInfo/Modify?format=json";
+                var requestUri = new Uri(BuildBaseUri(apiServer), "/ISAPI/AccessControl/UserInfo/Modify?format=json");
                 var json = JsonConvert.SerializeObject(payload);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
-                var response = await client.PutAsync(url, content);
+                var response = await client.PutAsync(requestUri, content);
                 return response.IsSuccessStatusCode;
             }
         }
@@ -233,11 +294,11 @@ namespace TAS360.Services
 
             using (var client = new HttpClient(handler))
             {
-                string url = $"{apiServer.TrimEnd('/')}/ISAPI/AccessControl/UserInfo/Delete?format=json";
+                var requestUri = new Uri(BuildBaseUri(apiServer), "/ISAPI/AccessControl/UserInfo/Delete?format=json");
                 var json = JsonConvert.SerializeObject(body);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-                var response = await client.PutAsync(url, content);
+                var response = await client.PutAsync(requestUri, content);
                 var responseBody = await response.Content.ReadAsStringAsync();
 
                 if (!response.IsSuccessStatusCode)
@@ -345,11 +406,12 @@ namespace TAS360.Services
             var handler = new HttpClientHandler { Credentials = new NetworkCredential(user, pass) };
             using (var http = new HttpClient(handler) { Timeout = TimeSpan.FromMilliseconds(timeoutMs) })
             {
-                var url = $"{baseUrl.TrimEnd('/')}/ISAPI/Security/userCheck";
+                var baseUri = BuildBaseUri(baseUrl);
+                var requestUri = new Uri(baseUri, "/ISAPI/Security/userCheck");
                 var sw = Stopwatch.StartNew();
                 try
                 {
-                    var resp = await http.GetAsync(url).ConfigureAwait(false);
+                    var resp = await http.GetAsync(requestUri).ConfigureAwait(false);
                     sw.Stop();
                     return new DeviceCheckResult
                     {

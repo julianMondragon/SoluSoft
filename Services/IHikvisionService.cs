@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using TAS360.Models.ViewModel;
+using Newtonsoft.Json.Linq;
 
 namespace TAS360.Services
 {
@@ -37,6 +38,16 @@ namespace TAS360.Services
         /// <param name="pass">Contraseña asociada al usuario con permisos.</param>
         /// <returns>Respuesta cruda que describe las interfaces de red configuradas.</returns>
         Task<string> GetNetworkInterfaces(string apiServer, string user, string pass);
+
+        /// <summary>
+        /// Recupera los eventos de control de acceso almacenados en el dispositivo Hikvision.
+        /// </summary>
+        /// <param name="apiServer">Dirección base o host del dispositivo.</param>
+        /// <param name="user">Usuario con permisos para consultar eventos.</param>
+        /// <param name="password">Contraseña asociada al usuario.</param>
+        /// <param name="eventSearch">Objeto opcional con la definición del filtro de búsqueda enviado al endpoint.</param>
+        /// <returns>Objeto JSON con la información de los eventos retornados por el dispositivo.</returns>
+        Task<JObject> GetEventsAsync(string apiServer, string user, string password, object eventSearch = null);
 
         /// <summary>
         /// Obtiene la información de personas registrada en el dispositivo Hikvision de manera paginada.
