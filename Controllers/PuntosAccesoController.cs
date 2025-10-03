@@ -11,6 +11,7 @@ using TAS360.Filters;
 using TAS360.Models;
 using TAS360.Models.ViewModel;
 using TAS360.Services;
+using DocumentFormat.OpenXml.Math;
 
 namespace TAS360.Controllers
 {
@@ -344,15 +345,17 @@ namespace TAS360.Controllers
                     var events = await _hikvisionService.GetEventsAsync(puntoAcceso.apiServer, puntoAcceso.usuario, puntoAcceso.password, inicio, fin, maxResults);
                     var projection = events.Select(e => new
                     {
-                        employeeNo = e.EmployeeNo,
-                        personName = e.PersonName,
-                        cardNumber = e.CardNumber,
-                        majorEventType = e.MajorEventType,
-                        minorEventType = e.MinorEventType,
-                        eventTime = e.EventTime?.ToString("yyyy-MM-dd HH:mm:ss"),
-                        sourceName = e.SourceName
+                        totalMatches = e.totalMatches,
+                        serialNo = e.InfoList.FirstOrDefault().serialNo,
+                        cardType = e.InfoList.FirstOrDefault().cardType,
+                        currentVerifyMode = e.InfoList.FirstOrDefault().currentVerifyMode,
+                        remoteHostAddr = e.InfoList.FirstOrDefault().remoteHostAddr,
+                        doorNo = e.InfoList.FirstOrDefault().doorNo,
+                        time = e.InfoList.FirstOrDefault().time,
+
                     });
 
+                    
                     return Json(new { ok = true, events = projection }, JsonRequestBehavior.AllowGet);
                 }
                 catch (Exception ex)

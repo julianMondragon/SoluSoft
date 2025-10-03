@@ -343,15 +343,15 @@ namespace TAS360.Services
                 var requestUri = new Uri(baseUri, "/ISAPI/AccessControl/AcsEvent?format=json");
                 var payload = new
                 {
-                    AcsEventSearchCond = new
+                    AcsEventCond = new
                     {
                         searchID = "1",
                         searchResultPosition = 0,
                         maxResults = maxResults,
                         major = 0,
                         minor = 0,
-                        startTime = start.ToString("yyyy-MM-dd'T'HH:mm:ss", CultureInfo.InvariantCulture),
-                        endTime = end.ToString("yyyy-MM-dd'T'HH:mm:ss", CultureInfo.InvariantCulture)
+                        startTime = start.ToString("yyyy-MM-dd'T'HH:mm:ss",CultureInfo.CurrentCulture),
+                        endTime = end.ToString("yyyy-MM-dd'T'HH:mm:ss", CultureInfo.CurrentCulture)
                     }
                 };
 
@@ -367,7 +367,7 @@ namespace TAS360.Services
 
                 var body = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                 var parsed = JObject.Parse(body);
-                var eventsToken = parsed["AcsEventSearchResult"]?["AcsEvent"];
+                var eventsToken = parsed["AcsEvent"]?["InfoList"];
                 if (eventsToken == null)
                     return Array.Empty<HikvisionEventViewModel>();
 
@@ -388,14 +388,19 @@ namespace TAS360.Services
 
                     result.Add(new HikvisionEventViewModel
                     {
-                        EmployeeNo = item.Value<string>("employeeNoString") ?? item.Value<string>("employeeNo"),
-                        PersonName = item.Value<string>("name"),
-                        CardNumber = item.Value<string>("cardNo"),
-                        MajorEventType = item.Value<string>("majorEventType") ?? item.Value<string>("major") ?? string.Empty,
-                        MinorEventType = item.Value<string>("minorEventType") ?? item.Value<string>("minor") ?? string.Empty,
-                        EventTime = eventTime,
-                        SourceName = item.Value<string>("readerName") ?? item.Value<string>("doorNoString") ?? item.Value<string>("doorName")
+                        totalMatches = item.Value<int>("totalMatches"),
+                        serchID = item.Value<string>("serchID"),
+                        InfoList = new List<InfoList>() 
+                        {
+                            new InfoList(){
+                            serialNo = item.Value<int>("serialNo"),
+                            cardType = item.Value<int>("cardType"),
+                            currentVerifyMode = item.Value<string>("currentVerifyMode"),
+                            time = item.Value<DateTime>("time")
+                            } 
+                        }
                     });
+                    
                 }
 
                 return result;
