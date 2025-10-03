@@ -192,16 +192,16 @@
         (function () {
             function loadEventos() {
                 var id = '@Model.id'; // id del punto actual
-                $("#tbodyEventos").html('<tr><td colspan="6" class="text-center text-muted">Actualizando eventos...</td></tr>');
+                $("#events-body").html('<tr><td colspan="6" class="text-center text-muted">Actualizando eventos...</td></tr>');
                 $.get('@Url.Action("EventosHoyTable","PuntosAcceso")', { id: id })
                     .done(function (html) {
-                        $("#tbodyEventos").html(html); // inyecta las filas <tr> del partial
+                        $("#events-body").html(html); // inyecta las filas <tr> del partial
                     })
                     .fail(function (xhr) {
-                        $("#tbodyEventos").html('<tr><td colspan="6" class="text-danger">Error: ' + xhr.status + ' ' + xhr.statusText + '</td></tr>');
+                        $("#events-body").html('<tr><td colspan="6" class="text-danger">Error: ' + xhr.status + ' ' + xhr.statusText + '</td></tr>');
                     });
             }
-            $("#btnActualizar").on("click", loadEventos);
+            $("#btn-refresh-events").on("click", loadEventos);
             loadEventos(); // carga inicial
         })();
 </script>

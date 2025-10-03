@@ -180,6 +180,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\HikEventHelper.cs" />
     <Compile Include="Helpers\Hikvision.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="Models\Accesos.cs">
@@ -641,6 +642,7 @@
     <Content Include="fonts\Myriad Pro Italic.ttf" />
     <Content Include="fonts\PFBeauSansPro-LightItalic.ttf" />
     <Content Include="ReportesSLAHistorico\010725.pdf" />
+    <Content Include="App_Data\hik_minor_map.json" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\datatables\AutoFill-2.4.0\css\autoFill.bootstrap.css" />
     <Content Include="Scripts\datatables\AutoFill-2.4.0\css\autoFill.bootstrap.min.css" />
@@ -1054,7 +1056,6 @@
     <Content Include="Views\PuntosAcceso\_EventosHoyTable.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="App_Data\" />
     <Folder Include="ArchivosASA\" />
     <Folder Include="Logs\" />
     <Folder Include="Tablas_CSV\" />

@@ -5,13 +5,14 @@
 {
     foreach (var e in Model)
     {
-        <tr>
+        <tr title="@HikEventHelper.DebugTip(e)">
+            <!-- tooltip de debug -->
             <td>@e.serialNo</td>
             <td>@(string.IsNullOrWhiteSpace(e.employeeNo) ? "-" : e.employeeNo)</td>
             <td>@(string.IsNullOrWhiteSpace(e.name) ? "-" : e.name)</td>
-            <td>@Hikvision.Describe(e)</td>   <!-- Descripción amigable -->
+            <td>@HikEventHelper.Describe(e)</td>
             <td>@(e.doorNo ?? 0)</td>
-            <td>@e.time</td>
+            <td>@HikEventHelper.FormatTime(e.time)</td>  <!-- ajusta hora -->
         </tr>
     }
 }

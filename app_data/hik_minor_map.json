@@ -1,0 +1,16 @@
+{
+  "5": {
+    "7": "Duración no válida",
+    "39": "Falló autenticación mediante rostro",
+    "21": "Puerta abierta",
+    "22": "Puerta cerrada",
+    "112": "Falló autenticación mediante huella",
+    "113": "Falló autenticación rostro (genérico)",
+    "114": "Falló autenticación mediante tarjeta",
+    "204": "Duración no válida"
+  },
+  "3": {
+    "80": "Local: Inicio de sesión",
+    "112": "Remoto: Inicio de sesión"
+  }
+}
