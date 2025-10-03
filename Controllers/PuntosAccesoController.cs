@@ -337,8 +337,8 @@ namespace TAS360.Controllers
                     return Json(new { ok = false, error = "Punto de acceso no encontrado" }, JsonRequestBehavior.AllowGet);
                 }
 
-                var inicio = DateTime.Today;
-                var fin = DateTime.Now;
+                var inicio = DateTime.Today.AddHours(-0.01);
+                var fin = DateTime.Today.AddHours(22.5);
 
                 try
                 {
@@ -352,6 +352,11 @@ namespace TAS360.Controllers
                         remoteHostAddr = e.InfoList.FirstOrDefault().remoteHostAddr,
                         doorNo = e.InfoList.FirstOrDefault().doorNo,
                         time = e.InfoList.FirstOrDefault().time,
+                        employeeNoString = e.InfoList.FirstOrDefault().employeeNoString,
+                        userType = e.InfoList.FirstOrDefault().userType,
+                        name = e.InfoList.FirstOrDefault().name,
+                        major = e.InfoList.FirstOrDefault().major,
+                        minor = e.InfoList.FirstOrDefault().minor,
 
                     });
 

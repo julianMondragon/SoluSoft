@@ -180,6 +180,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\Hikvision.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="Models\Accesos.cs">
       <DependentUpon>HelpDesk.tt</DependentUpon>

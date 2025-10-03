@@ -22,13 +22,18 @@ namespace TAS360.Models.ViewModel
     {
         public int major { get; set; }
         public int minor { get; set; }
-        public DateTime time { get; set; }
+        public string time { get; set; }
         public int serialNo { get; set; }
         public int cardType { get; set; }
         public string currentVerifyMode { get; set; }
         public string mask { get; set; }
         public int cardReaderNo { get; set; }
         public int doorNo { get; set; }
+        public int cardNo { get; set; }
+        public string cardNoString { get; set; }
         public string remoteHostAddr { get;set; }
+        public string name { get; set; }
+        public string employeeNoString { get; set; }
+        public string userType { get; set;}
     }
 }

@@ -111,8 +111,9 @@
                 <thead>
                     <tr>
                         <th>Serial Number</th>
-                        <th>Modo de verificacion</th>
-                        <th>Tag</th>
+                        <th>No Empleado</th>
+                        <th>Nombre</th>
+                        <th>Descripción</th>
                         <th>Puerta</th>
                         <th>Hora</th>
                     </tr>
@@ -152,7 +153,7 @@
 
 @section scripts {
     @Scripts.Render("~/bundles/jqueryval")
-    <script>
+<script>
         (function () {
             var url = '@Url.Action("CheckStatus","PuntosAcceso", new { id = Model.id })';
             var $led = $("#conn-led");
@@ -211,8 +212,9 @@
 
                     return '<tr>' +
                         '<td>' + (evt.serialNo || '-') + '</td>' +
-                        '<td>' + (evt.currentVerifyMode || '-') + '</td>' +
-                        '<td>' + (evt.cardType || '-') + '</td>' +
+                        '<td>' + (evt.employeeNoString || '-') + '</td>' +
+                        '<td>' + (evt.name || '-') + '</td>' +
+                        '<td>' + (minor || '-') + '</td>' +
                         '<td>' + (evt.doorNo || '-') + '</td>' +
                         '<td>' + (evt.time || '-') + '</td>' +
                         '</tr>';
@@ -275,7 +277,7 @@
             loadEvents();
             setInterval(loadEvents, 100000);
         })();
-    </script>
+</script>
 }
 
 

@@ -348,7 +348,7 @@ namespace TAS360.Services
                         searchID = "1",
                         searchResultPosition = 0,
                         maxResults = maxResults,
-                        major = 0,
+                        major = 5,
                         minor = 0,
                         startTime = start.ToString("yyyy-MM-dd'T'HH:mm:ss",CultureInfo.CurrentCulture),
                         endTime = end.ToString("yyyy-MM-dd'T'HH:mm:ss", CultureInfo.CurrentCulture)
@@ -396,7 +396,12 @@ namespace TAS360.Services
                             serialNo = item.Value<int>("serialNo"),
                             cardType = item.Value<int>("cardType"),
                             currentVerifyMode = item.Value<string>("currentVerifyMode"),
-                            time = item.Value<DateTime>("time")
+                            time = item.Value<string>("time"),
+                            name = item.Value<string>("name"),
+                            employeeNoString = item.Value<string>("employeeNoString"),
+                            doorNo = item.Value<int>("doorNo"),
+                            minor = item.Value<int>("menior"),
+                            major = item.Value<int>("major")
                             } 
                         }
                     });
