@@ -1051,6 +1051,7 @@
     <Content Include="Views\PuntosAcceso\GetAPByPlantel.cshtml" />
     <Content Include="Views\Estudiantes\Details.cshtml" />
     <Content Include="Views\PuntosAcceso\Details.cshtml" />
+    <Content Include="Views\PuntosAcceso\_EventosHoyTable.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

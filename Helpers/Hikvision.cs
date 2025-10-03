@@ -94,10 +94,12 @@ namespace TAS360.Helpers
             // - "Acceso por rostro válido (Julian Mondragon, emp 117)"
             // - "Falló autenticación huella (emp 117)"
             // - "Duración no válida (tarjeta: 123456)"
-            var actor = !string.IsNullOrWhiteSpace(e.name) ? e.name
-                       : !string.IsNullOrWhiteSpace(e.employeeNo) ? $"emp {e.employeeNo}"
-                       : !string.IsNullOrWhiteSpace(e.cardNo.ToString()) ? $"tarjeta {e.cardNo}"
-                       : "-";
+            //var actor = !string.IsNullOrEmpty(e.name) ? e.name
+            //           : !string.IsNullOrEmpty(e.employeeNo) ? $"emp {e.employeeNo}"
+            //           : !string.IsNullOrEmpty(e.cardNo.ToString()) ? $"tarjeta {e.cardNo}"
+            //           : !string.IsNullOrEmpty(e.cardReaderNo.ToString()) ? $"tarjeta {e.cardReaderNo}"
+            //           : !string.IsNullOrEmpty(e.minor.ToString()) ? $"minior {e.minor}": "-";
+            var actor = "-actor";
 
             // Construcción base
             string action = minorTxt;

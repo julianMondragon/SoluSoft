@@ -1,0 +1,23 @@
+@using TAS360.Helpers
+@model IEnumerable<TAS360.Models.ViewModel.InfoItem>
+
+@if (Model != null && Model.Any())
+{
+    foreach (var e in Model)
+    {
+        <tr>
+            <td>@e.serialNo</td>
+            <td>@(string.IsNullOrWhiteSpace(e.employeeNo) ? "-" : e.employeeNo)</td>
+            <td>@(string.IsNullOrWhiteSpace(e.name) ? "-" : e.name)</td>
+            <td>@Hikvision.Describe(e)</td>   <!-- Descripción amigable -->
+            <td>@(e.doorNo ?? 0)</td>
+            <td>@e.time</td>
+        </tr>
+    }
+}
+else
+{
+    <tr>
+        <td colspan="6" class="text-center text-muted">Sin eventos para hoy.</td>
+    </tr>
+}

@@ -369,5 +369,40 @@ namespace TAS360.Controllers
                 }
             }
         }
+
+        [HttpGet]
+        public async Task<PartialViewResult> EventosHoyTable(int id)
+        {
+            using (var db = new HelpDesk_Entities1())
+            {
+                // 1) Trae el punto (Host, https, puerto, usuario, pass) desde tu BD
+                var punto = db.PuntosAcceso
+                          .Where(p => p.id == id)
+                          .Select(p => new { p.apiServer, p.usuario, p.password })
+                          .FirstOrDefault();
+
+                if (punto == null)
+                    return PartialView("_EventosHoyTable", new List<InfoItem>());
+
+                var scheme = "http";
+                var baseUrl = punto.apiServer;
+
+                var svc = new HikvisionService();
+
+                // 2) Solo major=5 (control de acceso) para favorecer eventos con persona
+                var (items, num, total) = await svc.GetEventsTodayAsync(baseUrl, punto.usuario, punto.password, pageSize: 50, major: 5, minor: 0);
+
+                // 3) Orden descendente por tiempo (string ISO funciona bien)
+                var ordered = items ?? new List<InfoItem>();
+                ordered = ordered.OrderByDescending(e => e.time).ToList();
+
+                ViewBag.NumMatches = num;
+                ViewBag.TotalMatches = total;
+
+                return PartialView("_EventosHoyTable", ordered);
+                
+            }
+        }
+
     }
 }

@@ -1,4 +1,5 @@
-﻿@model TAS360.Models.ViewModel.HikvisionPuntosAccesoViewModel
+﻿@using TAS360.Helpers 
+@model TAS360.Models.ViewModel.HikvisionPuntosAccesoViewModel
 @{
     ViewBag.Title = "Detalles punto de acceso";
 
@@ -189,93 +190,19 @@
         })();
 
         (function () {
-            var eventsUrl = '@Url.Action("GetTodayEvents", "PuntosAcceso", new { id = Model.id })';
-            var $tableBody = $("#events-body");
-            var $error = $("#events-error");
-            var $refresh = $("#btn-refresh-events");
-            var $filter = $("#event-filter");
-            var $count = $("#totalMatches");
-            var loadingRow = '<tr><td colspan="6" class="text-center text-muted">Actualizando eventos...</td></tr>';
-
-            function renderRows(events) {
-                if (!events || !events.length) {
-                    $tableBody.html('<tr><td colspan="6" class="text-center text-muted">Sin eventos registrados para el día de hoy.</td></tr>');
-                    $count.text('0');
-                    return;
-                }
-
-                var rows = $.map(events, function (evt) {
-                    var time = evt.eventTime ? evt.eventTime : '';
-                    var major = evt.majorEventType || '';
-                    var minor = evt.minorEventType || '';
-                    var description = $.trim([major, minor].filter(Boolean).join(' / '));
-
-                    return '<tr>' +
-                        '<td>' + (evt.serialNo || '-') + '</td>' +
-                        '<td>' + (evt.employeeNoString || '-') + '</td>' +
-                        '<td>' + (evt.name || '-') + '</td>' +
-                        '<td>' + (Hikvision.Describe(e.minor) || '-') + '</td>' +
-                        '<td>' + (evt.doorNo || '-') + '</td>' +
-                        '<td>' + (evt.time || '-') + '</td>' +
-                        '</tr>';
-                });
-
-                $tableBody.html(rows.join(''));
-                $count.text(events.length);
-                filterTable('event-filter', 'tblEvents');
-            }
-
-            function showError(message) {
-                $error.text(message || 'No fue posible obtener los eventos del dispositivo.').removeClass('hidden');
-                $count.text('0');
-            }
-
-            function hideError() {
-                $error.addClass('hidden').text('');
-            }
-
-            function setLoading(isLoading) {
-                if (isLoading) {
-                    $refresh.prop('disabled', true).find('span.glyphicon').addClass('spin');
-                } else {
-                    $refresh.prop('disabled', false).find('span.glyphicon').removeClass('spin');
-                }
-            }
-
-            function loadEvents() {
-                hideError();
-                $tableBody.html(loadingRow);
-                setLoading(true);
-
-                $.getJSON(eventsUrl)
-                    .done(function (response) {
-                        if (!response || response.ok !== true) {
-                            showError((response && response.error) ? response.error : 'Respuesta inválida del servidor.');
-                            $tableBody.html('<tr><td colspan="6" class="text-center text-muted">Sin datos disponibles.</td></tr>');
-                            return;
-                        }
-
-                        renderRows(response.events);
+            function loadEventos() {
+                var id = '@Model.id'; // id del punto actual
+                $("#tbodyEventos").html('<tr><td colspan="6" class="text-center text-muted">Actualizando eventos...</td></tr>');
+                $.get('@Url.Action("EventosHoyTable","PuntosAcceso")', { id: id })
+                    .done(function (html) {
+                        $("#tbodyEventos").html(html); // inyecta las filas <tr> del partial
                     })
-                    .fail(function () {
-                        showError('Error de comunicación con el servidor.');
-                        $tableBody.html('<tr><td colspan="6" class="text-center text-muted">Error al actualizar la información.</td></tr>');
-                    })
-                    .always(function () {
-                        setLoading(false);
+                    .fail(function (xhr) {
+                        $("#tbodyEventos").html('<tr><td colspan="6" class="text-danger">Error: ' + xhr.status + ' ' + xhr.statusText + '</td></tr>');
                     });
             }
-
-            $refresh.on('click', function () {
-                loadEvents();
-            });
-
-            $filter.on('input', function () {
-                filterTable('event-filter', 'tblEvents');
-            });
-
-            loadEvents();
-            setInterval(loadEvents, 100000);
+            $("#btnActualizar").on("click", loadEventos);
+            loadEventos(); // carga inicial
         })();
 </script>
 }
