@@ -82,21 +82,21 @@ namespace TAS360.Helpers
         /// <summary>
         /// Devuelve una descripción amigable combinando major/minor + verifyMode + tarjeta/persona
         /// </summary>
-        public static string Describe(HikvisionEventViewModel e)
+        public static string Describe(InfoItem e)
         {
             if (e == null) return "";
 
-            var majorTxt = GetMajorText(e.InfoList.FirstOrDefault().major);
-            var minorTxt = GetMinorText(e.InfoList.FirstOrDefault().major, e.InfoList.FirstOrDefault().minor);
-            var vmTxt = GetVerifyModeText(e.InfoList.FirstOrDefault().currentVerifyMode);
+            var majorTxt = GetMajorText(e.major);
+            var minorTxt = GetMinorText(e.major, (int)e.minor);
+            var vmTxt = GetVerifyModeText(e.currentVerifyMode);
 
             // Ejemplos de frases:
             // - "Acceso por rostro válido (Julian Mondragon, emp 117)"
             // - "Falló autenticación huella (emp 117)"
             // - "Duración no válida (tarjeta: 123456)"
-            var actor = !string.IsNullOrWhiteSpace(e.InfoList.FirstOrDefault().name) ? e.InfoList.FirstOrDefault().name
-                       : !string.IsNullOrWhiteSpace(e.InfoList.FirstOrDefault().employeeNoString) ? $"emp {e.InfoList.FirstOrDefault().employeeNoString}"
-                       : !string.IsNullOrWhiteSpace(e.InfoList.FirstOrDefault().cardNo.ToString()) ? $"tarjeta {e.InfoList.FirstOrDefault().cardNo}"
+            var actor = !string.IsNullOrWhiteSpace(e.name) ? e.name
+                       : !string.IsNullOrWhiteSpace(e.employeeNo) ? $"emp {e.employeeNo}"
+                       : !string.IsNullOrWhiteSpace(e.cardNo.ToString()) ? $"tarjeta {e.cardNo}"
                        : "-";
 
             // Construcción base
@@ -106,9 +106,9 @@ namespace TAS360.Helpers
             if (action.StartsWith("Minor "))
             {
                 if (!string.IsNullOrEmpty(vmTxt))
-                    action = $"Intento de acceso por {vmTxt} (código {e.InfoList.FirstOrDefault().minor})";
+                    action = $"Intento de acceso por {vmTxt} (código {e.minor})";
                 else
-                    action = $"Evento {majorTxt} (código {e.InfoList.FirstOrDefault().minor})";
+                    action = $"Evento {majorTxt} (código {e.minor})";
             }
             else
             {

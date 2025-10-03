@@ -343,20 +343,20 @@ namespace TAS360.Controllers
                 try
                 {
                     var events = await _hikvisionService.GetEventsAsync(puntoAcceso.apiServer, puntoAcceso.usuario, puntoAcceso.password, inicio, fin, maxResults);
-                    var projection = events.Select(e => new
+                    var projection = events.Items.Select(e => new
                     {
-                        totalMatches = e.totalMatches,
-                        serialNo = e.InfoList.FirstOrDefault().serialNo,
-                        cardType = e.InfoList.FirstOrDefault().cardType,
-                        currentVerifyMode = e.InfoList.FirstOrDefault().currentVerifyMode,
-                        remoteHostAddr = e.InfoList.FirstOrDefault().remoteHostAddr,
-                        doorNo = e.InfoList.FirstOrDefault().doorNo,
-                        time = e.InfoList.FirstOrDefault().time,
-                        employeeNoString = e.InfoList.FirstOrDefault().employeeNoString,
-                        userType = e.InfoList.FirstOrDefault().userType,
-                        name = e.InfoList.FirstOrDefault().name,
-                        major = e.InfoList.FirstOrDefault().major,
-                        minor = e.InfoList.FirstOrDefault().minor,
+                        
+                        serialNo = e.serialNo,
+                        cardType = e.cardType,
+                        currentVerifyMode = e.currentVerifyMode,
+                        //remoteHostAddr = e.InfoList.FirstOrDefault().remoteHostAddr,
+                        doorNo = e.doorNo,
+                        time = e.time,
+                        employeeNo = e.employeeNo,
+                        //userType = e.InfoList.FirstOrDefault().userType,
+                        name = e.name,
+                        major = e.major,
+                        minor = e.minor,
 
                     });
 

@@ -308,107 +308,127 @@ namespace TAS360.Services
             }
         }
 
+        // =====================================================================
+        //                          EVENTOS (AcsEvent)
+        // =====================================================================
+
         /// <summary>
-        /// Consulta el API de eventos de Hikvision y proyecta la respuesta al modelo de presentación.
+        /// Obtiene eventos en un rango de tiempo usando /ISAPI/AccessControl/AcsEvent?format=json
+        /// Maneja paginación por searchResultPosition y devuelve la lista consolidada.
+        /// IMPORTANTE: requiere que existan AcsEventEnvelope/HikvisionEventViewModel/InfoItem en ViewModels.
         /// </summary>
-        /// <param name="apiServer">Dirección base del servidor ISAPI.</param>
-        /// <param name="user">Usuario con permisos para leer eventos.</param>
-        /// <param name="pass">Contraseña del usuario con permisos.</param>
-        /// <param name="start">Fecha y hora de inicio del intervalo a consultar.</param>
-        /// <param name="end">Fecha y hora de fin del intervalo a consultar.</param>
-        /// <param name="maxResults">Número máximo de eventos que se desean recuperar.</param>
-        /// <returns>Lista inmutable de eventos representados mediante <see cref="HikvisionEventViewModel"/>.</returns>
-        public async Task<IReadOnlyCollection<HikvisionEventViewModel>> GetEventsAsync(string apiServer, string user, string pass, DateTime start, DateTime end, int maxResults = 100)
+        public async Task<(List<InfoItem> Items, int NumMatches, int TotalMatches)> GetEventsAsync(
+                string apiServer, string user, string password,
+                DateTime start, DateTime end,
+                int pageSize = 50, int major = 5, int minor = 0)
         {
-            if (string.IsNullOrWhiteSpace(apiServer))
-                throw new ArgumentException("La dirección del servidor no puede ser vacía", nameof(apiServer));
+            var handler = new HttpClientHandler
+            {
+                Credentials = new CredentialCache
+                {
+                    { new Uri(apiServer), "Digest", new NetworkCredential(user, password) }
+                }
+            };
 
-            if (string.IsNullOrWhiteSpace(user))
-                throw new ArgumentException("El usuario es obligatorio", nameof(user));
+            var all = new List<InfoItem>();
+            int totalMatches = 0, numMatches = 0, pos = 0;
 
-            if (string.IsNullOrWhiteSpace(pass))
-                throw new ArgumentException("La contraseña es obligatoria", nameof(pass));
+            using (var client = new HttpClient(handler))
+            {
+                var url = $"{apiServer.TrimEnd('/')}/ISAPI/AccessControl/AcsEvent?format=json";
 
-            if (maxResults <= 0)
-                throw new ArgumentOutOfRangeException(nameof(maxResults), "El número máximo de resultados debe ser mayor que cero");
+                do
+                {
+                    var payload = new
+                    {
+                        AcsEventCond = new
+                        {
+                            searchID = "1",
+                            searchResultPosition = pos,
+                            maxResults = pageSize,
+                            major = major,     // 5 = Control de acceso (0 = todos)
+                            minor = minor,     // 0 = todos los subtipos
+                            startTime = start.ToString("yyyy-MM-ddTHH:mm:ss"),
+                            endTime = end.ToString("yyyy-MM-ddTHH:mm:ss")
+                        }
+                    };
+
+                    var content = new StringContent(JsonConvert.SerializeObject(payload), Encoding.UTF8, "application/json");
+                    var resp = await client.PostAsync(url, content);
+                    var body = await resp.Content.ReadAsStringAsync();
+
+                    if (!resp.IsSuccessStatusCode)
+                        throw new Exception($"AcsEvent {(int)resp.StatusCode}: {body}");
+
+                    // Deserializar con "envelope"
+                    var envelope = JsonConvert.DeserializeObject<AcsEventEnvelope>(body);
+                    var result = envelope?.AcsEvent;
+
+                    if (result == null)
+                        break;
+
+                    numMatches = result.numOfMatches;
+                    totalMatches = result.totalMatches;
+
+                    if (result.InfoList != null && result.InfoList.Count > 0)
+                        all.AddRange(result.InfoList);
+
+                    pos += pageSize;
+
+                } while (pos < totalMatches && totalMatches > 0);
+            }
+
+            return (all, numMatches, totalMatches);
+        }
+
+        /// <summary>
+        /// Azúcar para obtener los eventos del día de hoy (00:00:00 a 23:59:59).
+        /// </summary>
+        public Task<(List<InfoItem> Items, int NumMatches, int TotalMatches)>GetEventsTodayAsync(string apiServer, string user, string password, int pageSize = 50, int major = 5, int minor = 0)
+        {
+            var start = DateTime.Today;
+            var end = start.AddDays(1).AddSeconds(-1);
+            return GetEventsAsync(apiServer, user, password, start, end, pageSize, major, minor);
+        }
+
+        /// <summary>
+        /// (Opcional) Dado un employeeNo, resuelve el nombre con UserInfo/Search (útil cuando en eventos no viene "name")
+        /// </summary>
+        public async Task<string> ResolveNameByEmployeeNoAsync(string apiServer, string user, string password, string employeeNo)
+        {
+            if (string.IsNullOrWhiteSpace(employeeNo)) return string.Empty;
 
             var handler = new HttpClientHandler
             {
-                Credentials = new NetworkCredential(user, pass)
+                Credentials = new CredentialCache
+                {
+                    { new Uri(apiServer), "Digest", new NetworkCredential(user, password) }
+                }
             };
 
             using (var client = new HttpClient(handler))
             {
-                var baseUri = BuildBaseUri(apiServer);
-                var requestUri = new Uri(baseUri, "/ISAPI/AccessControl/AcsEvent?format=json");
-                var payload = new
+                var url = $"{apiServer.TrimEnd('/')}/ISAPI/AccessControl/UserInfo/Search?format=json";
+                var body = new
                 {
-                    AcsEventCond = new
+                    UserInfoSearchCond = new
                     {
                         searchID = "1",
                         searchResultPosition = 0,
-                        maxResults = maxResults,
-                        major = 5,
-                        minor = 0,
-                        startTime = start.ToString("yyyy-MM-dd'T'HH:mm:ss",CultureInfo.CurrentCulture),
-                        endTime = end.ToString("yyyy-MM-dd'T'HH:mm:ss", CultureInfo.CurrentCulture)
+                        maxResults = 1,
+                        EmployeeNoList = new[] { new { employeeNo = employeeNo } }
                     }
                 };
+                var content = new StringContent(JsonConvert.SerializeObject(body), Encoding.UTF8, "application/json");
 
-                var json = JsonConvert.SerializeObject(payload);
-                var content = new StringContent(json, Encoding.UTF8, "application/json");
+                var resp = await client.PostAsync(url, content);
+                var txt = await resp.Content.ReadAsStringAsync();
 
-                var response = await client.PostAsync(requestUri, content).ConfigureAwait(false);
-                if (!response.IsSuccessStatusCode)
-                {
-                    var reason = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-                    throw new Exception($"No se pudo obtener el historial de eventos: {(int)response.StatusCode} - {reason}");
-                }
+                if (!resp.IsSuccessStatusCode) return string.Empty;
 
-                var body = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-                var parsed = JObject.Parse(body);
-                var eventsToken = parsed["AcsEvent"]?["InfoList"];
-                if (eventsToken == null)
-                    return Array.Empty<HikvisionEventViewModel>();
-
-                if (eventsToken.Type != JTokenType.Array)
-                {
-                    eventsToken = new JArray(eventsToken);
-                }
-
-                var result = new List<HikvisionEventViewModel>();
-                foreach (var item in eventsToken)
-                {
-                    DateTime? eventTime = null;
-                    var eventTimeString = item.Value<string>("eventTime");
-                    if (!string.IsNullOrWhiteSpace(eventTimeString) && DateTime.TryParse(eventTimeString, CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal, out var parsedDate))
-                    {
-                        eventTime = parsedDate;
-                    }
-
-                    result.Add(new HikvisionEventViewModel
-                    {
-                        totalMatches = item.Value<int>("totalMatches"),
-                        serchID = item.Value<string>("serchID"),
-                        InfoList = new List<InfoList>() 
-                        {
-                            new InfoList(){
-                            serialNo = item.Value<int>("serialNo"),
-                            cardType = item.Value<int>("cardType"),
-                            currentVerifyMode = item.Value<string>("currentVerifyMode"),
-                            time = item.Value<string>("time"),
-                            name = item.Value<string>("name"),
-                            employeeNoString = item.Value<string>("employeeNoString"),
-                            doorNo = item.Value<int>("doorNo"),
-                            minor = item.Value<int>("menior"),
-                            major = item.Value<int>("major")
-                            } 
-                        }
-                    });
-                    
-                }
-
-                return result;
+                var json = JObject.Parse(txt);
+                var userInfo = json["UserInfoSearch"]?["UserInfo"]?.First;
+                return userInfo?["name"]?.ToString() ?? string.Empty;
             }
         }
 

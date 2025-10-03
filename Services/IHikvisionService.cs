@@ -118,6 +118,11 @@ namespace TAS360.Services
         /// <param name="end">Fecha y hora final (incluida) para acotar la búsqueda.</param>
         /// <param name="maxResults">Cantidad máxima de eventos a recuperar.</param>
         /// <returns>Listado de eventos convertidos a un modelo de presentación.</returns>
-        Task<IReadOnlyCollection<HikvisionEventViewModel>> GetEventsAsync(string apiServer, string user, string pass, DateTime start, DateTime end, int maxResults = 100);
+        //Task<IReadOnlyCollection<HikvisionEventViewModel>> GetEventsAsync(string apiServer, string user, string pass, DateTime start, DateTime end, int maxResults = 100);
+
+        Task<(List<InfoItem> Items, int NumMatches, int TotalMatches)> GetEventsTodayAsync(string apiServer, string user, string password, int pageSize = 50, int major = 5, int minor = 0);
+
+        Task<(List<InfoItem> Items, int NumMatches, int TotalMatches)> GetEventsAsync(string apiServer, string user, string password, DateTime start, DateTime end, int pageSize = 50, int major = 5, int minor = 0);
+
     }
 }
