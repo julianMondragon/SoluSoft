@@ -1,168 +1,212 @@
-﻿
-@model List<TAS360.Models.ViewModel.TicketViewModel>
+﻿@model List<TAS360.Models.ViewModel.TicketViewModel>
 @{
     ViewBag.Title = "Service Level Agreement";
     int total = ViewBag.tksclose + @ViewBag.tksopen;
-    Layout = "~/Views/Shared/_LayoutReport.cshtml";
-
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<div class="jumbotron">
-    <div class="row">
-        <div class="col-xs-3">
-            <div class="thumbnail" style="height:100px; width:200px;">
-                <img src="https://pts-tools.com.mx/Content/img/proftech-logo-01.png" class="img-responsive" />
-            </div>
-        </div>
-        <div class="col-xs-9">
-            <h1 class="text-right">Acuerdo de Nivel de Servicio (SLA)</h1>
-        </div>
-    </div>
+@*Espacio vacio*@
+<div class="row" style="height: 40px;">
 </div>
-<div class="row">
-    <div class="col-md-6">
-        <p class="lead">
-            Los SLA se utilizan para establecer indicadores medibles del servicio que brindamos y así asegurar el cumplimiento de las expectativas de nuestros clientes.
-        </p>
-        <p class="lead">
-            Para expresar un compromiso de calidad de servicio, esta debe ser medible con facilidad. Esta medición puede ser, muchas veces, subjetiva por parte de los clientes finales, como en el caso de un departamento de atención al cliente.
-        </p>
-        <p class="lead">
-            Anteriormente se muestra las tablas y graficas midiendo la eficiencia de respuesta del servicio.
-        </p>
-    </div>
-    <div class="col-md-6" style="margin:0px 0px 0px 0px">
-        <img src="~/Content/img/SLA.jpg" class="img-responsive" alt="Responsive image">
-    </div>
+<div style="margin-left: 89.5%;">
+    <button id="btnGenerarPDF" class="btn btn-primary">Descarga PDF</button>
+    @*@using (Html.BeginForm("ReporteServer", "LSA", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        <input type="file" name="postedFile" accept=".pdf" />
+        <button type="submit">Subir PDF</button>
+    }*@
+    <form id="formUploadPDF" method="post" enctype="multipart/form-data" action="/LSA/SubirReportePDF">
+        <input type="file" id="inputPDF" name="archivoPDF" style="display:none" />
+    </form>
 </div>
-@*Graficas *@
-<div class="row">
+<div id="slaReportContainer">
+    <div class="jumbotron">
+        <h1>Acuerdo de Nivel de Servicio (SLA) </h1>
+        <h3 style="text-align: right; opacity: 0.6; font-weight: normal;">
+            @DateTime.Now.ToString("dd/MM/yyyy")
+        </h3>
 
-    <div class="col-md-6">
-        <div class="panel panel-default">
-            <div class="panel-heading"><b>Reporte Total de Tickets</b> </div>
-            <div class="panel-body">
-                <table id="summaryTable" class="table table-success table-striped">
-                    <thead>
-                        <tr>
-                            <th scope="col">Tickets</th>
-                            <th scope="col">#</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <th scope="row">Abiertos</th>
-                            <td>@ViewBag.tksopen</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Cerrados</th>
-                            <td>@ViewBag.tksclose</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Total</th>
-                            <td>@total</td>
-                        </tr>
-                    </tbody>
-                </table>
+    </div>
+    <!-- Aquí están tus gráficas, tablas, etc. -->
+    @*Documentacion SLA*@
+    <div class="row">
+        <div class="col-md-6">
+            <p class="lead mb-8">
+                Los SLA se utilizan para establecer indicadores medibles del servicio que brindamos y así asegurar el cumplimiento de las expectativas de nuestros clientes.
+            </p>
+            <p class="lead">
+                Para expresar un compromiso de calidad de servicio, esta debe ser medible con facilidad. Esta medición puede ser, muchas veces, subjetiva por parte de los clientes finales, como en el caso de un departamento de atención al cliente.
+            </p>
+            <p class="lead">
+                Anteriormente se muestra las tablas y graficas midiendo la eficiencia de respuesta del servicio.
+            </p>
+        </div>
+        <div class="col-md-6" style="margin:0px 0px 0px 0px">
+            <img src="~/Content/img/SLA.jpg" class="img-responsive" alt="Responsive image">
+        </div>
+    </div>
+    @*Graficas *@
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading"><b>Reporte Status de Tickets:</b> </div>
+                <div class="panel-body">
+                    <canvas id="myBarChart" width="120" height="60"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading"><b>Reporte Total de Tickets</b> </div>
+                <div class="panel-body">
+                    <table id="summaryTable" class="table table-success table-striped">
+                        <thead>
+                            <tr>
+                                <th scope="col">Tickets</th>
+                                <th scope="col">#</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th scope="row">Abiertos</th>
+                                <td>@ViewBag.tksopen</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Cerrados</th>
+                                <td>@ViewBag.tksclose</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Total</th>
+                                <td>@total</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row" style="height: 400px;">
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading"><b>Reporte total de Tickets por categoria </b> </div>
+                <div class="panel-body">
+                    <canvas id="myPieChart" width="180" height="180"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading"><b>Reporte total de Tickets por TAD: ultimo mes</b> </div>
+                <div class="panel-body">
+                    <canvas id="myPieChart2" width="50" height="25"></canvas>
+                </div>
             </div>
         </div>
     </div>
-</div>
-@*tabla de tickets *@
-<div class="row">
+    @*Espacio vacio*@
+    <div class="row" style="height: 400px;">
+
+    </div>
+
+    <div class="col-lg-12">
+        <div class="panel panel-default">
+            <div class="panel-heading"><b>Reporte total de Tickets por TAD</b> </div>
+            <div class="panel-body">
+                <canvas id="myBarChart2" width="50" height="50"></canvas>
+            </div>
+        </div>
+    </div>
+
+
     <div class="col-md-12">
         <div class="panel panel-default">
-            <div class="panel-heading">
-                <b>Tickets abiertos y su fecha compromiso</b>
-            </div>
+            <div class="panel-heading"><b>Actualización de Tickets: últimos 15 días</b></div>
             <div class="panel-body">
-                <table id="ticketsTable" class="table table-success table-striped">
+                <table class="table table-bordered" id="tablaTicketsModificados">
                     <thead>
                         <tr>
-                            <th scope="col">#</th>
-                            <th colspan="2">Titulo</th>
-                            <th scope="col">TAD</th>
-                            <th scope="col">Status</th>
-                            <th scope="col">Categoria</th>
-                            <th scope="col">Compromiso</th>
-                            <th scope="col">Tiempo</th>
+                            <th>ID Ticket</th>
+                            <th>Modificaciones</th>
+                            <th>Creación</th>
+                            <th>Ultima Comentario</th>
+                            <th>Status</th>
+                            <th>Responsable</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        @if (Model != null)
-                        {
-                            foreach (var ticket in Model)
-
-                            {
-                                int dias = (ticket.Datetobedone.Value - DateTime.Now).Days;
-                                <tr>
-                                    <td colspan="1"> <a href="@Url.Content("~/Tickets/ShowTicket/"  + ticket.id)">@ticket.id</a> </td>
-                                    <td colspan="2"> @ticket.titulo</td>
-                                    <td colspan="1"> @ticket.terminal_name</td>
-                                    <td colspan="1"> @ticket.status_name</td>
-                                    <td colspan="1"> @ticket.categoria_name</td>
-                                    <td colspan="1"> @ticket.Datetobedone.Value.ToString("dd-MMM-yy")</td>
-                                    <td colspan="1">
-                                        @{
-
-                                            if (DateTime.Now.ToShortDateString() == ticket.Datetobedone.Value.ToShortDateString())
-                                            {
-                                                <a style="color:darkblue"> Hoy es la entrega </a>
-
-                                            }
-                                            else if (DateTime.Now < ticket.Datetobedone)
-                                            {
-                                                <a style="color:blue"> Quedan @dias días</a>
-
-                                            }
-                                            else
-                                            {
-                                                dias = Math.Abs(dias);
-                                                <a style="color:red"> Atrasado @dias días </a>
-                                            }
-                                        }
-
-                                    </td>
-                                </tr>
-                            }
-                        }
-                    </tbody>
+                    <tbody></tbody>
                 </table>
             </div>
         </div>
     </div>
-</div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <b>Tickets abiertos y su fecha compromiso</b>
+                </div>
+                <div class="panel-body">
+                    <table id="ticketsTable" class="table table-success table-striped">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th colspan="2">Titulo</th>
+                                <th scope="col">TAD</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Categoria</th>
+                                <th scope="col">Compromiso</th>
+                                <th scope="col">Tiempo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model != null)
+                            {
+                                foreach (var ticket in Model)
 
+                                {
+                                    int dias = (ticket.Datetobedone.Value - DateTime.Now).Days;
+                                    <tr>
+                                        <td colspan="1"> <a href="@Url.Content("~/Tickets/ShowTicket/"  + ticket.id)">@ticket.id</a> </td>
+                                        <td colspan="2"> @ticket.titulo</td>
+                                        <td colspan="1"> @ticket.terminal_name</td>
+                                        <td colspan="1"> @ticket.status_name</td>
+                                        <td colspan="1"> @ticket.categoria_name</td>
+                                        <td colspan="1"> @ticket.Datetobedone.Value.ToString("dd-MMM-yy")</td>
+                                        <td colspan="1">
+                                            @{
+
+                                                if (DateTime.Now.ToShortDateString() == ticket.Datetobedone.Value.ToShortDateString())
+                                                {
+                                                    <a style="color:darkblue"> Hoy es la entrega </a>
+
+                                                }
+                                                else if (DateTime.Now < ticket.Datetobedone)
+                                                {
+                                                    <a style="color:blue"> Quedan @dias días</a>
+
+                                                }
+                                                else
+                                                {
+                                                    dias = Math.Abs(dias);
+                                                    <a style="color:red"> Atrasado @dias días </a>
+                                                }
+                                            }
+
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 @section scripts
 {
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-        function filterTable() {
-            var input, filter, table, tr, td, i, j, txtValue, found;
-            input = document.getElementById("searchInput");
-            filter = input.value.toUpperCase();
-            table = document.getElementById("ticketsTable");  // Cambiar aquí para seleccionar la tabla correcta
-            tr = table.getElementsByTagName("tr");
-
-            // Iterar sobre todas las filas de la tabla, comenzando desde el índice 1 para omitir los encabezados
-            for (i = 1; i < tr.length; i++) {
-                found = false; // Reiniciamos el indicador de coincidencia para cada fila
-                // Obtener todas las celdas de la fila
-                td = tr[i].getElementsByTagName("td");
-                // Iterar sobre todas las celdas de la fila
-                for (j = 0; j < td.length; j++) {
-                    // Obtener el contenido de la celda y convertirlo a mayúsculas para la comparación
-                    txtValue = td[j].textContent || td[j].innerText;
-                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                        // Si el texto coincide con el filtro, marcar como encontrado y salir del bucle interno
-                        found = true;
-                        break;
-                    }
-                }
-                // Mostrar u ocultar la fila de datos dependiendo de si se encontró una coincidencia
-                tr[i].style.display = found ? "" : "none";
-            }
-        }
-    </script>
     <script>
         //Bar Chart ticketes por status
         jQuery.ajax({
@@ -230,6 +274,32 @@
                     console.log(error)
                 }
         });
+jQuery.ajax({
+    url: '@Url.Action("GetTicketsModificados", "LSA")',
+    type: "GET",
+    dataType: "json",
+    contentType: "application/json; charset=utf-8",
+    success: function (data) {
+        var tabla = $("#tablaTicketsModificados tbody");
+        tabla.empty(); // Limpia la tabla antes de llenarla
+
+        data.forEach(function (item) {
+            var fila = `
+                <tr>
+                    <td>${item.id_ticket}</td>
+                    <td>${item.Cantidad_modificaciones}</td>
+                    <td>${item.masAntiguo}</td>
+                    <td>${item.masReciente}</td>
+                    <td>${item.Status_Actual}</td>
+                    <td>${item.Nombre_Usuario}</td>
+                </tr>`;
+            tabla.append(fila);
+        });
+    },
+    error: function (error) {
+        console.log(error);
+    }
+});
 
         //Bar Chart total de tickets por tad
         jQuery.ajax({
@@ -373,6 +443,118 @@
                 console.log(error)
             }
         });
+
+    jQuery.ajax({
+    url: '@Url.Action("GetTicketsByTerminalOnLastMonth", "LSA")',
+    type: "GET",
+    dataType: "json",
+    contentType: "application/json; charset=utf-8",
+    success: function (data) {
+
+        var arrayCategorias = [];
+        var arrayCantidad = [];
+
+        for (var x = 0; x < data.length; x++)
+        {
+            arrayCategorias.push(data[x].Terminal)
+            arrayCantidad.push(data[x].Cantidad)
+        }
+
+        console.log(arrayCategorias)
+        console.log(arrayCantidad)
+
+        var controlPie1 = document.getElementById("myPieChart2");
+        var graficoPie1 = new Chart(controlPie1, {
+            type: 'pie',
+            data: {
+                labels: arrayCategorias,
+                datasets: [{
+                    data: arrayCantidad,
+                    backgroundColor: ['#007bff', '#dc3545', '#ffc107', '#28a745', "#BB2100", "#03B100", "#0083B1", "#0800B1", "#EBFA00", "#FA00D8"],
+                }],
+            },
+        });
+
+    },
+    error: function (error) {
+        console.log(error)
+    }
+      });
+
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <script>
+        document.getElementById("btnGenerarPDF").addEventListener("click", function () {
+            console.log("Botón presionado");
+
+            const container = document.querySelector("#slaReportContainer");
+            if (!container) {
+                console.error("No se encontró el contenedor.");
+                return;
+            }
+
+            html2canvas(container, { scale: 1.5 }).then(canvas => {
+                console.log("Canvas generado");
+
+                const imgData = canvas.toDataURL("image/png");
+                const pdf = new jspdf.jsPDF('p', 'mm', 'a4');
+                const pdfWidth = pdf.internal.pageSize.getWidth();
+                const pdfHeight = pdf.internal.pageSize.getHeight();
+
+                const margin = 10;
+                const imgWidth = pdfWidth - 2 * margin;
+                const imgHeight = canvas.height * imgWidth / canvas.width;
+
+                let heightLeft = imgHeight;
+                let position = margin;
+
+                pdf.addImage(imgData, 'PNG', margin, position, imgWidth, imgHeight);
+                heightLeft -= pdfHeight;
+
+                while (heightLeft > 0) {
+                    position = heightLeft - imgHeight + margin;
+                    pdf.addPage();
+                    pdf.addImage(imgData, 'PNG', margin, position, imgWidth, imgHeight);
+                    heightLeft -= pdfHeight;
+                }
+
+                const fecha = new Date();
+                const dd = String(fecha.getDate()).padStart(2, '0');
+                const mm = String(fecha.getMonth() + 1).padStart(2, '0'); // Enero es 0
+                const yy = String(fecha.getFullYear()).slice(-2);
+                /*const nombreArchivo = `${yyyy}_${mm}_${dd}.pdf`;*/
+                const nombreArchivo = `${dd}${mm}${yy}.pdf`;
+                pdf.save(nombreArchivo);
+                pdf.output('blob').then(blob => {
+                    const form = new FormData();
+                    form.append('file', blob, nombreArchivo);
+
+                    fetch('/LSA/GuardarPDF', {
+                        method: 'POST',
+                        body: form
+                    })
+                        .then(async response => {
+                            console.log("Respuesta recibida, status:", response.status);
+                            if (!response.ok) {
+                                const errorText = await response.text();
+                                throw new Error("Error del servidor: " + errorText);
+                            } else {
+                                alert("El PDF se guardó correctamente en el servidor.");
+                            }
+                        })
+                        .catch(error => {
+                            console.error("Error en fetch:", error);
+                            alert("Ocurrió un error: " + error.message);
+                        });
+                });
+
+            }).catch(err => {
+                console.error("Error al generar canvas:", err);
+            });
+        });
+
+
     </script>
 }
-
