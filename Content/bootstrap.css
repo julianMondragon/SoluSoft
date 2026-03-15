@@ -5090,11 +5090,11 @@ a.badge:focus {
     top: 10px;
     left: 10px;
     max-width: 150px;
-    height: auto;
+    max-height: 50px;    
 }
     .thumbnail img {
         max-width: 150px;
-        height: auto;
+        max-height: 10px;
     }
 .thumbnail > img,
 .thumbnail a > img {
@@ -6951,13 +6951,13 @@ button.close {
 position: absolute;
 top: 10px;
 left: 10px;
-max-width: 200px;
+max-width: 80px;
 height: auto;
 }
 
 .thumbnail2 img {
-    max-width: 200px;
-    height: auto;
+    max-width: 120px;
+    
 }
 
 /* Fuentes segun manual de identidad */

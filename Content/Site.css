@@ -1,3 +1,24 @@
 ﻿.red{
     color:#ff0000;
 }
+.service-card {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 25px;
+    margin-bottom: 25px;
+    text-align: center;
+    transition: all .3s;
+}
+
+    .service-card:hover {
+        box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        transform: translateY(-5px);
+    }
+
+.service-icon {
+    font-size: 40px;
+    color: #2a7db8;
+    margin-bottom: 15px;
+    display: block;
+}

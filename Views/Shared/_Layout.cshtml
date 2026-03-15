@@ -20,7 +20,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                @Html.ActionLink("PTS-TOOLS", "Home", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                @Html.ActionLink("🔧 NEGMON", "Home", "Home", new { area = "" }, new { @class = "navbar-brand" })
             </div>
             <div class="navbar-collapse collapse">
                 @using TAS360.Models;
@@ -28,62 +28,54 @@
                     User usuario = (User)HttpContext.Current.Session["user"];
                 }
                 <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("SLA", "Index", "LSA")</li>
-                    <li>@Html.ActionLink("Tickets", "Index", "Tickets")</li>
-                    <li>@Html.ActionLink("Cálculo FCV", "Index", "Calculo_FCV")</li>
-                    <li>@Html.ActionLink("Conv.Tabla de Cubicación", "Index", "TablaCub")</li>
                     <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Otras <span class="caret"></span></a>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Servicios <span class="caret"></span></a>
                         <ul class="dropdown-menu">
-                            <li>@Html.ActionLink("Incidentes", "Index", "Pendientes")</li>
-                            <li role="separator" class="divider"></li>
-                            <li>@Html.ActionLink("Terminales", "Index", "Terminal")</li>
-                            <li role="separator" class="divider"></li>
-                            <li>@Html.ActionLink("HMI de Aditivación", "Index", "Aditivo")</li>
-                            <li role="separator" class="divider"></li>
-                            <li>@Html.ActionLink("Usuarios", "Index", "User")</li>
-                            <li role="separator" class="divider"></li>
-                            <li>@Html.ActionLink("Roles & Privilegios", "Index", "Roles_and_Privilege")</li>
-                            @*<li role="separator" class="divider"></li>
-                                <li>@Html.ActionLink("Danload 6000", "Index", "Danload")</li>
-                                <li role="separator" class="divider"></li>
-                                <li>@Html.ActionLink("Accuload III", "Index", "Accuload")</li>
-                                <li role="separator" class="divider"></li>
-                                <li><a href="#">Reportes</a></li>
-                                <li>@Html.ActionLink("Carga", "Index", "Home")</li>
-                                <li>@Html.ActionLink("Tanques", "About", "Home")</li>
-                                <li role="separator" class="divider"></li>
-                                <li>@Html.ActionLink("Crear Reporte", "Create", "Reports")</li>
-                                <li>@Html.ActionLink("abrir conexion", "Index", "Reports")</li>
-                                <li role="separator" class="divider"></li>
-                                <li><a href="#">SIIC</a></li>
-                                <li>@Html.ActionLink("Entradas", "Index", "Home")</li>
-                                <li>@Html.ActionLink("Salidas", "About", "Home")</li>
-                                <li>@Html.ActionLink("Auditoria", "Contact", "Home")</li>
-                            *@
+                            <li>@Html.ActionLink("Consultoría(TI)", "Consultoring", "ServicesSSF")</li>
+                            <li>@Html.ActionLink("Control de acceso", "ControlAcceso", "ServicesSSF")</li>
+                            <li>@Html.ActionLink("Videovigilancia (CCTV)", "Videovigilancia", "ServicesSSF")</li>
+                            <li>@Html.ActionLink("Punto de Venta (POS)", "POS", "ServicesSSF")</li>
+                            <li>@Html.ActionLink("Network/Wi-Fi", "WifiAdministrado", "ServicesSSF")</li>
                         </ul>
                     </li>
-                    @if (usuario != null)
-                    {
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Productos <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li>@Html.ActionLink("Control de acceso", "ProductosCA", "ProductSSF")</li>
+                            <li>@Html.ActionLink("Videovigilancia", "ProductosCCTV", "ProductSSF")</li>
+                            <li>@Html.ActionLink("Red/Wifi", "ProductosWifi", "ProductSSF")</li>
+                            <li>@Html.ActionLink("Puntos de Venta", "ProductosPOS", "ProductSSF")</li>
+                        </ul>
+                    </li>
+                    @*<li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Paquetes <span class="caret"></span></a>
+            <ul class="dropdown-menu">
+                <li>@Html.ActionLink("Consultoría(TI)", "Index", "Service")</li>
+                <li>@Html.ActionLink("Cableado estructurado", "Index", "Service")</li>
+                <li>@Html.ActionLink("Videovigilancia (CCTV)", "Index", "Service")</li>
+                <li>@Html.ActionLink("Punto de Venta (POS)", "Index", "Service")</li>
+                <li>@Html.ActionLink("Wi-Fi Administrado" + "", "Index", "Service")</li>
+            </ul>
+        </li>*@
+                    <li>@Html.ActionLink("Quienes somos" + "", "Experiencia", "ProductSSF")</li>
+                    <li>@Html.ActionLink("Contacto" + "", "Index", "ContactoSSF")</li>
+                    @*@if (usuario != null)
+        {
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">@usuario.nombre <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                    <li role="separator" class="divider"></li>
+                    <li>@Html.ActionLink("Perfil", "Index/3", "Profile")</li>
+                    <li role="separator" class="divider"></li>
 
-
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">@usuario.nombre <span class="caret"></span></a>
-                            <ul class="dropdown-menu">
-                                <li role="separator" class="divider"></li>
-                                <li>@Html.ActionLink("Perfil", "Index/3", "Profile")</li>
-                                <li role="separator" class="divider"></li>
-
-                                <li class="nav-item px-lg-4"><a href="@Url.Content("~/logout/logout")">Cerrar Sesion</a></li>
-                            </ul>
-                        </li>
-
-                    }
-                    else
-                    {
-                        <li>@Html.ActionLink("Iniciar Sesion", "Login", "Acceso")</li>
-                    }
-
+                    <li class="nav-item px-lg-4"><a href="@Url.Content("~/logout/logout")">Cerrar Sesion</a></li>
+                </ul>
+            </li>
+        }
+        else
+        {
+            <li>@Html.ActionLink("Iniciar Sesion", "Login", "Acceso")</li>
+        }*@
                 </ul>
             </div>
         </div>

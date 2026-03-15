@@ -1,0 +1,141 @@
+﻿@model TAS360.Models.ViewModel.ContactoSSFViewModel
+
+@{
+    ViewBag.Title = "Contacto";
+}
+
+<div class="container">
+
+    <div class="jumbotron">
+        <div class="col-md-2">
+            <img src="~/Content/img/Negmon-logo.jpeg" style="max-height:120px;" />
+        </div>
+        <h2>Contacto</h2>
+        <p>
+            Envíanos un mensaje y uno de nuestros asesores se pondrá
+            en contacto contigo.
+        </p>
+    </div>
+
+    <div class="row">
+
+        <div class="col-md-8">
+
+            @using (Html.BeginForm("EnviarMensaje", "ContactoSSF", FormMethod.Post))
+            {
+
+                @Html.AntiForgeryToken()
+
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+
+                <div class="form-group">
+
+                    @Html.LabelFor(m => m.Nombre)
+
+                    @Html.TextBoxFor(m => m.Nombre, new
+                    {
+                        @class = "form-control",
+                        placeholder = "Tu nombre completo"
+                    })
+
+                    @Html.ValidationMessageFor(m => m.Nombre, "", new { @class = "text-danger" })
+
+                </div>
+
+
+                <div class="form-group">
+
+                    @Html.LabelFor(m => m.Correo)
+
+                    @Html.TextBoxFor(m => m.Correo, new
+                    {
+                        @class = "form-control",
+                        placeholder = "correo@empresa.com"
+                    })
+
+                    @Html.ValidationMessageFor(m => m.Correo, "", new { @class = "text-danger" })
+
+                </div>
+
+
+                <div class="form-group">
+
+                    @Html.LabelFor(m => m.Telefono)
+
+                    @Html.TextBoxFor(m => m.Telefono, new
+                    {
+                        @class = "form-control"
+                    })
+
+                </div>
+
+
+                <div class="form-group">
+
+                    @Html.LabelFor(m => m.Servicio)
+
+                    @Html.DropDownListFor(m => m.Servicio,
+                        new List<SelectListItem>
+                        {
+                            new SelectListItem{ Text="Seleccione un servicio", Value="" },
+                            new SelectListItem{ Text="Consultoría TI", Value="Consultoría TI" },
+                            new SelectListItem{ Text="Punto de Venta", Value="Punto de Venta" },
+                            new SelectListItem{ Text="WiFi Administrado", Value="WiFi Administrado" },
+                            new SelectListItem{ Text="Videovigilancia CCTV", Value="Videovigilancia CCTV" },
+                            new SelectListItem{ Text="Control de Acceso", Value="Control de Acceso" },
+                            new SelectListItem{ Text="Infraestructura de red", Value="Infraestructura de red" }
+                        },
+                        new { @class = "form-control" })
+
+                    @Html.ValidationMessageFor(m => m.Servicio, "", new { @class = "text-danger" })
+
+                </div>
+
+
+                <div class="form-group">
+
+                    @Html.LabelFor(m => m.Mensaje)
+
+                    @Html.TextAreaFor(m => m.Mensaje, new
+                    {
+                        @class = "form-control",
+                        rows = 5
+                    })
+
+                    @Html.ValidationMessageFor(m => m.Mensaje, "", new { @class = "text-danger" })
+
+                </div>
+
+
+                <button type="submit"
+                        class="btn btn-primary btn-lg">
+
+                    Enviar mensaje
+
+                </button>
+
+            }
+
+            @if (ViewBag.MensajeExito != null)
+            {
+                <div class="alert alert-success">
+                    @ViewBag.MensajeExito
+                </div>
+            }
+
+        </div>
+
+
+        <div class="col-md-4">
+
+            <h3>Información de contacto</h3>
+
+            <p>Email: contacto@solusoft.mx</p>
+            <p>Teléfono: +52 442 XXX XXXX</p>
+
+        </div>
+
+    </div>
+
+</div>

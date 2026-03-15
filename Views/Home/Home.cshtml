@@ -1,9 +1,9 @@
 ﻿
-    @{
-        ViewBag.Title = "HelpDesk TAS360";
-    }
+@{
+    ViewBag.Title = "Soluciones de Software";
+}
 
-    <div class="jumbotron" style="padding: 10px; margin: 25px;">
+@*<div class="jumbotron" style="padding: 10px; margin: 25px;">
         <h1 style="font-family: 'Myriad Pro Bold', sans-serif; font-weight: 700; font-style: normal; background-color: transparent; border: none; margin-bottom: 10px; text-align:center;">
             HELP DESK TAS360 - PTS
         </h1>
@@ -17,112 +17,145 @@
             relacionados con las incidencias en una Terminal de
             almacenamiento y despacho.
         </p>
-    </div>
-    <div class="row">
-        <div class="col-md-10" style="margin:0px 0px 0px 0px">
-            <img src="~/Content/img/Home_BG_1.png" class="img-responsive" alt="Responsive image">
-            <br />
+    </div>*@
+<div class="row">
+    <div class="col-md-10" style="margin:10px 0px 0px 0px">
+        @*<img src="~/Content/img/Home_BG_1.png" class="img-responsive" alt="Responsive image">*@
+        <div id="homeSlider" class="carousel slide" data-ride="carousel">
+
+            <!-- Indicadores -->
+            <ol class="carousel-indicators">
+                <li data-target="#homeSlider" data-slide-to="0" class="active"></li>
+                <li data-target="#homeSlider" data-slide-to="1"></li>
+                <li data-target="#homeSlider" data-slide-to="2"></li>
+            </ol>
+
+            <!-- Contenido del slider -->
+            <div class="carousel-inner">
+
+                <div class="item active">
+                    <img src="~/Content/img/Slider1.png" class="img-responsive" style="height:100%;" alt="Slider 1">
+                    <div class="carousel-caption">
+                        <h3>SoluSoft</h3>
+                        <p>Soluciones tecnológicas para tu empresa</p>
+                    </div>
+                </div>
+
+                <div class="item">
+                    <img src="~/Content/img/Slider2.png" class="img-responsive" style="width:100%;" alt="Slider 2">
+                    <div class="carousel-caption">
+                        <h3>Desarrollo de Software</h3>
+                        <p>Aplicaciones empresariales a la medida</p>
+                    </div>
+                </div>
+
+                <div class="item">
+                    <img src="~/Content/img/Slider3.png" class="img-responsive" style="width:100%;" alt="Slider 3">
+                    <div class="carousel-caption">
+                        <h3>Integración de Sistemas</h3>
+                        <p>Conectamos tus procesos</p>
+                    </div>
+                </div>
+
+            </div>
+            <!-- Controles -->
+            <a class="left carousel-control" href="#homeSlider" data-slide="prev">
+                <span class="glyphicon glyphicon-chevron-left"></span>
+            </a>
+
+            <a class="right carousel-control" href="#homeSlider" data-slide="next">
+                <span class="glyphicon glyphicon-chevron-right"></span>
+            </a>
+
         </div>
-        <div class="col-md-2" style="margin:0 0px 0px 0px">
-            <h3><strong style="font-family: 'Myriad Pro Bold', sans-serif; font-weight: 700; font-style: normal; background-color: transparent; border: none;">Documentación</strong></h3>
-            <table class="table table-success">
-                <tr>
-                    <td><a onclick="document.location.href = '@Url.Content("~/Documentacion/Procedimientos")'" class="btn btn-success" title="Ver procedimientos">Procedimientos &raquo;</a></td>
-                </tr>
-                <tr>
-                    <td><a onclick="document.location.href = '@Url.Content("~/Documentacion/Manuales")'" class="btn btn-info" title="Ver manuales">Manuales &raquo;</a></td>
-                </tr>
-            </table>
-
-            <h3><strong style="font-family: 'Myriad Pro Bold', sans-serif; font-weight: 700; font-style: normal; background-color: transparent; border: none;">Contacto</strong></h3>
-            <table class="table table-success">
-                <tr>
-                    <td>(442) 254-56-03</td>
-                </tr>
-                <tr>
-                    <td>soporte.tas360@pts.mx</td>
-                </tr>
-
-            </table>
-
-            <h3><strong style="font-family: 'Myriad Pro Bold', sans-serif; font-weight: 700; font-style: normal; background-color: transparent; border: none;">Horarios de atención: </strong></h3>
-            <table class="table table-success">
-                <tr>
-                    <td>Lun-Vie: 9:00-17:00 </td>
-                </tr>
-                <tr>
-                    <td>Sab: 9:00 - 13:00</td>
-                </tr>
-
-            </table>
-        </div>
+        <br />
     </div>
-    <div class="row">
-        <h2 style="font-family: Monotype Corsiva "> <strong>Objetivo</strong> </h2>
+    <div class="col-md-2" style="margin: 10px 0px 0px 0px">
+        <!-- Logo -->
+        <div class="text-center" style="margin-top:15px;">
+            <img src="~/Content/img/Negmon-logo.jpeg" style="max-height:150px;" />
+        </div>
+        <h3><strong style="font-family: 'Myriad Pro Bold', sans-serif; font-weight: 700; font-style: normal; background-color: transparent; border: none;">Contacto</strong></h3>
+        <table class="table table-success">
+            <tr>
+                <td><a onclick="document.location.href = '#'" )'" class="btn btn-success" title="WhatsApp">WhatsApp 📞</a></td>
+            </tr>
+            <tr>
+                <td><a onclick="document.location.href = '#'" )'" class="btn btn-info" title="Facebook">Facebook </a></td>
+            </tr>
+            <tr>
+                <td><a onclick="document.location.href = '#'" )'" class="btn btn-danger" title="Instagram">Instagram </a></td>
+            </tr>
+        </table>
+        <table class="table table-success">
+            @*<tr>
+                <td>(442) 150-20-80</td>
+            </tr>*@
+            <tr>
+                <td>Contacto@SoluSoft.mx</td>
+            </tr>
+
+        </table>
+
+        <h3><strong style="font-family: 'Myriad Pro Bold', sans-serif; font-weight: 700; font-style: normal; background-color: transparent; border: none;">Horarios de atención: </strong></h3>
+        <table class="table table-success">
+            <tr>
+                <td>Lun-Vie: 9:00-17:00 </td>
+            </tr>
+            <tr>
+                <td>Sab: 9:00 - 13:00</td>
+            </tr>
+
+        </table>
+    </div>
+</div>
+<div class="container">
+
+    <div class="text-center">
+        <h2>Soluciones Tecnológicas</h2>
         <p class="lead">
-            Distribuir una falla del sistema TAS360 al personal interno mejor
-            capacitado para resolver el problema o darle seguimiento al
-            requerimiento con el fabricante.
+            En SoluSoft ofrecemos soluciones integrales para mejorar la infraestructura
+            tecnológica de tu empresa.
         </p>
-        <br />
     </div>
 
     <div class="row">
-        <img src="~/Content/img/Home_BG.png" class="img-responsive" alt="Responsive image">
-        <br />
 
-    </div>
-
-    <div class="row">
-        <p class="lead" style="font-family: Monotype Corsiva ">
-            <strong> Para los incidentes vía telefónica: (442) 254-56-03 </strong>
-        </p>
-        <br />
-    </div>
-
-
-    <!--Manejo de Tickets segun categorias  -->
-    @*            <div class="row">
-                <h2>Manejo de categorías de Tickets</h2>
-                <p class="lead">
-                    1.-Atención Prioritaria (Detiene la operación)
-                </p>
-                <p class="lead">
-                    5.-Dudas sobre la funcionalidad del TAS
-                </p>
-                <br />
-            </div>
-            <div class="row">
-                <img src="~/Content/img/Home_BG_2.png" class="img-responsive" alt="Responsive image">
-                <br />
-            </div>
-            <div class="row">
-                <h2>Manejo de categorías de Tickets</h2>
-                <p class="lead">
-                    ▪2.-Error ó Alerta (No detiene la operación pero debe atenderse)
-                </p>
-                <p class="lead">
-                    ▪3.-Nuevo requerimiento (Debe realizarse cambio)
-                </p>
-                <br />
-            </div>
-            <div class="row">
-                <img src="~/Content/img/Home_BG_3.png" class="img-responsive" alt="Responsive image">
-                <br />
-            </div>
-            <div class="row">
-                <h2>Manejo de categorías de Tickets</h2>
-                <p class="lead">
-                    ▪4.-Fuera de Alcance
-                </p>
-                <br />
-            </div>
-            <div class="row">
-                <img src="~/Content/img/Home_BG_4.png" class="img-responsive" alt="Responsive image">
-                <br />
+        <div class="col-md-3 col-sm-6">
+            <div class="service-card">
+                <span class="glyphicon glyphicon-briefcase service-icon"></span>
+                <h4>Consultoría TI</h4>
+                <p>Asesoría especializada para optimizar la infraestructura tecnológica.</p>
             </div>
         </div>
-    *@
+
+        <div class="col-md-3 col-sm-6">
+            <div class="service-card">
+                <span class="glyphicon glyphicon-random service-icon"></span>
+                <h4>Cableado estructurado</h4>
+                <p>Diseño e instalación de redes confiables para empresas.</p>
+            </div>
+        </div>
+
+        <div class="col-md-3 col-sm-6">
+            <div class="service-card">
+                <span class="glyphicon glyphicon-facetime-video service-icon"></span>
+                <h4>Videovigilancia</h4>
+                <p>Sistemas CCTV para monitoreo y seguridad empresarial.</p>
+            </div>
+        </div>
+
+        <div class="col-md-3 col-sm-6">
+            <div class="service-card">
+                <span class="glyphicon glyphicon-lock service-icon"></span>
+                <h4>Control de acceso</h4>
+                <p>Soluciones de seguridad para controlar el acceso a instalaciones.</p>
+            </div>
+        </div>
+
+    </div>
+
+</div>
 </body>
 
 

@@ -154,6 +154,7 @@
     <Compile Include="Controllers\AcculoadController.cs" />
     <Compile Include="Controllers\AditivoController.cs" />
     <Compile Include="Controllers\Calculo_FCVController.cs" />
+    <Compile Include="Controllers\ContactoSSFController.cs" />
     <Compile Include="Controllers\DanloadController.cs" />
     <Compile Include="Controllers\DocumentacionController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
@@ -161,9 +162,11 @@
     <Compile Include="Controllers\logoutController.cs" />
     <Compile Include="Controllers\LSAController.cs" />
     <Compile Include="Controllers\PendientesController.cs" />
+    <Compile Include="Controllers\ProductSSFController.cs" />
     <Compile Include="Controllers\ReportsController.cs" />
     <Compile Include="Controllers\Rice_Lake920iController.cs" />
     <Compile Include="Controllers\Roles_and_PrivilegeController.cs" />
+    <Compile Include="Controllers\ServicesSSFController.cs" />
     <Compile Include="Controllers\TablaCubController.cs" />
     <Compile Include="Controllers\TerminalController.cs" />
     <Compile Include="Controllers\TicketsController.cs" />
@@ -405,6 +408,7 @@
     <Compile Include="Models\ViewModel\auditoriaViewModel.cs" />
     <Compile Include="Models\ViewModel\ConfigTanqAditivoViewModel.cs" />
     <Compile Include="Models\ViewModel\ConnexionSQLViewModel.cs" />
+    <Compile Include="Models\ViewModel\ContactoSSFViewModel.cs" />
     <Compile Include="Models\ViewModel\CreateReportViewModel.cs" />
     <Compile Include="Models\ViewModel\entradasViewModel.cs" />
     <Compile Include="Models\ViewModel\FCV_ViewModel.cs" />
@@ -459,6 +463,9 @@
     <Content Include="Content\img\Bascula-Info\img_2.jpg" />
     <Content Include="Content\img\Bascula-Info\img_3.jpg" />
     <Content Include="Content\img\Bascula-Info\img_4.jpg" />
+    <Content Include="Content\img\Cam1.jpg" />
+    <Content Include="Content\img\Cam2.jfif" />
+    <Content Include="Content\img\Cam3.jpg" />
     <Content Include="Content\img\Ej_Tabla_Cub_LLenado_2.JPG" />
     <Content Include="Content\img\ERROR-500-CABECERA.jpg" />
     <Content Include="Content\img\Home_BG_1.png" />
@@ -987,6 +994,18 @@
     <Content Include="Views\Roles_and_Privilege\EditOperation.cshtml" />
     <Content Include="Views\Roles_and_Privilege\EditModulos.cshtml" />
     <Content Include="Views\Roles_and_Privilege\EditRol.cshtml" />
+    <Content Include="Views\ServicesSSF\Consultoring.cshtml" />
+    <Content Include="Views\ServicesSSF\Videovigilancia.cshtml" />
+    <Content Include="Views\ServicesSSF\WifiAdministrado.cshtml" />
+    <Content Include="Views\ServicesSSF\Cableado.cshtml" />
+    <Content Include="Views\ServicesSSF\POS.cshtml" />
+    <Content Include="Views\ProductSSF\ProductosPOS.cshtml" />
+    <Content Include="Views\ProductSSF\ProductosWifi.cshtml" />
+    <Content Include="Views\ProductSSF\ProductosCCTV.cshtml" />
+    <Content Include="Views\ProductSSF\Experiencia.cshtml" />
+    <Content Include="Views\ServicesSSF\ControlAcceso.cshtml" />
+    <Content Include="Views\ProductSSF\ProductosCA.cshtml" />
+    <Content Include="Views\ContactoSSF\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
