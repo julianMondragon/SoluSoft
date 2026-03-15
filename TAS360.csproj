@@ -468,16 +468,6 @@
     <Content Include="Content\img\Cam3.jpg" />
     <Content Include="Content\img\Ej_Tabla_Cub_LLenado_2.JPG" />
     <Content Include="Content\img\ERROR-500-CABECERA.jpg" />
-    <Content Include="Content\img\Home_BG_1.png" />
-    <Content Include="Content\img\Home_BG_2.png" />
-    <Content Include="Content\img\Home_BG_3.png" />
-    <Content Include="Content\img\Home_BG_4.png" />
-    <Content Include="Content\img\Home_BG_old.png" />
-    <Content Include="Content\img\IndiceProcedimientos.JPG" />
-    <Content Include="Content\img\IndiceProcedimientos2.JPG" />
-    <Content Include="Content\img\IndiceProcedimientos3.JPG" />
-    <Content Include="Content\img\IndiceProcedimientos4.JPG" />
-    <Content Include="Content\img\ManualesTAS360.JPG" />
     <Content Include="Content\img\NoAuthorizado.jpg" />
     <Content Include="Content\img\SLA.jpg" />
     <Content Include="Content\img\TanqueAditivo.JPG" />
