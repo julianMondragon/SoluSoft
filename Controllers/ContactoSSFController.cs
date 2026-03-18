@@ -14,9 +14,14 @@ namespace TAS360.Controllers
 {
     public class ContactoSSFController : Controller
     {
-        public ActionResult Index()
+        public ActionResult Index(string servicio, string mensaje)
         {
-            return View(new ContactoSSFViewModel());
+            var model = new ContactoSSFViewModel();
+
+            model.Servicio = servicio;
+            model.Mensaje = mensaje;
+
+            return View(model);
         }
 
 

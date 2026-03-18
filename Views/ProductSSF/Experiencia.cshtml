@@ -11,7 +11,7 @@
         </div>
         <h2>Soluciones Tecnológicas</h2>
         <p class="lead">
-            En SoluSoft ayudamos a las empresas a modernizar su infraestructura
+            En NEGMON ayudamos a las empresas a modernizar su infraestructura
             tecnológica mediante herramientas y plataformas que optimizan
             procesos, aumentan la productividad y fortalecen la seguridad
             de la información.
@@ -42,9 +42,13 @@
                 Automatización de flujos de trabajo | Optimización de procesos.
             </p>
 
-            <p>
-                <a class="btn btn-warning">Solicitar información</a>
-            </p>
+            @*<p>
+                <a href="@Url.Action("Index", "ContactoSSF", new {
+                        servicio = "Consultoría TI",
+                        origen = "Quienes somos",
+                        mensaje = "Hola, necesito Desarrollo de aplicaciones empresariales | Integración de sistemas |Automatización de flujos de trabajo | Optimización de procesos. mi negocio..."})"
+                    class="btn btn-warning">Solicitar información</a>
+            </p>*@
 
         </div>
 
@@ -76,9 +80,9 @@
                 Plataformas empresariales | Desarrollo en .NET.
             </p>
 
-            <p>
+            @*<p>
                 <a class="btn btn-warning">Solicitar información</a>
-            </p>
+            </p>*@
 
         </div>
 
@@ -110,9 +114,9 @@
                 Servicios web | Automatización industrial.
             </p>
 
-            <p>
+            @*<p>
                 <a class="btn btn-warning">Solicitar información</a>
-            </p>
+            </p>*@
 
         </div>
 
@@ -144,9 +148,9 @@
                 Virtualización | Infraestructura cloud.
             </p>
 
-            <p>
+            @*<p>
                 <a class="btn btn-warning">Solicitar información</a>
-            </p>
+            </p>*@
 
         </div>
 
@@ -167,7 +171,11 @@
         </p>
 
         <p>
-            <a class="btn btn-primary btn-lg">
+            <a href="@Url.Action("Index", "ContactoSSF", new {
+                        servicio = "Consultoría TI",
+                        origen = "Quienes somos",
+                        mensaje = "Hola, necesito modernizar lu infraestructura tecnológica de mi negocio mediante herramientas y plataformas que optimizan procesos, aumentan la productividad y fortalecerán la seguridad de la información de mi negocio..."})"
+                   class="btn btn-primary btn-lg">
                 Hablar con un asesor »
             </a>
         </p>

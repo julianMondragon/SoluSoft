@@ -7,14 +7,20 @@
     <div class="col-md-2">
         <img src="~/Content/img/Negmon-logo.jpeg" style="max-height:120px;" />
     </div>
-    <h2>Videovigilancia y Seguridad CCTV </h2>
+    <h2> <strong>Videovigilancia y Seguridad CCTV</strong>  </h2>
     <p class="lead">
-        En SoluSoft ayudamos a empresas, comercios y hogares a implementar
+        En <strong>Negmon</strong> ayudamos a empresas, comercios y hogares a implementar
         sistemas profesionales de videovigilancia diseñados para proteger
         personas, instalaciones y activos.
     </p>
 
-    <a onclick="document.location.href = '@Url.Content("~/TablaCub/DownloadPrototype")'" class="btn btn-success btn-lg">Solicita una cita &raquo;</a>
+    <a href="@Url.Action("Index", "ContactoSSF", new {
+    servicio = "Videovigilancia CCTV",
+    origen = "Servicios/CCTV",
+    mensaje = "Hola, necesito una solución de videovigilancia para mi negocio."
+})" class="btn btn-success">
+        Solicitar información
+    </a>
 
     @*<p class="lead">
             Áreas en las que nos especializamos:
@@ -249,7 +255,10 @@
     </p>
 
     <p>
-        <a class="btn btn-primary btn-lg" href="#">
+        <a class="btn btn-primary btn-lg" href="@Url.Action("Index", "ContactoSSF", new {
+    servicio = "Videovigilancia CCTV",
+    mensaje = "Hola, necesito una solución de videovigilancia para mi negocio/hogar."
+})">
             Hablar con un asesor »
         </a>
     </p>

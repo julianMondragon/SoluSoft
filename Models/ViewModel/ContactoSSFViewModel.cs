@@ -33,5 +33,7 @@ namespace TAS360.Models.ViewModel
         [Display(Name = "Mensaje")]
         public string Mensaje { get; set; }
 
+        public string Origen { get; set; }
+
     }
 }

@@ -16,7 +16,14 @@
             confiables y adaptados a las necesidades de su negocio.
         </p>
         <p>
-            <a class="btn btn-success btn-lg" href="#">Solicita una asesoría »</a>
+            <a href="@Url.Action("Index", "ContactoSSF", new {
+                            servicio = "Punto de Venta",
+                            origen = "Servicos/POS",
+                            mensaje = "Hola, me interesa implementar un sistema de Punto de Venta en mi negocio."
+                        })" 
+               class="btn btn-success">
+                Solicitar información
+            </a>
         </p>
     </div>
 
@@ -244,7 +251,12 @@
         </p>
 
         <p>
-            <a class="btn btn-primary btn-lg" href="#">Solicitar asesoría</a>
+            <a href="@Url.Action("Index", "ContactoSSF", new {
+                        servicio = "Punto de Venta",
+                        origen = "Servicos/POS",
+                        mensaje = "Hola, me interesa implementar un sistema de Punto de Venta en mi negocio."
+                    })"
+               class="btn btn-primary btn-lg">Solicitar asesoría</a>
         </p>
 
     </div>

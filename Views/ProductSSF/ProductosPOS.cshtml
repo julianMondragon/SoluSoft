@@ -15,7 +15,11 @@
             confiables y adaptados a las necesidades de su negocio.
         </p>
         <p>
-            <a class="btn btn-success btn-lg" href="#">Solicita una asesoría »</a>
+            <a href="@Url.Action("Index", "ContactoSSF", new {
+                        servicio = "Punto de Venta",
+                        origen = "Productos/POS",
+                        mensaje = "Hola, necesito un producto ..... para mi negocio..."})"
+                   class="btn btn-success btn-lg">Solicita una asesoría »</a>
         </p>
     </div>
     <div class="row">

@@ -2,30 +2,31 @@
 @{
     ViewBag.Title = "Control de Acceso y Asistencia";
 }
-
-<div class="container">
-
-    <!-- HERO -->
-    <div class="jumbotron">
-        <div class="col-md-2">
-            <img src="~/Content/img/Negmon-logo.jpeg" style="max-height:120px;" />
-        </div>
-        <h2>Control de Acceso y Asistencia</h2>
-
+<!-- HERO -->
+<div class="jumbotron">
+    <div class="col-md-2">
+        <img src="~/Content/img/Negmon-logo.jpeg" style="max-height:120px;" />
+    </div>
+    <div class="col-md-10">
+        <h2><strong>Control de Acceso y Asistencia</strong> </h2>
         <p class="lead">
             Implementamos soluciones de control de acceso y registro de asistencia
             que permiten a las empresas gestionar de forma segura el ingreso
             de su personal y llevar un control preciso de horarios laborales.
         </p>
-        <p>
-            <a class="btn btn-success btn-lg">
-                Solicitar asesoría »
-            </a>
-        </p>
 
     </div>
-
-
+    <p>
+        <a href="@Url.Action("Index", "ContactoSSF", new {
+    servicio = "Control de Acceso",
+    origen = "Servicios/Control de Acceso",
+    mensaje = "Hola, estoy interesado en un sistema de control de acceso con asistencia."
+})" class="btn btn-success">
+            Solicitar información
+        </a>
+    </p>
+</div>
+<div class="container">
     <!-- CONTENIDO -->
     <div class="row">
         <p class="lead">
@@ -169,7 +170,11 @@
         </p>
 
         <p>
-            <a class="btn btn-primary btn-lg">
+                    <a href="@Url.Action("Index", "ContactoSSF", new {
+    servicio = "Control de Acceso",
+    origen = "Servicios/Control de Acceso",
+    mensaje = "Hola, estoy interesado en un sistema de control de acceso con asistencia."
+})" class="btn btn-primary btn-lg">
                 Hablar con un asesor »
             </a>
         </p>

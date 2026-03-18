@@ -10,16 +10,20 @@
         <div class="col-md-2">
             <img src="~/Content/img/Negmon-logo.jpeg" style="max-height:120px;" />
         </div>
-        <h2>Consultoría en Tecnologías de la Información (TI)</h2>
-
-        <p class="lead">
-            Ayudamos a empresas y organizaciones a aprovechar al máximo
-            las tecnologías de la información para mejorar sus procesos,
-            aumentar su productividad y fortalecer su infraestructura
-            tecnológica.
-        </p>
+        <h2><strong> Consultoría en Tecnologías de la Información (TI)</strong></h2>
+        <div class="col-md-10">
+            <p class="lead">
+                Ayudamos a empresas y organizaciones a aprovechar al máximo
+                las tecnologías de la información para mejorar sus procesos,
+                aumentar su productividad y fortalecer su infraestructura.
+            </p>
+        </div>        
         <p>
-            <a class="btn btn-success btn-lg">
+                <a href="@Url.Action("Index", "ContactoSSF", new {
+                            servicio = "Consultoría TI",
+                            origen = "Servicios/Consultoría",
+                            mensaje = "Hola, necesito una solución para mi negocio de..."
+                        })" class="btn btn-success btn-lg">
                 Solicita una cita »
             </a>
         </p>
@@ -172,7 +176,11 @@
         </p>
 
         <p>
-            <a class="btn btn-primary btn-lg">
+            <a href="@Url.Action("Index", "ContactoSSF", new {
+            servicio = "Consultoría TI",
+            origen = "Servicios/Consultoría",
+            mensaje = "Hola, necesito una solución para mi negocio de..."
+        })" class="btn btn-primary btn-lg">
                 Contactar asesor »
             </a>
         </p>

@@ -12,12 +12,18 @@
         <h2>Administrador de Red(Wifi)</h2>
 
         <p>
-            En <strong>JIAN TECH</strong> ofrecemos soluciones de Wi-Fi Administrado para empresas que
+            En <strong>NEGMON</strong> ofrecemos soluciones de Wi-Fi Administrado para empresas que
             necesitan remodelar su red actual, construir una nueva infraestructura de conectividad
             o implementar una red inalámbrica moderna y segura.
         </p>
         <p>
-            <a class="btn btn-success btn-lg" href="#">Solicita asesoría »</a>
+            <a href="@Url.Action("Index", "ContactoSSF", new {
+    servicio = "WiFi Administrado",
+    origen = "Servicios/WiFi Administrado",
+    mensaje = "Hola, quiero información sobre una red WiFi administrada para mi empresa."
+})" class="btn btn-success">
+                Solicitar información
+            </a>
         </p>
 
     </div>
@@ -220,7 +226,11 @@
         </p>
 
         <p>
-            <a class="btn btn-primary btn-lg" href="#">Contactar asesor</a>
+         <a href="@Url.Action("Index", "ContactoSSF", new {
+                    servicio = "WiFi Administrado",
+                    origen = "Servicios/WiFi Administrado",
+                    mensaje = "Hola, quiero información sobre una red WiFi administrada para mi empresa."})"
+            class="btn btn-primary btn-lg">Contactar asesor</a>
         </p>
 
     </div>
