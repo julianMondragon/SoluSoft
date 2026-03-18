@@ -49,21 +49,5 @@ namespace TAS360.Controllers
         {
             return View();
         }
-        public ActionResult Index()
-        {
-            entradasViewModel entradasVM = new entradasViewModel();
-            using (bdSimcot_Entities db = new bdSimcot_Entities())
-            {
-                var aux = (from s in db.Entradas select s);
-                if (aux != null && aux.Any())
-                {
-                    foreach (var a in aux)
-                    {
-                        entradasVM.entradas.Add(a);
-                    }
-                }
-            }
-            return View(entradasVM);
-        }
     }
 } 
