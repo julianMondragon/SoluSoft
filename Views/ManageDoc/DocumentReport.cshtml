@@ -1,0 +1,292 @@
+﻿
+@model TAS360.Models.ViewModel.DocumentViewModel
+@using TAS360.Models.Enums
+
+@{
+    ViewBag.Title = "Vista previa del documento";
+    var isPdfRequest = ViewBag.IsPdf != null && (bool)ViewBag.IsPdf;
+    Layout = isPdfRequest ? null : "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    @if (TempData["InfoMessage"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["InfoMessage"]
+        </div>
+    }
+
+    @if (TempData["WarningMessage"] != null)
+    {
+        <div class="alert alert-warning">
+            @TempData["WarningMessage"]
+        </div>
+    }
+
+    <div class="row" style="top:20px;">
+        <div class="col-md-12">
+            <h2>Vista previa del documento</h2>
+            <hr />
+        </div>
+    </div>
+
+    @if (!isPdfRequest)
+    {
+        <div class="row" style="margin-bottom:20px;">
+            <div class="col-md-12">
+                <a href="@Url.Action("CreateDocument", "ManageDoc")" class="btn btn-default">
+                    Editar documento
+                </a>
+
+                <a href="@Url.Action("PrintDocumentReport", "ManageDoc")" target="_blank" class="btn btn-primary">
+                    Imprimir PDF
+                </a>
+
+                @using (Html.BeginForm("ResetDocument", "ManageDoc", FormMethod.Post, new { style = "display:inline-block;" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-danger">
+                        Reiniciar documento
+                    </button>
+                }
+            </div>
+        </div>
+    }
+
+<div id="document-container" style="background-color:white; padding:30px; border:1px solid #ddd;">
+
+    <!-- Encabezado -->
+    <div class="row" style="margin-bottom:20px;">
+        <!-- Logo por default -->
+        <div class="col-sm-2 text-left">
+            <img src="https://pts-tools.com.mx/Content/img/Negmon-logo.jpeg" alt="Logo" style="max-height:90px;" />
+        </div>
+        <div class="col-sm-10 text-left">
+            @if (Model.ShowTitle && !string.IsNullOrWhiteSpace(Model.Title))
+            {
+                <h1 style="margin-bottom:5px;">@Model.Title</h1>
+            }
+
+            @if (Model.ShowSubtitle && !string.IsNullOrWhiteSpace(Model.Subtitle))
+            {
+                <h3 style="margin-top:0;">@Model.Subtitle</h3>
+            }
+        </div>
+    </div>
+
+    <!-- Datos generales -->
+    <div class="row" style="margin-bottom:20px;">
+        <div class="col-sm-6">
+            @if (Model.ShowFolio && !string.IsNullOrWhiteSpace(Model.Folio))
+            {
+                <p><strong>Folio:</strong> @Model.Folio</p>
+            }
+
+            <p><strong>Tipo de documento:</strong> @GetDocumentTypeText(Model.DocumentType)</p>
+
+            @if (Model.ShowIssueDate)
+            {
+                <p><strong>Fecha de emisión:</strong> @Model.IssueDate.ToString("dd/MM/yyyy")</p>
+            }
+
+            @if (Model.ShowLocation && !string.IsNullOrWhiteSpace(Model.IssueLocation))
+            {
+                <p><strong>Lugar de emisión:</strong> @Model.IssueLocation</p>
+            }
+        </div>
+
+        <div class="col-sm-6">
+            @if (Model.ShowClientName && !string.IsNullOrWhiteSpace(Model.ClientName))
+            {
+                <p><strong>Cliente:</strong> @Model.ClientName</p>
+            }
+
+            @if (Model.ShowResponsibleName && !string.IsNullOrWhiteSpace(Model.ResponsibleName))
+            {
+                <p><strong>Responsable:</strong> @Model.ResponsibleName</p>
+            }
+
+            @if (Model.ShowResponsiblePosition && !string.IsNullOrWhiteSpace(Model.ResponsiblePosition))
+            {
+                <p><strong>Puesto:</strong> @Model.ResponsiblePosition</p>
+            }
+        </div>
+    </div>
+
+    <!-- Descripción general -->
+    @if (Model.ShowGeneralDescription && !string.IsNullOrWhiteSpace(Model.GeneralDescription))
+    {
+        <div class="row" style="margin-bottom:20px;">
+            <div class="col-xs-12">
+                <h4>Descripción general</h4>
+                <p style="white-space: pre-line;">@Model.GeneralDescription</p>
+            </div>
+        </div>
+    }
+
+    <!-- Secciones -->
+    @if (Model.ShowSections && Model.Sections != null && Model.Sections.Any())
+    {
+        <div class="row" style="margin-bottom:20px;">
+            <div class="col-xs-12">
+                <h4>Secciones</h4>
+            </div>
+        </div>
+
+        foreach (var docSection in Model.Sections.OrderBy(x => x.Order))
+        {
+            <div class="row" style="margin-bottom:25px;">
+                <div class="col-xs-12">
+                    @if (docSection.ShowSectionTitle && !string.IsNullOrWhiteSpace(docSection.SectionTitle))
+                    {
+                        <h4>@docSection.SectionTitle</h4>
+                    }
+
+                    @if (docSection.ShowDescription && !string.IsNullOrWhiteSpace(docSection.Description))
+                    {
+                        <p style="white-space: pre-line;">@docSection.Description</p>
+                    }
+
+                    @if (!isPdfRequest)
+                    {
+                        <div style="margin:10px 0 15px 0;">
+                            @using (Html.BeginForm("AddDescriptionImage", "ManageDoc", FormMethod.Post, new { enctype = "multipart/form-data", style = "display:inline-block;" }))
+                            {
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="sectionIndex" value="@Model.Sections.IndexOf(docSection)" />
+                                <input type="file" name="postedFile" accept=".jpg,.jpeg,.png,.bmp,.webp" class="form-control" style="display:inline-block; width:auto;" />
+                                <button type="submit" class="btn btn-default">Agregar imagen</button>
+                            }
+
+                            @if (!string.IsNullOrWhiteSpace(docSection.ImagePath))
+                            {
+                                using (Html.BeginForm("RemoveDescriptionImage", "ManageDoc", FormMethod.Post, new { style = "display:inline-block; margin-left:10px;" }))
+                                {
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="sectionIndex" value="@Model.Sections.IndexOf(docSection)" />
+                                    <button type="submit" class="btn btn-danger">Quitar imagen</button>
+                                }
+                            }
+                        </div>
+                    }
+
+                    @if (docSection.ShowImage && !string.IsNullOrWhiteSpace(docSection.ImagePath))
+                    {
+                        <div style="margin-top:10px;">
+                            <img src="@docSection.ImagePath" alt="Imagen de sección" class="img-responsive img-thumbnail" style="max-height:350px;" />
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    }
+
+    <!-- Conceptos -->
+    @if (Model.ShowItems && Model.Items != null && Model.Items.Any(x => !string.IsNullOrWhiteSpace(x.Concept) || !string.IsNullOrWhiteSpace(x.Description) || x.Quantity > 0 || x.UnitPrice > 0))
+    {
+        <div class="row" style="margin-bottom:20px;">
+            <div class="col-xs-12">
+                <h4>Conceptos</h4>
+
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Concepto</th>
+                            <th>Descripción</th>
+                            <th style="width:120px;">Cantidad</th>
+                            <th style="width:140px;">Precio unitario</th>
+                            <th style="width:140px;">Importe</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Items.OrderBy(x => x.Order))
+                        {
+                            if (!string.IsNullOrWhiteSpace(item.Concept) || !string.IsNullOrWhiteSpace(item.Description) || item.Quantity > 0 || item.UnitPrice > 0)
+                            {
+                                <tr>
+                                    <td>@item.Concept</td>
+                                    <td>@item.Description</td>
+                                    <td>@item.Quantity.ToString("N2")</td>
+                                    <td>@item.UnitPrice.ToString("C")</td>
+                                    <td>@item.Amount.ToString("C")</td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="4" class="text-right"><strong>Subtotal</strong></td>
+                            <td>@Model.Subtotal.ToString("C")</td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" class="text-right"><strong>IVA</strong></td>
+                            <td>@Model.Vat.ToString("C")</td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" class="text-right"><strong>Total</strong></td>
+                            <td><strong>@Model.Total.ToString("C")</strong></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    }
+
+    <!-- Observaciones -->
+    @if (Model.ShowObservations && !string.IsNullOrWhiteSpace(Model.Observations))
+    {
+        <div class="row" style="margin-bottom:20px;">
+            <div class="col-xs-12">
+                <h4>Observaciones</h4>
+                <p style="white-space: pre-line;">@Model.Observations</p>
+            </div>
+        </div>
+    }
+
+    <!-- Notas -->
+    @if (Model.ShowNotes && !string.IsNullOrWhiteSpace(Model.Notes))
+    {
+        <div class="row" style="margin-bottom:20px;">
+            <div class="col-xs-12">
+                <h4>Notas</h4>
+                <p style="white-space: pre-line;">@Model.Notes</p>
+            </div>
+        </div>
+    }
+
+    <!-- Firmas -->
+    @if (Model.ShowSignatures && Model.Signatures != null && Model.Signatures.Any(x => x.ShowSignature))
+    {
+        <div class="row" style="margin-top:50px;">
+            @foreach (var signature in Model.Signatures.OrderBy(x => x.Order).Where(x => x.ShowSignature))
+            {
+                <div class="col-sm-4 text-center" style="margin-bottom:30px;">
+                    <div style="border-top:1px solid #000; margin:0 auto 10px auto; width:80%;"></div>
+                    <p style="margin-bottom:0;"><strong>@signature.Name</strong></p>
+                    <p style="margin-top:0;">@signature.Position</p>
+                </div>
+            }
+        </div>
+    }
+</div>
+</div>
+
+@functions {
+    public string GetDocumentTypeText(DocumentTypeEnum documentType)
+    {
+        switch (documentType)
+        {
+            case DocumentTypeEnum.Cotizacion:
+                return "Cotización";
+            case DocumentTypeEnum.ReporteServicio:
+                return "Reporte de Servicio";
+            case DocumentTypeEnum.Requerimiento:
+                return "Requerimiento";
+            case DocumentTypeEnum.DocumentoGeneral:
+                return "Documento General";
+            default:
+                return documentType.ToString();
+        }
+    }
+}
+

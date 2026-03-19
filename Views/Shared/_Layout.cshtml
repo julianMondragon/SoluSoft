@@ -48,7 +48,7 @@
                             <li>@Html.ActionLink("Puntos de Venta", "ProductosPOS", "ProductSSF")</li>
                         </ul>
                     </li>
-                    @*<li class="dropdown">
+                    <li class="dropdown">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Paquetes <span class="caret"></span></a>
             <ul class="dropdown-menu">
                 <li>@Html.ActionLink("Consultoría(TI)", "Index", "Service")</li>
@@ -57,16 +57,16 @@
                 <li>@Html.ActionLink("Punto de Venta (POS)", "Index", "Service")</li>
                 <li>@Html.ActionLink("Wi-Fi Administrado" + "", "Index", "Service")</li>
             </ul>
-        </li>*@
+        </li>
                     <li>@Html.ActionLink("Quienes somos" + "", "Experiencia", "ProductSSF")</li>
                     <li>@Html.ActionLink("Contacto" + "", "Index", "ContactoSSF")</li>
-                    @*@if (usuario != null)
+                    @if (usuario != null)
         {
             <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">@usuario.nombre <span class="caret"></span></a>
                 <ul class="dropdown-menu">
                     <li role="separator" class="divider"></li>
-                    <li>@Html.ActionLink("Perfil", "Index/3", "Profile")</li>
+                    <li>@Html.ActionLink("Document+", "CreateDocument", "ManageDoc")</li>
                     <li role="separator" class="divider"></li>
 
                     <li class="nav-item px-lg-4"><a href="@Url.Content("~/logout/logout")">Cerrar Sesion</a></li>
@@ -76,7 +76,7 @@
         else
         {
             <li>@Html.ActionLink("Iniciar Sesion", "Login", "Acceso")</li>
-        }*@
+        }
                 </ul>
             </div>
         </div>

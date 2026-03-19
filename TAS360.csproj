@@ -161,6 +161,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\logoutController.cs" />
     <Compile Include="Controllers\LSAController.cs" />
+    <Compile Include="Controllers\ManageDocControllerController.cs" />
     <Compile Include="Controllers\PendientesController.cs" />
     <Compile Include="Controllers\ProductSSFController.cs" />
     <Compile Include="Controllers\ReportsController.cs" />
@@ -248,6 +249,7 @@
     <Compile Include="Models\Entradas.cs">
       <DependentUpon>Simcot_db.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Enums\DocumentTypeEnum.cs" />
     <Compile Include="Models\Files.cs">
       <DependentUpon>HelpDesk.tt</DependentUpon>
     </Compile>
@@ -410,6 +412,10 @@
     <Compile Include="Models\ViewModel\ConnexionSQLViewModel.cs" />
     <Compile Include="Models\ViewModel\ContactoSSFViewModel.cs" />
     <Compile Include="Models\ViewModel\CreateReportViewModel.cs" />
+    <Compile Include="Models\ViewModel\DocumentItemModel.cs" />
+    <Compile Include="Models\ViewModel\DocumentSectionModel.cs" />
+    <Compile Include="Models\ViewModel\DocumentSignatureModel.cs" />
+    <Compile Include="Models\ViewModel\DocumentViewModel.cs" />
     <Compile Include="Models\ViewModel\entradasViewModel.cs" />
     <Compile Include="Models\ViewModel\FCV_ViewModel.cs" />
     <Compile Include="Models\ViewModel\FilterPendientesViewModel.cs" />
@@ -996,6 +1002,9 @@
     <Content Include="Views\ServicesSSF\ControlAcceso.cshtml" />
     <Content Include="Views\ProductSSF\ProductosCA.cshtml" />
     <Content Include="Views\ContactoSSF\Index.cshtml" />
+    <Content Include="Views\ManageDoc\CreateDocument.cshtml" />
+    <Content Include="Views\ManageDoc\DocumentReport.cshtml" />
+    <Content Include="Views\ManageDoc\DocumentReport2.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -1005,6 +1014,7 @@
     <Folder Include="Tablas_Pendientes\" />
     <Folder Include="Tablas_Tickets\" />
     <Folder Include="TicketFiles\" />
+    <Folder Include="Views\ManageDocController\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />

@@ -1,0 +1,472 @@
+﻿
+@model TAS360.Models.ViewModel.DocumentViewModel
+
+@{
+    ViewBag.Title = "Crear documento";
+}
+
+<h2>Crear documento</h2>
+<hr />
+
+@if (ViewBag.ExceptionMessage != null)
+{
+    <div class="alert alert-danger">
+        @ViewBag.ExceptionMessage
+    </div>
+}
+@if (TempData["InfoMessage"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["InfoMessage"]
+    </div>
+}
+@using (Html.BeginForm("CreateDocument", "ManageDoc", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+    @Html.HiddenFor(m => m.DocumentSessionId)
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <strong>Datos generales</strong>
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.DocumentType, new { @class = "control-label" })
+                        @Html.DropDownListFor(m => m.DocumentType, (IEnumerable<SelectListItem>)ViewBag.DocumentTypes, "Seleccione...", new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.DocumentType, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Folio, new { @class = "control-label" })
+                        @Html.TextBoxFor(m => m.Folio, new { @class = "form-control", placeholder = "Ej. Folio123" })
+                        @Html.ValidationMessageFor(m => m.Folio, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.IssueDate, new { @class = "control-label" })
+                        @Html.TextBoxFor(m => m.IssueDate, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+                        @Html.ValidationMessageFor(m => m.IssueDate, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Title, new { @class = "control-label" })
+                        @Html.TextBoxFor(m => m.Title, new { @class = "form-control", placeholder = "Título principal del documento" })
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.IssueLocation, new { @class = "control-label" })
+                        @Html.TextBoxFor(m => m.IssueLocation, new { @class = "form-control", placeholder = "Lugar de emisión" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.Subtitle, new { @class = "control-label" })
+                @Html.TextBoxFor(m => m.Subtitle, new { @class = "form-control", placeholder = "Subtítulo" })
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.GeneralDescription, new { @class = "control-label" })
+                @Html.TextAreaFor(m => m.GeneralDescription, 4, 1, new { @class = "form-control", placeholder = "Descripción general del documento" })
+            </div>
+        </div>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <strong>Datos del cliente y responsable</strong>
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.ClientName, new { @class = "control-label" })
+                        @Html.TextBoxFor(m => m.ClientName, new { @class = "form-control", placeholder = "Nombre del cliente" })
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.ResponsibleName, new { @class = "control-label" })
+                        @Html.TextBoxFor(m => m.ResponsibleName, new { @class = "form-control", placeholder = "Nombre del responsable" })
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.ResponsiblePosition, new { @class = "control-label" })
+                        @Html.TextBoxFor(m => m.ResponsiblePosition, new { @class = "form-control", placeholder = "Puesto del responsable" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.Observations, new { @class = "control-label" })
+                @Html.TextAreaFor(m => m.Observations, 4, 1, new { @class = "form-control", placeholder = "Observaciones" })
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.Notes, new { @class = "control-label" })
+                @Html.TextAreaFor(m => m.Notes, 4, 1, new { @class = "form-control", placeholder = "Notas adicionales" })
+            </div>
+        </div>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <strong>Opciones de visualización</strong>
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="checkbox">
+                        <label>@Html.CheckBoxFor(m => m.ShowTitle) Mostrar título</label>
+                    </div>
+                    <div class="checkbox">
+                        <label>@Html.CheckBoxFor(m => m.ShowSubtitle) Mostrar subtítulo</label>
+                    </div>
+                    <div class="checkbox">
+                        <label>@Html.CheckBoxFor(m => m.ShowGeneralDescription) Mostrar descripción general</label>
+                    </div>
+                    <div class="checkbox">
+                        <label>@Html.CheckBoxFor(m => m.ShowFolio) Mostrar folio</label>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="checkbox">
+                        <label>@Html.CheckBoxFor(m => m.ShowIssueDate) Mostrar fecha</label>
+                    </div>
+                    <div class="checkbox">
+                        <label>@Html.CheckBoxFor(m => m.ShowLocation) Mostrar lugar</label>
+                    </div>
+                    <div class="checkbox">
+                        <label>@Html.CheckBoxFor(m => m.ShowClientName) Mostrar cliente</label>
+                    </div>
+                    <div class="checkbox">
+                        <label>@Html.CheckBoxFor(m => m.ShowResponsibleName) Mostrar responsable</label>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="checkbox">
+                        <label>@Html.CheckBoxFor(m => m.ShowResponsiblePosition) Mostrar puesto del responsable</label>
+                    </div>
+                    <div class="checkbox">
+                        <label>@Html.CheckBoxFor(m => m.ShowObservations) Mostrar observaciones</label>
+                    </div>
+                    <div class="checkbox">
+                        <label>@Html.CheckBoxFor(m => m.ShowNotes) Mostrar notas</label>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="checkbox">
+                        <label>@Html.CheckBoxFor(m => m.ShowSections) Mostrar secciones</label>
+                    </div>
+                    <div class="checkbox">
+                        <label>@Html.CheckBoxFor(m => m.ShowItems) Mostrar conceptos</label>
+                    </div>
+                    <div class="checkbox">
+                        <label>@Html.CheckBoxFor(m => m.ShowSignatures) Mostrar firmas</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    if (Model.Sections != null && Model.Sections.Any())
+    {
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <strong>Secciones del documento</strong>
+            </div>
+            <div class="panel-body">
+
+                <div style="margin-bottom:15px;">
+                    <button type="submit" name="submitAction" value="addSection" class="btn btn-info">
+                        Agregar sección
+                    </button>
+                </div>
+
+                @for (int i = 0; i < Model.Sections.Count; i++)
+                {
+                    <div class="well">
+                        @Html.HiddenFor(m => m.Sections[i].Id)
+                        @Html.HiddenFor(m => m.Sections[i].Order)
+                        @Html.HiddenFor(m => m.Sections[i].ImagePath)
+                        @Html.HiddenFor(m => m.Sections[i].ImageName)
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    @Html.LabelFor(m => m.Sections[i].SectionTitle, new { @class = "control-label" })
+                                    @Html.TextBoxFor(m => m.Sections[i].SectionTitle, new { @class = "form-control", placeholder = "Título de la sección" })
+                                </div>
+                            </div>
+
+                            <div class="col-md-8">
+                                <div class="form-group">
+                                    @Html.LabelFor(m => m.Sections[i].Description, new { @class = "control-label" })
+                                    @Html.TextAreaFor(m => m.Sections[i].Description, 4, 1, new { @class = "form-control", placeholder = "Descripción de la sección" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="checkbox">
+                                    <label>@Html.CheckBoxFor(m => m.Sections[i].ShowSectionTitle) Mostrar título</label>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="checkbox">
+                                    <label>@Html.CheckBoxFor(m => m.Sections[i].ShowDescription) Mostrar descripción</label>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="checkbox">
+                                    <label>@Html.CheckBoxFor(m => m.Sections[i].ShowImage) Mostrar imagen</label>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    @Html.LabelFor(m => m.Sections[i].Order, new { @class = "control-label" })
+                                    @Html.TextBoxFor(m => m.Sections[i].Order, new { @class = "form-control", type = "number" })
+                                </div>
+                            </div>
+                        </div>
+
+                        @if (!string.IsNullOrWhiteSpace(Model.Sections[i].ImagePath))
+                        {
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <p><strong>Imagen actual:</strong> @Model.Sections[i].ImageName</p>
+                                    <img src="@Url.Content(Model.Sections[i].ImagePath)" alt="Imagen sección" class="img-responsive img-thumbnail" style="max-height:200px;" />
+                                </div>
+                            </div>
+                        }
+
+                        <div class="text-right" style="margin-top:10px;">
+                            <button type="submit"
+                                    name="submitAction"
+                                    value="removeSection_@Model.Sections[i].Id"
+                                    class="btn btn-danger btn-sm">
+                                Quitar sección
+                            </button>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <strong>Secciones del documento</strong>
+            </div>
+            <div class="panel-body">
+                <button type="submit" name="submitAction" value="addSection" class="btn btn-info">
+                    Agregar sección
+                </button>
+            </div>
+        </div>
+    }
+
+    if (Model.Items != null && Model.Items.Any())
+    {
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <strong>Conceptos / partidas</strong>
+            </div>
+            <div class="panel-body">
+
+                <div style="margin-bottom:15px;">
+                    <button type="submit" name="submitAction" value="addItem" class="btn btn-info">
+                        Agregar concepto
+                    </button>
+                </div>
+
+                @for (int i = 0; i < Model.Items.Count; i++)
+                {
+                    <div class="well">
+                        @Html.HiddenFor(m => m.Items[i].Id)
+
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    @Html.LabelFor(m => m.Items[i].Concept, new { @class = "control-label" })
+                                    @Html.TextBoxFor(m => m.Items[i].Concept, new { @class = "form-control", placeholder = "Concepto" })
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    @Html.LabelFor(m => m.Items[i].Description, new { @class = "control-label" })
+                                    @Html.TextBoxFor(m => m.Items[i].Description, new { @class = "form-control", placeholder = "Descripción" })
+                                </div>
+                            </div>
+
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    @Html.LabelFor(m => m.Items[i].Quantity, new { @class = "control-label" })
+                                    @Html.TextBoxFor(m => m.Items[i].Quantity, new { @class = "form-control", type = "number", step = "0.01" })
+                                </div>
+                            </div>
+
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    @Html.LabelFor(m => m.Items[i].UnitPrice, new { @class = "control-label" })
+                                    @Html.TextBoxFor(m => m.Items[i].UnitPrice, new { @class = "form-control", type = "number", step = "0.01" })
+                                </div>
+                            </div>
+
+                            <div class="col-md-1">
+                                <div class="form-group">
+                                    @Html.LabelFor(m => m.Items[i].Order, new { @class = "control-label" })
+                                    @Html.TextBoxFor(m => m.Items[i].Order, new { @class = "form-control", type = "number" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="text-right" style="margin-top:10px;">
+                            <button type="submit"
+                                    name="submitAction"
+                                    value="removeItem_@Model.Items[i].Id"
+                                    class="btn btn-danger btn-sm">
+                                Quitar concepto
+                            </button>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <strong>Conceptos / partidas</strong>
+            </div>
+            <div class="panel-body">
+                <button type="submit" name="submitAction" value="addItem" class="btn btn-info">
+                    Agregar concepto
+                </button>
+            </div>
+        </div>
+    }
+
+    if (Model.Signatures != null && Model.Signatures.Any())
+    {
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <strong>Firmas</strong>
+            </div>
+            <div class="panel-body">
+                @for (int i = 0; i < Model.Signatures.Count; i++)
+                {
+                    <div class="well">
+                        @Html.HiddenFor(m => m.Signatures[i].Id)
+                        @Html.HiddenFor(m => m.Signatures[i].SignaturePath)
+
+                        <div class="row">
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    @Html.LabelFor(m => m.Signatures[i].Name, new { @class = "control-label" })
+                                    @Html.TextBoxFor(m => m.Signatures[i].Name, new { @class = "form-control", placeholder = "Nombre" })
+                                </div>
+                            </div>
+
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    @Html.LabelFor(m => m.Signatures[i].Position, new { @class = "control-label" })
+                                    @Html.TextBoxFor(m => m.Signatures[i].Position, new { @class = "form-control", placeholder = "Puesto" })
+                                </div>
+                            </div>
+
+                            <div class="col-md-1">
+                                <div class="checkbox" style="margin-top:30px;">
+                                    <label>@Html.CheckBoxFor(m => m.Signatures[i].ShowSignature) Mostrar</label>
+                                </div>
+                            </div>
+
+                            <div class="col-md-1">
+                                <div class="form-group">
+                                    @Html.LabelFor(m => m.Signatures[i].Order, new { @class = "control-label" })
+                                    @Html.TextBoxFor(m => m.Signatures[i].Order, new { @class = "form-control", type = "number" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <strong>Totales</strong>
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Subtotal, new { @class = "control-label" })
+                        @Html.TextBoxFor(m => m.Subtotal, new { @class = "form-control", @readonly = "readonly" })
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Vat, new { @class = "control-label" })
+                        @Html.TextBoxFor(m => m.Vat, new { @class = "form-control", @readonly = "readonly" })
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Total, new { @class = "control-label" })
+                        @Html.TextBoxFor(m => m.Total, new { @class = "form-control", @readonly = "readonly" })
+                    </div>
+                </div>
+            </div>
+            <p class="text-muted">
+                Los totales serán recalculados en el controlador al guardar el documento.
+            </p>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <button type="submit" name="submitAction" value="save" class="btn btn-success">
+            Guardar y continuar editando
+        </button>
+
+        <button type="submit" name="submitAction" value="preview" class="btn btn-primary">
+            Guardar y ver vista previa
+        </button>
+
+        <a href="@Url.Action("NewDocument", "ManageDoc")" class="btn btn-default" style="margin-left:10px;">
+            Nuevo documento
+        </a>
+    </div>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
