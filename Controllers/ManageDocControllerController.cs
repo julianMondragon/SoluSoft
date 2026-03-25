@@ -650,7 +650,8 @@ namespace TAS360.Controllers
             }
 
             decimal subtotal = model.Items.Sum(x => x.Amount);
-            decimal vat = subtotal * 0.16m;
+            //decimal vat = subtotal * 0.16m;
+            decimal vat = subtotal * 0m;
             decimal total = subtotal + vat;
 
             model.Subtotal = subtotal;
