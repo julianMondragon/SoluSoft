@@ -38,155 +38,158 @@ namespace TAS360.Controllers
             try
             {
 
-                string contenidoHtml =  @"
-<!DOCTYPE html>
-<html lang='es'>
-<head>
-<meta charset='UTF-8'>
-<meta name='viewport' content='width=device-width, initial-scale=1.0'>
-<title>Nuevo contacto - SoluSoft</title>
+                string contenidoHtml = $@"
+                    <!DOCTYPE html>
+                    <html lang='es'>
+                    <head>
+                    <meta charset='UTF-8'>
+                    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+                    <title>Nuevo contacto - NEGMON</title>
 
-<style>
+                    <style>
 
-body{margin:0;
-    padding:0;
-    background:#f4f6f9;
-    font-family: Arial, Helvetica, sans-serif;
-}
+                    body{{margin:0;
+                        padding:0;
+                        background:#f4f6f9;
+                        font-family: Arial, Helvetica, sans-serif;
+                    }}
 
-.container{width:100%;
-    max-width:620px;
-    margin:auto;
-    background:#ffffff;
-    border-radius:6px;
-    overflow:hidden;
-    box-shadow:0px 3px 12px rgba(0,0,0,0.08);
-}
+                    .container{{width:100%;
+                        max-width:620px;
+                        margin:auto;
+                        background:#ffffff;
+                        border-radius:6px;
+                        overflow:hidden;
+                        box-shadow:0px 3px 12px rgba(0,0,0,0.08);
+                    }}
 
-.header{background:#1f3c5a;
-    color:white;
-    padding:25px;
-    text-align:center;
-}
+                    .header{{background:#1f3c5a;
+                        color:white;
+                        padding:25px;
+                        text-align:center;
+                    }}
 
-.logo{font - size:24px;
-    font-weight:bold;
-    letter-spacing:1px;
-}
+                    .logo{{font-size:24px;
+                        font-weight:bold;
+                        letter-spacing:1px;
+                    }}
 
-.subtitle{font - size:14px;
-    opacity:0.9;
-}
+                    .subtitle{{font-size:14px;
+                        opacity:0.9;
+                    }}
 
-.content{padding:30px;
-    color:#333;
-}
+                    .content{{padding:30px;
+                        color:#333;
+                    }}
 
-.info-box{background:#f8f9fb;
-    border:1px solid #e3e6eb;
-    border-radius:5px;
-    padding:20px;
-    margin-top:15px;
-}
+                    .info-box{{background:#f8f9fb;
+                        border:1px solid #e3e6eb;
+                        border-radius:5px;
+                        padding:20px;
+                        margin-top:15px;
+                    }}
 
-.info-row{margin - bottom:10px;
-}
+                    .info-row{{margin-bottom:10px;
+                    }}
 
-.label{font - weight:bold;
-    color:#1f3c5a;
-}
+                    .label{{font-weight:bold;
+                        color:#1f3c5a;
+                    }}
 
-.message{margin - top:20px;
-    padding:15px;
-    background:#f4f6f9;
-    border-left:4px solid #1f3c5a;
-}
+                    .message{{margin-top:20px;
+                        padding:15px;
+                        background:#f4f6f9;
+                        border-left:4px solid #1f3c5a;
+                    }}
 
-.button{display:inline-block;
-    margin-top:25px;
-    padding:12px 22px;
-    background:#2d7ef7;
-    color:white;
-    text-decoration:none;
-    border-radius:4px;
-    font-size:14px;
-}
+                    .button{{display:inline-block;
+                        margin-top:25px;
+                        padding:12px 22px;
+                        background:#2d7ef7;
+                        color:white;
+                        text-decoration:none;
+                        border-radius:4px;
+                        font-size:14px;
+                    }}
 
-.footer{background:#f1f3f6;
-    text-align:center;
-    padding:18px;
-    font-size:12px;
-    color:#777;
-}
+                    .footer{{background:#f1f3f6;
+                        text-align:center;
+                        padding:18px;
+                        font-size:12px;
+                        color:#777;
+                    }}
 
-.footer strong{color:#1f3c5a;
-}
+                    .footer strong{{color:#1f3c5a;
+                    }}
+                    .alert {{padding: 15px;
+                        margin-bottom: 20px;
+                        border: 1px solid transparent;
+                        border-radius: 4px;
+                    }}
+                    .alert-success {{color: #3c763d;
+                        background-color: #dff0d8;
+                        border-color: #d6e9c6;
+                    }}
+                    </style>
 
-</style>
+                    </head>
 
-</head>
+                    <body>
 
-<body>
+                    <div class='container'>
 
-<div class='container'>
+                        <div class='header'>
+                            <div class='logo'>NEGMON</div>
+                            <div class='subtitle'>Soluciones tecnológicas empresariales</div>
+                        </div>                        
+                        <div class='content'>
+                        <div class='alert alert-success'>
+                                Uno de nuestros asesores se comunicara contigo {model.Nombre}            
+                        </div>
+                        <h2>Nuevo contacto desde la página web</h2>
+                        <p>Se ha recibido una nueva solicitud desde la pagina de contacto de<strong>NEGMON</strong>.</p>
+                        <div class='info-box'>
 
-    <div class='header'>
-        <div class='logo'>SoluSoft</div>
-        <div class='subtitle'>Soluciones tecnológicas empresariales</div>
-    </div>
+                            <div class='info-row'>
+                                <span class='label'>Nombre:</span> {model.Nombre}
+                            </div>
 
-    <div class='content'>
+                            <div class='info-row'>
+                                <span class='label'>Correo:</span> {model.Correo}
+                            </div>
 
-        <h2>Nuevo contacto desde la página web</h2>
+                            <div class='info-row'>
+                                <span class='label'>Teléfono:</span> {model.Telefono}
+                            </div>
 
-        <p>Se ha recibido una nueva solicitud de información desde la página de <strong>SoluSoft</strong>.</p>
+                            <div class='info-row'>
+                                <span class='label'>Servicio:</span> {model.Servicio}
+                            </div>
 
-        <div class='info-box'>
+                        </div>
 
-            <div class='info-row'>
-                <span class='label'>Nombre:</span> {model.Nombre}
-            </div>
+                        <div class='message'>
+                            <strong>Mensaje del cliente:</strong>
+                            <p>{model.Mensaje}</p>
+                        </div>
 
-            <div class='info-row'>
-                <span class='label'>Correo:</span> {model.Correo}
-            </div>
+                        <center>
+                            <a href='mailto:{model.Correo}' class='button'>
+                                Responder al cliente
+                            </a>
+                        </center>
+                        </div>
 
-            <div class='info-row'>
-                <span class='label'>Teléfono:</span> {model.Telefono}
-            </div>
+                        <div class='footer'>
+                            <p>Este mensaje fue generado automáticamente desde el formulario web.</p>
+                            <p><strong>NEGMON</strong> | Soluciones tecnológicas empresariales</p>
+                        </div>
 
-            <div class='info-row'>
-                <span class='label'>Servicio de interés:</span> {model.Servicio}
-            </div>
+                    </div>
 
-        </div>
-
-        <div class='message'>
-            <strong>Mensaje del cliente:</strong>
-            <p>{model.Mensaje}</p>
-        </div>
-
-        <center>
-            <a href='mailto:{model.Correo}' class='button'>
-                Responder al cliente
-            </a>
-        </center>
-
-    </div>
-
-    <div class='footer'>
-        <p>Este mensaje fue generado automáticamente desde el formulario de contacto.</p>
-        <p><strong>SoluSoft</strong> | Soluciones tecnológicas empresariales</p>
-        <p>© 2026 SoluSoft</p>
-    </div>
-
-</div>
-
-</body>
-</html>
-";
-
-
+                    </body>
+                    </html>
+                    ";
                 SmtpClient clienteSmtp = new SmtpClient(
                     ConfigurationManager.AppSettings["SmtpHost"],
                     int.Parse(ConfigurationManager.AppSettings["SmtpPort"]))
@@ -202,14 +205,17 @@ body{margin:0;
                 MailMessage mensaje = new MailMessage
                 {
                     From = new MailAddress(ConfigurationManager.AppSettings["SmtpUser"]),
-                    Subject = "Nuevo mensaje desde SoluSoft",
+                    Subject = "Nuevo mensaje desde Negmon-Contacto",
                     Body = contenidoHtml,
                     IsBodyHtml = true
                 };
 
 
-                mensaje.To.Add(ConfigurationManager.AppSettings["SmtpUser"]);
+                mensaje.To.Add("jmondragon@negmon.com");
+                mensaje.To.Add("janegrete@negmon.com");
                 mensaje.CC.Add(model.Correo);
+                mensaje.BodyEncoding = System.Text.Encoding.UTF8;
+                mensaje.SubjectEncoding = System.Text.Encoding.UTF8;
 
                 clienteSmtp.Send(mensaje);
 
