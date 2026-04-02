@@ -1,6 +1,11 @@
 ﻿
 @{
     ViewBag.Title = "Soluciones de Software";
+    var whatsUrl = "https://wa.me/524625405097?text=Hola%20me%20interesa%20el%20servicio%20de%20Control%20de%20Acceso";
+    var facebookUrl = "https://www.facebook.com/profile.php?id=61579674332996";
+    var instagramUrl = "https://www.instagram.com/negmon_solutions_";
+    var tiktokUrl = "https://www.tiktok.com/@negmon50";
+
 }
 
 <div class="row">
@@ -61,7 +66,7 @@
             <img src="~/Content/img/Negmon-logo.jpeg" style="max-height:150px;" />
         </div>
         <h3><strong style="font-family: 'Myriad Pro Bold', sans-serif; font-weight: 700; font-style: normal; background-color: transparent; border: none;">Contacto</strong></h3>
-        <table class="table table-success">
+        @*<table class="table table-success">
             <tr>
                 <td><a href="https://wa.me/524625405097?text=Hola%20me%20interesa%20el%20servicio%20de%20Control%20de%20Acceso" class="btn btn-success" title="WhatsApp">💬 WhatsApp</a></td>
             </tr>
@@ -71,11 +76,33 @@
             <tr>
                 <td><a href="https://www.instagram.com/negmon_solutions_/" class="btn btn-danger" title="Instagram">📸 Instagram</a></td>
             </tr>
-        </table>
+            <tr>
+                <td><a href="@tiktokUrl" class="btn btn-default btn-tiktok"> 🎵 TikTok</a></td>
+            </tr>
+        </table>*@
+        <div class="contacto-redes">
+
+            <a href="@whatsUrl" class="btn btn-social btn-whatsapp btn-block">
+                <i class="fab fa-whatsapp"></i> WhatsApp
+            </a>
+
+            <a href="@facebookUrl" class="btn btn-social btn-facebook btn-block">
+                <i class="fab fa-facebook-f"></i> Facebook
+            </a>
+
+            <a href="@instagramUrl" class="btn btn-social btn-instagram btn-block">
+                <i class="fab fa-instagram"></i> Instagram
+            </a>
+
+            <a href="@tiktokUrl" class="btn btn-social btn-tiktok btn-block">
+                <i class="fab fa-tiktok"></i> TikTok
+            </a>
+
+        </div>
         <table class="table table-success">
-            @*<tr>
-                <td>(442) 150-20-80</td>
-            </tr>*@
+            <tr>
+                <td>(462) 540-50-97</td>
+            </tr>
             <tr>
                 <td>contacto@negmon.com</td>
             </tr>
@@ -110,15 +137,16 @@
             <div class="service-card">
                 <span class="glyphicon glyphicon-briefcase service-icon"></span>
                 <h4>Consultoría TI</h4>
-                <p>Asesoría especializada para optimizar la infraestructura tecnológica.</p>
+                <a href="https://negmon.com/ServicesSSF/Consultoring"><p>Asesoría especializada para optimizar la infraestructura tecnológica.</p></a>
+                
             </div>
         </div>
 
         <div class="col-md-3 col-sm-6">
             <div class="service-card">
-                <span class="glyphicon glyphicon-random service-icon"></span>
-                <h4>Cableado estructurado</h4>
-                <p>Diseño e instalación de redes confiables para empresas.</p>
+                <span class="glyphicon glyphicon-blackboard service-icon"></span>
+                <h4>Wifi Administrado</h4>
+                <a href="https://negmon.com/ServicesSSF/WifiAdministrado"><p>Diseño e instalación de redes confiables para empresas.</p></a>        
             </div>
         </div>
 
@@ -126,7 +154,9 @@
             <div class="service-card">
                 <span class="glyphicon glyphicon-facetime-video service-icon"></span>
                 <h4>Videovigilancia</h4>
-                <p>Sistemas CCTV para monitoreo y seguridad empresarial.</p>
+                <a href="https://negmon.com/ServicesSSF/Videovigilancia">
+                    <p>Sistemas CCTV para monitoreo y seguridad empresarial.</p>
+                </a>                
             </div>
         </div>
 
@@ -134,7 +164,9 @@
             <div class="service-card">
                 <span class="glyphicon glyphicon-lock service-icon"></span>
                 <h4>Control de acceso</h4>
-                <p>Soluciones de seguridad para controlar el acceso a instalaciones.</p>
+                <a href="https://negmon.com/ServicesSSF/ControlAcceso">
+                    <p>Soluciones de seguridad para controlar el acceso a instalaciones.</p>
+                </a>                
             </div>
         </div>
 
@@ -142,6 +174,59 @@
 
 </div>
 
+<style>
+    .contacto-redes .btn-social {
+        border-radius: 8px;
+        padding: 10px;
+        font-weight: 500;
+        text-align: left;
+        transition: all 0.2s ease-in-out;
+        margin-bottom: 10px;
+    }
 
+        .contacto-redes .btn-social:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
+    .contacto-redes .btn-social {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+    }
+
+        .contacto-redes .btn-social i {
+            width: 20px;
+            text-align: center;
+        }
+
+    /* WhatsApp */
+    .btn-whatsapp {
+        background-color: #25D366;
+        color: white;
+        border: none;
+    }
+
+    /* Facebook */
+    .btn-facebook {
+        background-color: #3b5998;
+        color: white;
+        border: none;
+    }
+
+    /* Instagram */
+    .btn-instagram {
+        background: linear-gradient(45deg, #f58529, #dd2a7b, #8134af);
+        color: white;
+        border: none;
+    }
+
+    /* TikTok */
+    .btn-tiktok {
+        background-color: #000;
+        color: #fff;
+        border: none;
+    }
+</style>
 
 
