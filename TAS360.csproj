@@ -152,7 +152,6 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\AccesoController.cs" />
     <Compile Include="Controllers\AcculoadController.cs" />
-    <Compile Include="Controllers\AditivoController.cs" />
     <Compile Include="Controllers\Calculo_FCVController.cs" />
     <Compile Include="Controllers\ContactoSSFController.cs" />
     <Compile Include="Controllers\DanloadController.cs" />
@@ -180,60 +179,6 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Log.cs" />
-    <Compile Include="Models\AditivoBD.Context.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>AditivoBD.Context.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\AditivoBD.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>AditivoBD.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\AditivoBD.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>AditivoBD.edmx</DependentUpon>
-    </Compile>
-    <Compile Include="Models\Aditivos.cs">
-      <DependentUpon>Simcot_db.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\AlIny10.cs">
-      <DependentUpon>AditivoBD.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\AlIny11.cs">
-      <DependentUpon>AditivoBD.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\AlIny12.cs">
-      <DependentUpon>AditivoBD.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\AlIny13.cs">
-      <DependentUpon>AditivoBD.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\AlIny14.cs">
-      <DependentUpon>AditivoBD.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\AlIny6.cs">
-      <DependentUpon>AditivoBD.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\AlIny7.cs">
-      <DependentUpon>AditivoBD.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\AlIny8.cs">
-      <DependentUpon>AditivoBD.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\AlIny9.cs">
-      <DependentUpon>AditivoBD.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\AlNiv.cs">
-      <DependentUpon>AditivoBD.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\AlSkid.cs">
-      <DependentUpon>AditivoBD.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\Auditoria.cs">
-      <DependentUpon>Simcot_db.tt</DependentUpon>
-    </Compile>
     <Compile Include="Models\Categoria.cs">
       <DependentUpon>HelpDesk.tt</DependentUpon>
     </Compile>
@@ -242,12 +187,6 @@
     </Compile>
     <Compile Include="Models\Comentario.cs">
       <DependentUpon>HelpDesk.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\Componentes.cs">
-      <DependentUpon>Simcot_db.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\Entradas.cs">
-      <DependentUpon>Simcot_db.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Enums\DocumentTypeEnum.cs" />
     <Compile Include="Models\Files.cs">
@@ -271,9 +210,6 @@
     <Compile Include="Models\Modulo.cs">
       <DependentUpon>HelpDesk.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\NivTanq.cs">
-      <DependentUpon>AditivoBD.tt</DependentUpon>
-    </Compile>
     <Compile Include="Models\Operacion.cs">
       <DependentUpon>HelpDesk.tt</DependentUpon>
     </Compile>
@@ -289,32 +225,11 @@
     <Compile Include="Models\Prioridad_de_Pendiente.cs">
       <DependentUpon>HelpDesk.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\Recetas.cs">
-      <DependentUpon>Simcot_db.tt</DependentUpon>
-    </Compile>
     <Compile Include="Models\Roll.cs">
       <DependentUpon>HelpDesk.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Roll_Operacion.cs">
       <DependentUpon>HelpDesk.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\Salidas.cs">
-      <DependentUpon>Simcot_db.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\Simcot_db.Context.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Simcot_db.Context.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\Simcot_db.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Simcot_db.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\Simcot_db.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Simcot_db.edmx</DependentUpon>
     </Compile>
     <Compile Include="Models\sp_helpdiagramdefinition_Result.cs">
       <DependentUpon>HelpDesk.tt</DependentUpon>
@@ -346,60 +261,6 @@
     <Compile Include="Models\Ticket_User.cs">
       <DependentUpon>HelpDesk.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\TotIny10.cs">
-      <DependentUpon>AditivoBD.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\TotIny11.cs">
-      <DependentUpon>AditivoBD.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\TotIny12.cs">
-      <DependentUpon>AditivoBD.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\TotIny13.cs">
-      <DependentUpon>AditivoBD.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\TotIny14.cs">
-      <DependentUpon>AditivoBD.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\TotIny6.cs">
-      <DependentUpon>AditivoBD.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\TotIny7.cs">
-      <DependentUpon>AditivoBD.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\TotIny8.cs">
-      <DependentUpon>AditivoBD.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\TotIny9.cs">
-      <DependentUpon>AditivoBD.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\UCIny10.cs">
-      <DependentUpon>AditivoBD.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\UCIny11.cs">
-      <DependentUpon>AditivoBD.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\UCIny12.cs">
-      <DependentUpon>AditivoBD.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\UCIny13.cs">
-      <DependentUpon>AditivoBD.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\UCIny14.cs">
-      <DependentUpon>AditivoBD.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\UCIny6.cs">
-      <DependentUpon>AditivoBD.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\UCIny7.cs">
-      <DependentUpon>AditivoBD.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\UCIny8.cs">
-      <DependentUpon>AditivoBD.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\UCIny9.cs">
-      <DependentUpon>AditivoBD.tt</DependentUpon>
-    </Compile>
     <Compile Include="Models\User.cs">
       <DependentUpon>HelpDesk.tt</DependentUpon>
     </Compile>
@@ -407,7 +268,6 @@
       <DependentUpon>HelpDesk.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ViewModel\aditivoViewModel.cs" />
-    <Compile Include="Models\ViewModel\auditoriaViewModel.cs" />
     <Compile Include="Models\ViewModel\ConfigTanqAditivoViewModel.cs" />
     <Compile Include="Models\ViewModel\ConnexionSQLViewModel.cs" />
     <Compile Include="Models\ViewModel\ContactoSSFViewModel.cs" />
@@ -416,7 +276,6 @@
     <Compile Include="Models\ViewModel\DocumentSectionModel.cs" />
     <Compile Include="Models\ViewModel\DocumentSignatureModel.cs" />
     <Compile Include="Models\ViewModel\DocumentViewModel.cs" />
-    <Compile Include="Models\ViewModel\entradasViewModel.cs" />
     <Compile Include="Models\ViewModel\FCV_ViewModel.cs" />
     <Compile Include="Models\ViewModel\FilterPendientesViewModel.cs" />
     <Compile Include="Models\ViewModel\FilterTicketsViewModel.cs" />
@@ -433,20 +292,15 @@
     <Compile Include="Models\ViewModel\PuertoSerialViewModel.cs" />
     <Compile Include="Models\ViewModel\RecetasViewModel.cs" />
     <Compile Include="Models\ViewModel\ReporteModel.cs" />
-    <Compile Include="Models\ViewModel\RepTotalizadoViewModel.cs" />
     <Compile Include="Models\ViewModel\RolesPrivilegesViewModel.cs" />
     <Compile Include="Models\ViewModel\RollViewModel.cs" />
     <Compile Include="Models\ViewModel\Rol_OperacionViewModel.cs" />
-    <Compile Include="Models\ViewModel\salidasViewModel.cs" />
     <Compile Include="Models\ViewModel\SocketViewModel.cs" />
     <Compile Include="Models\ViewModel\TablaCubViewModel.cs" />
     <Compile Include="Models\ViewModel\TerminalViewModel.cs" />
     <Compile Include="Models\ViewModel\TicketViewModel.cs" />
     <Compile Include="Models\ViewModel\TramaViewModel.cs" />
     <Compile Include="Models\ViewModel\WebAPIPemexViewModel.cs" />
-    <Compile Include="Models\VolTanq.cs">
-      <DependentUpon>AditivoBD.tt</DependentUpon>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StorProc\LSA_Reportes.cs" />
   </ItemGroup>
@@ -522,16 +376,6 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
-    <Content Include="Models\AditivoBD.Context.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>AditivoBD.edmx</DependentUpon>
-      <LastGenOutput>AditivoBD.Context.cs</LastGenOutput>
-    </Content>
-    <Content Include="Models\AditivoBD.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>AditivoBD.edmx</DependentUpon>
-      <LastGenOutput>AditivoBD.cs</LastGenOutput>
-    </Content>
     <Content Include="Models\HelpDesk.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>HelpDesk.edmx</DependentUpon>
@@ -542,16 +386,6 @@
       <DependentUpon>HelpDesk.edmx</DependentUpon>
       <LastGenOutput>HelpDesk.cs</LastGenOutput>
     </Content>
-    <Content Include="Models\Simcot_db.Context.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>Simcot_db.edmx</DependentUpon>
-      <LastGenOutput>Simcot_db.Context.cs</LastGenOutput>
-    </Content>
-    <Content Include="Models\Simcot_db.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>Simcot_db.edmx</DependentUpon>
-      <LastGenOutput>Simcot_db.cs</LastGenOutput>
-    </Content>
     <Content Include="Rotativa\help-wkhtmltoimage.txt" />
     <Content Include="Rotativa\help-wkhtmltopdf.txt" />
     <Content Include="Rotativa\wkhtmltoimage.exe" />
@@ -560,20 +394,6 @@
     <Content Include="Scripts\autosize.min.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
-    <EntityDeploy Include="Models\AditivoBD.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>AditivoBD.Designer.cs</LastGenOutput>
-    </EntityDeploy>
-    <Content Include="Models\AditivoBD.edmx.diagram">
-      <DependentUpon>AditivoBD.edmx</DependentUpon>
-    </Content>
-    <EntityDeploy Include="Models\Simcot_db.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>Simcot_db.Designer.cs</LastGenOutput>
-    </EntityDeploy>
-    <Content Include="Models\Simcot_db.edmx.diagram">
-      <DependentUpon>Simcot_db.edmx</DependentUpon>
-    </Content>
     <Content Include="Scripts\corecubi.js" />
     <Content Include="Scripts\datatables\Buttons-2.2.3\css\common.scss" />
     <Content Include="Scripts\datatables\Buttons-2.2.3\css\mixins.scss" />
