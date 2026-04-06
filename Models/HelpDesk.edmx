@@ -5,6 +5,27 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="HelpDeskModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="AreaTematica">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Clave" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="Nombre" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="Activo" Type="bit" />
+        </EntityType>
+        <EntityType Name="Capacitador">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Nombre" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="NumeroRegistroSTPS" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="CertificadorId" Type="int" Nullable="false" />
+          <Property Name="Activo" Type="bit" />
+          <Property Name="RutaFirmaBase" Type="nvarchar" MaxLength="500" />
+          <Property Name="FechaRegistroFirma" Type="datetime" />
+        </EntityType>
         <EntityType Name="Categoria">
           <Key>
             <PropertyRef Name="id" />
@@ -30,6 +51,68 @@
           <Property Name="id_User" Type="int" />
           <Property Name="CreatedAt" Type="date" />
         </EntityType>
+        <EntityType Name="Curso">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Nombre" Type="nvarchar" MaxLength="300" Nullable="false" />
+          <Property Name="DuracionHoras" Type="int" Nullable="false" />
+          <Property Name="AreaTematicaId" Type="int" Nullable="false" />
+          <Property Name="CertificadorId" Type="int" Nullable="false" />
+          <Property Name="Activo" Type="bit" />
+          <Property Name="FechaCreacion" Type="datetime" />
+        </EntityType>
+        <EntityType Name="DC3">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Folio" Type="nvarchar" MaxLength="50" />
+          <Property Name="TrabajadorId" Type="int" Nullable="false" />
+          <Property Name="EmpresaId" Type="int" Nullable="false" />
+          <Property Name="CursoId" Type="int" Nullable="false" />
+          <Property Name="CapacitadorId" Type="int" Nullable="false" />
+          <Property Name="FechaInicio" Type="date" Nullable="false" />
+          <Property Name="FechaFin" Type="date" Nullable="false" />
+          <Property Name="CertificadorId" Type="int" Nullable="false" />
+          <Property Name="Estatus" Type="nvarchar" MaxLength="50" />
+          <Property Name="FechaCreacion" Type="datetime" />
+        </EntityType>
+        <EntityType Name="DC3Documento">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="DC3Id" Type="int" Nullable="false" />
+          <Property Name="RutaPDF" Type="nvarchar" MaxLength="500" />
+          <Property Name="RutaQR" Type="nvarchar" MaxLength="500" />
+          <Property Name="UrlPublica" Type="nvarchar" MaxLength="500" />
+          <Property Name="FechaGeneracion" Type="datetime" />
+        </EntityType>
+        <EntityType Name="DC3Firma">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="DC3Id" Type="int" Nullable="false" />
+          <Property Name="TipoFirma" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="NombreFirmante" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="RutaArchivo" Type="nvarchar" MaxLength="500" />
+          <Property Name="FechaFirma" Type="datetime" />
+        </EntityType>
+        <EntityType Name="Empresa">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Nombre" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="RFC" Type="nvarchar" MaxLength="20" />
+          <Property Name="Direccion" Type="nvarchar" MaxLength="300" />
+          <Property Name="CertificadorId" Type="int" Nullable="false" />
+          <Property Name="Activo" Type="bit" />
+          <Property Name="FechaCreacion" Type="datetime" />
+        </EntityType>
         <EntityType Name="Files">
           <Key>
             <PropertyRef Name="id" />
@@ -45,6 +128,15 @@
           </Key>
           <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="nombre" Type="varchar" MaxLength="60" />
+        </EntityType>
+        <EntityType Name="Ocupacion">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Clave" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="Nombre" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="Activo" Type="bit" />
         </EntityType>
         <EntityType Name="Operacion">
           <Key>
@@ -196,6 +288,18 @@
           <Property Name="id_Ticket" Type="int" />
           <Property Name="id_File" Type="int" />
         </EntityType>
+        <EntityType Name="Trabajador">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Nombre" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="CURP" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="Puesto" Type="nvarchar" MaxLength="200" />
+          <Property Name="OcupacionId" Type="int" />
+          <Property Name="EmpresaId" Type="int" Nullable="false" />
+          <Property Name="Activo" Type="bit" />
+        </EntityType>
         <EntityType Name="User">
           <Key>
             <PropertyRef Name="id" />
@@ -213,18 +317,33 @@
             <PropertyRef Name="id" />
           </Key>
           <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="nombre" Type="varchar" MaxLength="100" />
-          <Property Name="email" Type="varchar" MaxLength="100" />
-          <Property Name="password" Type="varchar" MaxLength="100" />
+          <Property Name="nombre" Type="varchar" MaxLength="80" />
+          <Property Name="email" Type="varchar" MaxLength="50" />
+          <Property Name="password" Type="varchar" MaxLength="80" />
           <Property Name="createdAt" Type="date" />
           <Property Name="updateAt" Type="date" />
           <Property Name="fecha nacimeinto" Type="datetime" />
-          <Property Name="Cel" Type="varchar" MaxLength="50" />
-          <Property Name="Género" Type="varchar" MaxLength="50" />
-          <Property Name="Estado" Type="varchar" MaxLength="50" />
+          <Property Name="Cel" Type="varchar" MaxLength="1" />
+          <Property Name="Género" Type="varchar" MaxLength="1" />
+          <Property Name="Estado" Type="varchar" MaxLength="1" />
           <Property Name="Foto_usuario" Type="varbinary(max)" />
           <Property Name="id_User" Type="int" Nullable="false" />
+          <Property Name="NumeroCertificadosDisponibles" Type="int" />
+          <Property Name="NumeroCertificadosUsados" Type="int" />
+          <Property Name="FechaVigenciaPaquete" Type="date" />
         </EntityType>
+        <Association Name="FK_Capacitador_User">
+          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="Capacitador" Type="Self.Capacitador" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Capacitador">
+              <PropertyRef Name="CertificadorId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Comentario_User">
           <End Role="User" Type="Self.User" Multiplicity="0..1" />
           <End Role="Comentario" Type="Self.Comentario" Multiplicity="*" />
@@ -234,6 +353,126 @@
             </Principal>
             <Dependent Role="Comentario">
               <PropertyRef Name="id_User" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Curso_AreaTematica">
+          <End Role="AreaTematica" Type="Self.AreaTematica" Multiplicity="1" />
+          <End Role="Curso" Type="Self.Curso" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AreaTematica">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Curso">
+              <PropertyRef Name="AreaTematicaId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Curso_User">
+          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="Curso" Type="Self.Curso" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Curso">
+              <PropertyRef Name="CertificadorId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DC3_Capacitador">
+          <End Role="Capacitador" Type="Self.Capacitador" Multiplicity="1" />
+          <End Role="DC3" Type="Self.DC3" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Capacitador">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DC3">
+              <PropertyRef Name="CapacitadorId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DC3_Curso">
+          <End Role="Curso" Type="Self.Curso" Multiplicity="1" />
+          <End Role="DC3" Type="Self.DC3" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Curso">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DC3">
+              <PropertyRef Name="CursoId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DC3_Empresa">
+          <End Role="Empresa" Type="Self.Empresa" Multiplicity="1" />
+          <End Role="DC3" Type="Self.DC3" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Empresa">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DC3">
+              <PropertyRef Name="EmpresaId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DC3_Trabajador">
+          <End Role="Trabajador" Type="Self.Trabajador" Multiplicity="1" />
+          <End Role="DC3" Type="Self.DC3" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Trabajador">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DC3">
+              <PropertyRef Name="TrabajadorId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DC3_User">
+          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="DC3" Type="Self.DC3" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="DC3">
+              <PropertyRef Name="CertificadorId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DC3Documento_DC3">
+          <End Role="DC3" Type="Self.DC3" Multiplicity="1" />
+          <End Role="DC3Documento" Type="Self.DC3Documento" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DC3">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DC3Documento">
+              <PropertyRef Name="DC3Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DC3Firma_DC3">
+          <End Role="DC3" Type="Self.DC3" Multiplicity="1" />
+          <End Role="DC3Firma" Type="Self.DC3Firma" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DC3">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DC3Firma">
+              <PropertyRef Name="DC3Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Empresa_User">
+          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="Empresa" Type="Self.Empresa" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Empresa">
+              <PropertyRef Name="CertificadorId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -549,6 +788,30 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Trabajador_Empresa">
+          <End Role="Empresa" Type="Self.Empresa" Multiplicity="1" />
+          <End Role="Trabajador" Type="Self.Trabajador" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Empresa">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Trabajador">
+              <PropertyRef Name="EmpresaId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Trabajador_Ocupacion">
+          <End Role="Ocupacion" Type="Self.Ocupacion" Multiplicity="0..1" />
+          <End Role="Trabajador" Type="Self.Trabajador" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Ocupacion">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Trabajador">
+              <PropertyRef Name="OcupacionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_User_Roll">
           <End Role="Roll" Type="Self.Roll" Multiplicity="0..1" />
           <End Role="User" Type="Self.User" Multiplicity="*" />
@@ -573,12 +836,25 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        
+        
+        
+        
+        
         <EntityContainer Name="HelpDeskModelStoreContainer">
+          <EntitySet Name="AreaTematica" EntityType="Self.AreaTematica" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Capacitador" EntityType="Self.Capacitador" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Categoria" EntityType="Self.Categoria" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Clasificacion_Pendiente" EntityType="Self.Clasificacion_Pendiente" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Comentario" EntityType="Self.Comentario" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Curso" EntityType="Self.Curso" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="DC3" EntityType="Self.DC3" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="DC3Documento" EntityType="Self.DC3Documento" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="DC3Firma" EntityType="Self.DC3Firma" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Empresa" EntityType="Self.Empresa" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Files" EntityType="Self.Files" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Modulo" EntityType="Self.Modulo" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Ocupacion" EntityType="Self.Ocupacion" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Operacion" EntityType="Self.Operacion" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Pendiente" EntityType="Self.Pendiente" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Pendiente_Files" EntityType="Self.Pendiente_Files" Schema="dbo" store:Type="Tables" />
@@ -594,11 +870,56 @@
           <EntitySet Name="Ticket_Record_Status" EntityType="Self.Ticket_Record_Status" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Ticket_User" EntityType="Self.Ticket_User" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Tickets_Files" EntityType="Self.Tickets_Files" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Trabajador" EntityType="Self.Trabajador" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="usr_profile" EntityType="Self.usr_profile" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Capacitador_User" Association="Self.FK_Capacitador_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="Capacitador" EntitySet="Capacitador" />
+          </AssociationSet>
           <AssociationSet Name="FK_Comentario_User" Association="Self.FK_Comentario_User">
             <End Role="User" EntitySet="User" />
             <End Role="Comentario" EntitySet="Comentario" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Curso_AreaTematica" Association="Self.FK_Curso_AreaTematica">
+            <End Role="AreaTematica" EntitySet="AreaTematica" />
+            <End Role="Curso" EntitySet="Curso" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Curso_User" Association="Self.FK_Curso_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="Curso" EntitySet="Curso" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DC3_Capacitador" Association="Self.FK_DC3_Capacitador">
+            <End Role="Capacitador" EntitySet="Capacitador" />
+            <End Role="DC3" EntitySet="DC3" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DC3_Curso" Association="Self.FK_DC3_Curso">
+            <End Role="Curso" EntitySet="Curso" />
+            <End Role="DC3" EntitySet="DC3" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DC3_Empresa" Association="Self.FK_DC3_Empresa">
+            <End Role="Empresa" EntitySet="Empresa" />
+            <End Role="DC3" EntitySet="DC3" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DC3_Trabajador" Association="Self.FK_DC3_Trabajador">
+            <End Role="Trabajador" EntitySet="Trabajador" />
+            <End Role="DC3" EntitySet="DC3" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DC3_User" Association="Self.FK_DC3_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="DC3" EntitySet="DC3" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DC3Documento_DC3" Association="Self.FK_DC3Documento_DC3">
+            <End Role="DC3" EntitySet="DC3" />
+            <End Role="DC3Documento" EntitySet="DC3Documento" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DC3Firma_DC3" Association="Self.FK_DC3Firma_DC3">
+            <End Role="DC3" EntitySet="DC3" />
+            <End Role="DC3Firma" EntitySet="DC3Firma" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Empresa_User" Association="Self.FK_Empresa_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="Empresa" EntitySet="Empresa" />
           </AssociationSet>
           <AssociationSet Name="FK_Operacion_Modulo" Association="Self.FK_Operacion_Modulo">
             <End Role="Modulo" EntitySet="Modulo" />
@@ -703,6 +1024,14 @@
           <AssociationSet Name="FK_Tickets_Files_Ticket" Association="Self.FK_Tickets_Files_Ticket">
             <End Role="Ticket" EntitySet="Ticket" />
             <End Role="Tickets_Files" EntitySet="Tickets_Files" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Trabajador_Empresa" Association="Self.FK_Trabajador_Empresa">
+            <End Role="Empresa" EntitySet="Empresa" />
+            <End Role="Trabajador" EntitySet="Trabajador" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Trabajador_Ocupacion" Association="Self.FK_Trabajador_Ocupacion">
+            <End Role="Ocupacion" EntitySet="Ocupacion" />
+            <End Role="Trabajador" EntitySet="Trabajador" />
           </AssociationSet>
           <AssociationSet Name="FK_User_Roll" Association="Self.FK_User_Roll">
             <End Role="Roll" EntitySet="Roll" />
@@ -885,6 +1214,67 @@
           <AssociationSet Name="FK_usr_profile_User" Association="HelpDeskModel.FK_usr_profile_User">
             <End Role="User" EntitySet="User" />
             <End Role="usr_profile" EntitySet="usr_profile" />
+          </AssociationSet>
+          <EntitySet Name="AreaTematica" EntityType="HelpDeskModel.AreaTematica" />
+          <EntitySet Name="Capacitador" EntityType="HelpDeskModel.Capacitador" />
+          <EntitySet Name="Curso" EntityType="HelpDeskModel.Curso" />
+          <EntitySet Name="DC3" EntityType="HelpDeskModel.DC3" />
+          <EntitySet Name="DC3Documento" EntityType="HelpDeskModel.DC3Documento" />
+          <EntitySet Name="DC3Firma" EntityType="HelpDeskModel.DC3Firma" />
+          <EntitySet Name="Empresa" EntityType="HelpDeskModel.Empresa" />
+          <EntitySet Name="Ocupacion" EntityType="HelpDeskModel.Ocupacion" />
+          <EntitySet Name="Trabajador" EntityType="HelpDeskModel.Trabajador" />
+          <AssociationSet Name="FK_Curso_AreaTematica" Association="HelpDeskModel.FK_Curso_AreaTematica">
+            <End Role="AreaTematica" EntitySet="AreaTematica" />
+            <End Role="Curso" EntitySet="Curso" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Capacitador_User" Association="HelpDeskModel.FK_Capacitador_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="Capacitador" EntitySet="Capacitador" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DC3_Capacitador" Association="HelpDeskModel.FK_DC3_Capacitador">
+            <End Role="Capacitador" EntitySet="Capacitador" />
+            <End Role="DC3" EntitySet="DC3" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Curso_User" Association="HelpDeskModel.FK_Curso_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="Curso" EntitySet="Curso" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DC3_Curso" Association="HelpDeskModel.FK_DC3_Curso">
+            <End Role="Curso" EntitySet="Curso" />
+            <End Role="DC3" EntitySet="DC3" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DC3_Empresa" Association="HelpDeskModel.FK_DC3_Empresa">
+            <End Role="Empresa" EntitySet="Empresa" />
+            <End Role="DC3" EntitySet="DC3" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DC3_Trabajador" Association="HelpDeskModel.FK_DC3_Trabajador">
+            <End Role="Trabajador" EntitySet="Trabajador" />
+            <End Role="DC3" EntitySet="DC3" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DC3_User" Association="HelpDeskModel.FK_DC3_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="DC3" EntitySet="DC3" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DC3Documento_DC3" Association="HelpDeskModel.FK_DC3Documento_DC3">
+            <End Role="DC3" EntitySet="DC3" />
+            <End Role="DC3Documento" EntitySet="DC3Documento" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DC3Firma_DC3" Association="HelpDeskModel.FK_DC3Firma_DC3">
+            <End Role="DC3" EntitySet="DC3" />
+            <End Role="DC3Firma" EntitySet="DC3Firma" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Empresa_User" Association="HelpDeskModel.FK_Empresa_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="Empresa" EntitySet="Empresa" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Trabajador_Empresa" Association="HelpDeskModel.FK_Trabajador_Empresa">
+            <End Role="Empresa" EntitySet="Empresa" />
+            <End Role="Trabajador" EntitySet="Trabajador" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Trabajador_Ocupacion" Association="HelpDeskModel.FK_Trabajador_Ocupacion">
+            <End Role="Ocupacion" EntitySet="Ocupacion" />
+            <End Role="Trabajador" EntitySet="Trabajador" />
           </AssociationSet>
           </EntityContainer>
         <ComplexType Name="sp_helpdiagramdefinition_Result">
@@ -1157,24 +1547,31 @@
           <NavigationProperty Name="Roll" Relationship="HelpDeskModel.FK_User_Roll" FromRole="User" ToRole="Roll" />
           <NavigationProperty Name="Ticket_User" Relationship="HelpDeskModel.FK_Ticket_User_User" FromRole="User" ToRole="Ticket_User" />
           <NavigationProperty Name="usr_profile" Relationship="HelpDeskModel.FK_usr_profile_User" FromRole="User" ToRole="usr_profile" />
+          <NavigationProperty Name="Capacitador" Relationship="HelpDeskModel.FK_Capacitador_User" FromRole="User" ToRole="Capacitador" />
+          <NavigationProperty Name="Curso" Relationship="HelpDeskModel.FK_Curso_User" FromRole="User" ToRole="Curso" />
+          <NavigationProperty Name="DC3" Relationship="HelpDeskModel.FK_DC3_User" FromRole="User" ToRole="DC3" />
+          <NavigationProperty Name="Empresa" Relationship="HelpDeskModel.FK_Empresa_User" FromRole="User" ToRole="Empresa" />
         </EntityType>
         <EntityType Name="usr_profile">
           <Key>
             <PropertyRef Name="id" />
           </Key>
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="nombre" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="email" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="password" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="nombre" Type="String" MaxLength="80" FixedLength="false" Unicode="false" />
+          <Property Name="email" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="password" Type="String" MaxLength="80" FixedLength="false" Unicode="false" />
           <Property Name="createdAt" Type="DateTime" Precision="0" />
           <Property Name="updateAt" Type="DateTime" Precision="0" />
           <Property Name="fecha_nacimeinto" Type="DateTime" Precision="3" />
-          <Property Name="Cel" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Género" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Estado" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Cel" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="Género" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="Estado" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
           <Property Name="Foto_usuario" Type="Binary" MaxLength="Max" FixedLength="false" />
           <Property Name="id_User" Type="Int32" Nullable="false" />
           <NavigationProperty Name="User" Relationship="HelpDeskModel.FK_usr_profile_User" FromRole="usr_profile" ToRole="User" />
+          <Property Name="NumeroCertificadosDisponibles" Type="Int32" />
+          <Property Name="NumeroCertificadosUsados" Type="Int32" />
+          <Property Name="FechaVigenciaPaquete" Type="DateTime" Precision="0" />
         </EntityType>
         <Association Name="FK_Ticket_Categoria">
           <End Type="HelpDeskModel.Categoria" Role="Categoria" Multiplicity="0..1" />
@@ -1524,6 +1921,288 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="AreaTematica">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Clave" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="Nombre" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="Activo" Type="Boolean" />
+          <NavigationProperty Name="Curso" Relationship="HelpDeskModel.FK_Curso_AreaTematica" FromRole="AreaTematica" ToRole="Curso" />
+        </EntityType>
+        <EntityType Name="Capacitador">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Nombre" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="NumeroRegistroSTPS" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="CertificadorId" Type="Int32" Nullable="false" />
+          <Property Name="Activo" Type="Boolean" />
+          <Property Name="RutaFirmaBase" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="FechaRegistroFirma" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="User" Relationship="HelpDeskModel.FK_Capacitador_User" FromRole="Capacitador" ToRole="User" />
+          <NavigationProperty Name="DC3" Relationship="HelpDeskModel.FK_DC3_Capacitador" FromRole="Capacitador" ToRole="DC3" />
+        </EntityType>
+        <EntityType Name="Curso">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Nombre" Type="String" Nullable="false" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="DuracionHoras" Type="Int32" Nullable="false" />
+          <Property Name="AreaTematicaId" Type="Int32" Nullable="false" />
+          <Property Name="CertificadorId" Type="Int32" Nullable="false" />
+          <Property Name="Activo" Type="Boolean" />
+          <Property Name="FechaCreacion" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="AreaTematica" Relationship="HelpDeskModel.FK_Curso_AreaTematica" FromRole="Curso" ToRole="AreaTematica" />
+          <NavigationProperty Name="User" Relationship="HelpDeskModel.FK_Curso_User" FromRole="Curso" ToRole="User" />
+          <NavigationProperty Name="DC3" Relationship="HelpDeskModel.FK_DC3_Curso" FromRole="Curso" ToRole="DC3" />
+        </EntityType>
+        <EntityType Name="DC3">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Folio" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="TrabajadorId" Type="Int32" Nullable="false" />
+          <Property Name="EmpresaId" Type="Int32" Nullable="false" />
+          <Property Name="CursoId" Type="Int32" Nullable="false" />
+          <Property Name="CapacitadorId" Type="Int32" Nullable="false" />
+          <Property Name="FechaInicio" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="FechaFin" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="CertificadorId" Type="Int32" Nullable="false" />
+          <Property Name="Estatus" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="FechaCreacion" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Capacitador" Relationship="HelpDeskModel.FK_DC3_Capacitador" FromRole="DC3" ToRole="Capacitador" />
+          <NavigationProperty Name="Curso" Relationship="HelpDeskModel.FK_DC3_Curso" FromRole="DC3" ToRole="Curso" />
+          <NavigationProperty Name="Empresa" Relationship="HelpDeskModel.FK_DC3_Empresa" FromRole="DC3" ToRole="Empresa" />
+          <NavigationProperty Name="Trabajador" Relationship="HelpDeskModel.FK_DC3_Trabajador" FromRole="DC3" ToRole="Trabajador" />
+          <NavigationProperty Name="User" Relationship="HelpDeskModel.FK_DC3_User" FromRole="DC3" ToRole="User" />
+          <NavigationProperty Name="DC3Documento" Relationship="HelpDeskModel.FK_DC3Documento_DC3" FromRole="DC3" ToRole="DC3Documento" />
+          <NavigationProperty Name="DC3Firma" Relationship="HelpDeskModel.FK_DC3Firma_DC3" FromRole="DC3" ToRole="DC3Firma" />
+        </EntityType>
+        <EntityType Name="DC3Documento">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="DC3Id" Type="Int32" Nullable="false" />
+          <Property Name="RutaPDF" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="RutaQR" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="UrlPublica" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="FechaGeneracion" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="DC3" Relationship="HelpDeskModel.FK_DC3Documento_DC3" FromRole="DC3Documento" ToRole="DC3" />
+        </EntityType>
+        <EntityType Name="DC3Firma">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="DC3Id" Type="Int32" Nullable="false" />
+          <Property Name="TipoFirma" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="NombreFirmante" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="RutaArchivo" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="FechaFirma" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="DC3" Relationship="HelpDeskModel.FK_DC3Firma_DC3" FromRole="DC3Firma" ToRole="DC3" />
+        </EntityType>
+        <EntityType Name="Empresa">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Nombre" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="RFC" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Direccion" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="CertificadorId" Type="Int32" Nullable="false" />
+          <Property Name="Activo" Type="Boolean" />
+          <Property Name="FechaCreacion" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="DC3" Relationship="HelpDeskModel.FK_DC3_Empresa" FromRole="Empresa" ToRole="DC3" />
+          <NavigationProperty Name="User" Relationship="HelpDeskModel.FK_Empresa_User" FromRole="Empresa" ToRole="User" />
+          <NavigationProperty Name="Trabajador" Relationship="HelpDeskModel.FK_Trabajador_Empresa" FromRole="Empresa" ToRole="Trabajador" />
+        </EntityType>
+        <EntityType Name="Ocupacion">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Clave" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="Nombre" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="Activo" Type="Boolean" />
+          <NavigationProperty Name="Trabajador" Relationship="HelpDeskModel.FK_Trabajador_Ocupacion" FromRole="Ocupacion" ToRole="Trabajador" />
+        </EntityType>
+        <EntityType Name="Trabajador">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Nombre" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="CURP" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Puesto" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="OcupacionId" Type="Int32" />
+          <Property Name="EmpresaId" Type="Int32" Nullable="false" />
+          <Property Name="Activo" Type="Boolean" />
+          <NavigationProperty Name="DC3" Relationship="HelpDeskModel.FK_DC3_Trabajador" FromRole="Trabajador" ToRole="DC3" />
+          <NavigationProperty Name="Empresa" Relationship="HelpDeskModel.FK_Trabajador_Empresa" FromRole="Trabajador" ToRole="Empresa" />
+          <NavigationProperty Name="Ocupacion" Relationship="HelpDeskModel.FK_Trabajador_Ocupacion" FromRole="Trabajador" ToRole="Ocupacion" />
+        </EntityType>
+        <Association Name="FK_Curso_AreaTematica">
+          <End Type="HelpDeskModel.AreaTematica" Role="AreaTematica" Multiplicity="1" />
+          <End Type="HelpDeskModel.Curso" Role="Curso" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AreaTematica">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Curso">
+              <PropertyRef Name="AreaTematicaId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Capacitador_User">
+          <End Type="HelpDeskModel.User" Role="User" Multiplicity="1" />
+          <End Type="HelpDeskModel.Capacitador" Role="Capacitador" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Capacitador">
+              <PropertyRef Name="CertificadorId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DC3_Capacitador">
+          <End Type="HelpDeskModel.Capacitador" Role="Capacitador" Multiplicity="1" />
+          <End Type="HelpDeskModel.DC3" Role="DC3" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Capacitador">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DC3">
+              <PropertyRef Name="CapacitadorId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Curso_User">
+          <End Type="HelpDeskModel.User" Role="User" Multiplicity="1" />
+          <End Type="HelpDeskModel.Curso" Role="Curso" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Curso">
+              <PropertyRef Name="CertificadorId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DC3_Curso">
+          <End Type="HelpDeskModel.Curso" Role="Curso" Multiplicity="1" />
+          <End Type="HelpDeskModel.DC3" Role="DC3" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Curso">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DC3">
+              <PropertyRef Name="CursoId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DC3_Empresa">
+          <End Type="HelpDeskModel.Empresa" Role="Empresa" Multiplicity="1" />
+          <End Type="HelpDeskModel.DC3" Role="DC3" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Empresa">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DC3">
+              <PropertyRef Name="EmpresaId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DC3_Trabajador">
+          <End Type="HelpDeskModel.Trabajador" Role="Trabajador" Multiplicity="1" />
+          <End Type="HelpDeskModel.DC3" Role="DC3" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Trabajador">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DC3">
+              <PropertyRef Name="TrabajadorId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DC3_User">
+          <End Type="HelpDeskModel.User" Role="User" Multiplicity="1" />
+          <End Type="HelpDeskModel.DC3" Role="DC3" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="DC3">
+              <PropertyRef Name="CertificadorId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DC3Documento_DC3">
+          <End Type="HelpDeskModel.DC3" Role="DC3" Multiplicity="1" />
+          <End Type="HelpDeskModel.DC3Documento" Role="DC3Documento" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DC3">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DC3Documento">
+              <PropertyRef Name="DC3Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DC3Firma_DC3">
+          <End Type="HelpDeskModel.DC3" Role="DC3" Multiplicity="1" />
+          <End Type="HelpDeskModel.DC3Firma" Role="DC3Firma" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DC3">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DC3Firma">
+              <PropertyRef Name="DC3Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Empresa_User">
+          <End Type="HelpDeskModel.User" Role="User" Multiplicity="1" />
+          <End Type="HelpDeskModel.Empresa" Role="Empresa" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Empresa">
+              <PropertyRef Name="CertificadorId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Trabajador_Empresa">
+          <End Type="HelpDeskModel.Empresa" Role="Empresa" Multiplicity="1" />
+          <End Type="HelpDeskModel.Trabajador" Role="Trabajador" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Empresa">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Trabajador">
+              <PropertyRef Name="EmpresaId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Trabajador_Ocupacion">
+          <End Type="HelpDeskModel.Ocupacion" Role="Ocupacion" Multiplicity="0..1" />
+          <End Type="HelpDeskModel.Trabajador" Role="Trabajador" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Ocupacion">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Trabajador">
+              <PropertyRef Name="OcupacionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1757,6 +2436,9 @@
           <EntitySetMapping Name="usr_profile">
             <EntityTypeMapping TypeName="HelpDeskModel.usr_profile">
               <MappingFragment StoreEntitySet="usr_profile">
+                <ScalarProperty Name="FechaVigenciaPaquete" ColumnName="FechaVigenciaPaquete" />
+                <ScalarProperty Name="NumeroCertificadosUsados" ColumnName="NumeroCertificadosUsados" />
+                <ScalarProperty Name="NumeroCertificadosDisponibles" ColumnName="NumeroCertificadosDisponibles" />
                 <ScalarProperty Name="id_User" ColumnName="id_User" />
                 <ScalarProperty Name="Foto_usuario" ColumnName="Foto_usuario" />
                 <ScalarProperty Name="Estado" ColumnName="Estado" />
@@ -1769,6 +2451,119 @@
                 <ScalarProperty Name="email" ColumnName="email" />
                 <ScalarProperty Name="nombre" ColumnName="nombre" />
                 <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AreaTematica">
+            <EntityTypeMapping TypeName="HelpDeskModel.AreaTematica">
+              <MappingFragment StoreEntitySet="AreaTematica">
+                <ScalarProperty Name="Activo" ColumnName="Activo" />
+                <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+                <ScalarProperty Name="Clave" ColumnName="Clave" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Capacitador">
+            <EntityTypeMapping TypeName="HelpDeskModel.Capacitador">
+              <MappingFragment StoreEntitySet="Capacitador">
+                <ScalarProperty Name="FechaRegistroFirma" ColumnName="FechaRegistroFirma" />
+                <ScalarProperty Name="RutaFirmaBase" ColumnName="RutaFirmaBase" />
+                <ScalarProperty Name="Activo" ColumnName="Activo" />
+                <ScalarProperty Name="CertificadorId" ColumnName="CertificadorId" />
+                <ScalarProperty Name="NumeroRegistroSTPS" ColumnName="NumeroRegistroSTPS" />
+                <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Curso">
+            <EntityTypeMapping TypeName="HelpDeskModel.Curso">
+              <MappingFragment StoreEntitySet="Curso">
+                <ScalarProperty Name="FechaCreacion" ColumnName="FechaCreacion" />
+                <ScalarProperty Name="Activo" ColumnName="Activo" />
+                <ScalarProperty Name="CertificadorId" ColumnName="CertificadorId" />
+                <ScalarProperty Name="AreaTematicaId" ColumnName="AreaTematicaId" />
+                <ScalarProperty Name="DuracionHoras" ColumnName="DuracionHoras" />
+                <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DC3">
+            <EntityTypeMapping TypeName="HelpDeskModel.DC3">
+              <MappingFragment StoreEntitySet="DC3">
+                <ScalarProperty Name="FechaCreacion" ColumnName="FechaCreacion" />
+                <ScalarProperty Name="Estatus" ColumnName="Estatus" />
+                <ScalarProperty Name="CertificadorId" ColumnName="CertificadorId" />
+                <ScalarProperty Name="FechaFin" ColumnName="FechaFin" />
+                <ScalarProperty Name="FechaInicio" ColumnName="FechaInicio" />
+                <ScalarProperty Name="CapacitadorId" ColumnName="CapacitadorId" />
+                <ScalarProperty Name="CursoId" ColumnName="CursoId" />
+                <ScalarProperty Name="EmpresaId" ColumnName="EmpresaId" />
+                <ScalarProperty Name="TrabajadorId" ColumnName="TrabajadorId" />
+                <ScalarProperty Name="Folio" ColumnName="Folio" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DC3Documento">
+            <EntityTypeMapping TypeName="HelpDeskModel.DC3Documento">
+              <MappingFragment StoreEntitySet="DC3Documento">
+                <ScalarProperty Name="FechaGeneracion" ColumnName="FechaGeneracion" />
+                <ScalarProperty Name="UrlPublica" ColumnName="UrlPublica" />
+                <ScalarProperty Name="RutaQR" ColumnName="RutaQR" />
+                <ScalarProperty Name="RutaPDF" ColumnName="RutaPDF" />
+                <ScalarProperty Name="DC3Id" ColumnName="DC3Id" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DC3Firma">
+            <EntityTypeMapping TypeName="HelpDeskModel.DC3Firma">
+              <MappingFragment StoreEntitySet="DC3Firma">
+                <ScalarProperty Name="FechaFirma" ColumnName="FechaFirma" />
+                <ScalarProperty Name="RutaArchivo" ColumnName="RutaArchivo" />
+                <ScalarProperty Name="NombreFirmante" ColumnName="NombreFirmante" />
+                <ScalarProperty Name="TipoFirma" ColumnName="TipoFirma" />
+                <ScalarProperty Name="DC3Id" ColumnName="DC3Id" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Empresa">
+            <EntityTypeMapping TypeName="HelpDeskModel.Empresa">
+              <MappingFragment StoreEntitySet="Empresa">
+                <ScalarProperty Name="FechaCreacion" ColumnName="FechaCreacion" />
+                <ScalarProperty Name="Activo" ColumnName="Activo" />
+                <ScalarProperty Name="CertificadorId" ColumnName="CertificadorId" />
+                <ScalarProperty Name="Direccion" ColumnName="Direccion" />
+                <ScalarProperty Name="RFC" ColumnName="RFC" />
+                <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Ocupacion">
+            <EntityTypeMapping TypeName="HelpDeskModel.Ocupacion">
+              <MappingFragment StoreEntitySet="Ocupacion">
+                <ScalarProperty Name="Activo" ColumnName="Activo" />
+                <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+                <ScalarProperty Name="Clave" ColumnName="Clave" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Trabajador">
+            <EntityTypeMapping TypeName="HelpDeskModel.Trabajador">
+              <MappingFragment StoreEntitySet="Trabajador">
+                <ScalarProperty Name="Activo" ColumnName="Activo" />
+                <ScalarProperty Name="EmpresaId" ColumnName="EmpresaId" />
+                <ScalarProperty Name="OcupacionId" ColumnName="OcupacionId" />
+                <ScalarProperty Name="Puesto" ColumnName="Puesto" />
+                <ScalarProperty Name="CURP" ColumnName="CURP" />
+                <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

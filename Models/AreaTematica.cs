@@ -12,20 +12,20 @@ namespace TAS360.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class Clasificacion_Pendiente
+    public partial class AreaTematica
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Clasificacion_Pendiente()
+        public AreaTematica()
         {
-            this.Pendiente = new HashSet<Pendiente>();
+            this.Curso = new HashSet<Curso>();
         }
     
-        public int id { get; set; }
-        public string Nombre { get; set; }
-        public string Descripcion { get; set; }
+        public int Id { get; set; }
         public string Clave { get; set; }
+        public string Nombre { get; set; }
+        public Nullable<bool> Activo { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Pendiente> Pendiente { get; set; }
+        public virtual ICollection<Curso> Curso { get; set; }
     }
 }

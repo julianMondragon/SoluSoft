@@ -179,6 +179,12 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Log.cs" />
+    <Compile Include="Models\AreaTematica.cs">
+      <DependentUpon>HelpDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Capacitador.cs">
+      <DependentUpon>HelpDesk.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Categoria.cs">
       <DependentUpon>HelpDesk.tt</DependentUpon>
     </Compile>
@@ -186,6 +192,21 @@
       <DependentUpon>HelpDesk.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Comentario.cs">
+      <DependentUpon>HelpDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Curso.cs">
+      <DependentUpon>HelpDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\DC3.cs">
+      <DependentUpon>HelpDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\DC3Documento.cs">
+      <DependentUpon>HelpDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\DC3Firma.cs">
+      <DependentUpon>HelpDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Empresa.cs">
       <DependentUpon>HelpDesk.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Enums\DocumentTypeEnum.cs" />
@@ -208,6 +229,9 @@
       <DependentUpon>HelpDesk.edmx</DependentUpon>
     </Compile>
     <Compile Include="Models\Modulo.cs">
+      <DependentUpon>HelpDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Ocupacion.cs">
       <DependentUpon>HelpDesk.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Operacion.cs">
@@ -261,6 +285,9 @@
     <Compile Include="Models\Ticket_User.cs">
       <DependentUpon>HelpDesk.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Trabajador.cs">
+      <DependentUpon>HelpDesk.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\User.cs">
       <DependentUpon>HelpDesk.tt</DependentUpon>
     </Compile>
@@ -305,6 +332,7 @@
     <Compile Include="StorProc\LSA_Reportes.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Backup_Database\dc3_negmon_final.sql" />
     <Content Include="Backup_Database\Migraciones\Alter_Pendiente_Add_properties.sql" />
     <Content Include="Backup_Database\Migraciones\Create_Table_Pendiente_Files.sql" />
     <Content Include="Backup_Database\Migraciones\Create_Table_Pendiente_Record_Status.sql" />

@@ -12,15 +12,15 @@ namespace TAS360.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class Pendiente_Record_Status
+    public partial class DC3Firma
     {
-        public int id { get; set; }
-        public Nullable<int> id_Pendiente { get; set; }
-        public Nullable<int> id_Status { get; set; }
-        public Nullable<System.DateTime> CreatedAt { get; set; }
-        public Nullable<System.DateTime> UpdateAt { get; set; }
+        public int Id { get; set; }
+        public int DC3Id { get; set; }
+        public string TipoFirma { get; set; }
+        public string NombreFirmante { get; set; }
+        public string RutaArchivo { get; set; }
+        public Nullable<System.DateTime> FechaFirma { get; set; }
     
-        public virtual Pendiente Pendiente { get; set; }
-        public virtual Status Status { get; set; }
+        public virtual DC3 DC3 { get; set; }
     }
 }
