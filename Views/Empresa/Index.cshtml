@@ -1,0 +1,56 @@
+﻿
+@model List<TAS360.Models.Empresa>
+@{
+    ViewBag.Title = "Empresas registradas";
+    Layout = "~/Views/Shared/_Layout3.cshtml";
+}
+<div class="container">
+
+    <div class="jumbotron">
+        <div class="col-md-2">
+            <img src="~/Content/img/Negmon-logo.jpeg" style="max-height:120px;" />
+        </div>
+        <h2>Empresas</h2>
+        <p>
+            Mis empresas registradas en el sistema
+        </p>
+        <a href="@Url.Action("Create")" class="btn btn-success btn-sm pull-right">
+            + Nueva Empresa
+        </a>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4>Datos de empresas</h4>            
+        </div>
+
+        <div class="panel-body">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>RFC</th>
+                        <th>Dirección</th>
+                        @*<th>Certificador</th>*@
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.Nombre</td>
+                            <td>@item.RFC</td>
+                            <td>@item.Direccion</td>
+                            @*<td>@item.User.nombre</td>*@
+                            <td>
+                                <a href="@Url.Action("Edit", new { id = item.Id })" class="btn btn-primary btn-xs">Editar</a>
+                                <a href="@Url.Action("Delete", new { id = item.Id })" class="btn btn-danger btn-xs">Eliminar</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+

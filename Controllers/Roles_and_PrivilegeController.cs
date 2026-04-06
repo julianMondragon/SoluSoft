@@ -102,7 +102,14 @@ namespace TAS360.Controllers
                         count++;
                     }
                 }
-
+                var rol_operacionCert = from R in db.Roll_Operacion where R.id_Roll == 5 select R;
+                if (rol_operacionCert.Any())
+                {
+                    foreach (var item in rol_operacionCert)
+                    {
+                        rolesPrivileges.Rol_OperacionCerti.Add(item);
+                    }
+                }
             }
             GetUsuarios();
             GetModulos();
@@ -456,7 +463,7 @@ namespace TAS360.Controllers
                 {
                     model.id = ModuloToEdit.id;
                     model.nombre = ModuloToEdit.nombre;
-                    model.id_modulo = ModuloToEdit.id_Modulo;
+                    model.id_modulo = (int)ModuloToEdit.id_Modulo;
                    
                 }
             }

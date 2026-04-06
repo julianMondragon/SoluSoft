@@ -161,6 +161,7 @@
     <Compile Include="Controllers\logoutController.cs" />
     <Compile Include="Controllers\LSAController.cs" />
     <Compile Include="Controllers\ManageDocControllerController.cs" />
+    <Compile Include="Controllers\ManagerDC3\EmpresaController.cs" />
     <Compile Include="Controllers\PendientesController.cs" />
     <Compile Include="Controllers\ProductSSFController.cs" />
     <Compile Include="Controllers\ReportsController.cs" />
@@ -303,6 +304,7 @@
     <Compile Include="Models\ViewModel\DocumentSectionModel.cs" />
     <Compile Include="Models\ViewModel\DocumentSignatureModel.cs" />
     <Compile Include="Models\ViewModel\DocumentViewModel.cs" />
+    <Compile Include="Models\ViewModel\EmpresaViewModel.cs" />
     <Compile Include="Models\ViewModel\FCV_ViewModel.cs" />
     <Compile Include="Models\ViewModel\FilterPendientesViewModel.cs" />
     <Compile Include="Models\ViewModel\FilterTicketsViewModel.cs" />
@@ -898,6 +900,9 @@
     <Content Include="Views\ManageDoc\CreateDocument.cshtml" />
     <Content Include="Views\ManageDoc\DocumentReport.cshtml" />
     <Content Include="Views\ManageDoc\DocumentReport2.cshtml" />
+    <Content Include="Views\Empresa\Index.cshtml" />
+    <Content Include="Views\Empresa\Create.cshtml" />
+    <Content Include="Views\Empresa\Edit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

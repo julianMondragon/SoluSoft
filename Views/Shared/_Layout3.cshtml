@@ -4,24 +4,76 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - PTS </title>
+    <meta name="description" content="Soluciones tecnológicas en Querétaro: POS, CCTV, WiFi, Control de acceso">
+    <title>@ViewBag.Title - NEGMON </title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
-    @Styles.Render("~/bundles/datatables")
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="~/Scripts/autosize.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
 </head>
 <body>
     <div class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
             <div class="navbar-header">
-                @*@Html.ActionLink("Iniciar sesión", "login", "Acceso", new { area = "" }, new { @class = "navbar-brand" })*@
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                @Html.ActionLink(" NEGMON", "Home", "Home", new { area = "" }, new { @class = "navbar-brand" })
             </div>
             <div class="navbar-collapse collapse">
+                @using TAS360.Models;
+                @{
+                    User usuario = (User)HttpContext.Current.Session["user"];
+                }
                 <ul class="nav navbar-nav">
-                    @*<li>@Html.ActionLink("HMI de Aditivación", "Index", "Aditivo")</li>
-                        <li>@Html.ActionLink("Conv.Tabla de Cubicación", "Index", "TablaCub")</li>
-                        <li>@Html.ActionLink("Cálculo FCV", "Index", "Calculo_FCV")</li>
-                        <li>@Html.ActionLink("Danload 6000", "Index", "Danload")</li>
-                        <li>@Html.ActionLink("Accuload III", "Index", "Accuload")</li>*@
+                    <li class="dropdown">                        
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">DC-3 <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li>@Html.ActionLink("Crear DC-3", "Consultoring", "ServicesSSF")</li>
+                            <li>@Html.ActionLink("Buscar DC-3", "ControlAcceso", "ServicesSSF")</li>
+                            <li>@Html.ActionLink("Firmar", "Videovigilancia", "ServicesSSF")</li>
+                            <li>@Html.ActionLink("Generar QR", "POS", "ServicesSSF")</li>
+                        </ul>
+                    </li>
+                    <li>@Html.ActionLink("Empresas" + "", "Index", "Empresa")</li>
+                    <li>@Html.ActionLink("Cursos" + "", "Index", "Curso")</li>
+                    <li class="dropdown">                        
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Otros<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li>@Html.ActionLink("Formulario DC-3", "Consultoring", "ServicesSSF")</li>
+                        </ul>
+                    </li>
+                    @if (usuario != null)
+                    {
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">@usuario.nombre <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li class="nav-item px-lg-4"><a href="@Url.Content("~/logout/logout")">Cerrar Sesion</a></li>
+                            </ul>
+                        </li>
+                        if (usuario.id_Roll == 1)
+                        {
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> 👷 System <span class="caret"></span></a>
+                                <ul class="dropdown-menu">
+                                    <li>@Html.ActionLink("Roles y privilegios", "Index", "Roles_and_Privilege")</li>
+                                    <li role="separator" class="divider"></li>
+                                    <li>@Html.ActionLink("Usuarios", "Index", "User")</li>
+                                    <li role="separator" class="divider"></li>
+                                <li>@Html.ActionLink("Document+", "CreateDocument", "ManageDoc")</li>
+                                    @*<li class="nav-item px-lg-4"><a href="@Url.Content("~/logout/logout")">Cerrar Sesion</a></li>*@
+                                </ul>
+                            </li>
+                        }
+                    }
+                    else
+                    {
+                        <li>@Html.ActionLink("Iniciar Sesion", "Login", "Acceso")</li>
+                    }
                 </ul>
             </div>
         </div>
@@ -36,10 +88,30 @@
 
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
-    @Scripts.Render("~/bundles/datatables")
     @Scripts.Render("~/bundles/corecubi")
     @RenderSection("scripts", required: false)
+    <script src="~/Scripts/helper.js"></script>
+    <script type="text/javascript">
+        // Intervalo en milisegundos (aquí configurado para cada 4 minutos)
+        var keepAliveInterval = 4 * 60 * 1000;
 
+        function keepSessionAlive() {
+            let currentUrl = window.location.href; // Captura la URL actual
 
-</body>
+            fetch(`/Home/KeepAlive?currentUrl=${encodeURIComponent(currentUrl)}`, {
+                method: 'GET',
+                cache: 'no-cache'
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        console.error('Error manteniendo la sesión activa:', response.statusText);
+                    }
+                })
+                .catch(error => console.error('Error de red al intentar mantener la sesión activa:', error));
+        }
+        // Configura el intervalo para mantener la sesión activa
+        setInterval(keepSessionAlive, keepAliveInterval);
+    </script>
+
+</body>    
 </html>

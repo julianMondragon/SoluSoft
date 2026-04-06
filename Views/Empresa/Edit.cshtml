@@ -1,0 +1,51 @@
+﻿@model TAS360.Models.ViewModel.EmpresaViewModel
+@{
+    ViewBag.Title = "Editar empresa";
+}
+<div class="container">
+
+    <div class="jumbotron">
+        <div class="col-md-2">
+            <img src="~/Content/img/Negmon-logo.jpeg" style="max-height:120px;" />
+        </div>
+        <h2>Edita una empresa</h2>
+        <p>
+            Todas las empresas registradas por tú usuario se agregan al catalogo de creacion de tú DC-3
+        </p>
+    </div>
+    @using (Html.BeginForm())
+    {
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4>Datos de la empresa</h4>
+            </div>
+
+            <div class="panel-body">
+
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Nombre)
+                    @Html.TextBoxFor(m => m.Nombre, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(f => f.Nombre, null, new { @class = "red" })
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(m => m.RFC)
+                    @Html.TextBoxFor(m => m.RFC, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(f => f.RFC, null, new { @class = "red" })
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Direccion)
+                    @Html.TextBoxFor(m => m.Direccion, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(f => f.Direccion, null, new { @class = "red" })
+                </div>
+
+            </div>
+
+            <div class="panel-footer text-right">
+                <button type="submit" class="btn btn-primary">Guardar</button>
+                <a href="@Url.Action("Index")" class="btn btn-default">Cancelar</a>
+            </div>
+        </div>
+    }
+</div>

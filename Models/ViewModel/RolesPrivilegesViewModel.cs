@@ -16,6 +16,7 @@ namespace TAS360.Models.ViewModel
             this.Rol_OperacionResp = new List<Roll_Operacion>();
             this.Rol_OperacionContac = new List<Roll_Operacion>();
             this.Rol_OperacionVist = new List<Roll_Operacion>();
+            this.Rol_OperacionCerti = new List<Roll_Operacion>();
             this.Operacions = new List<Operacion>();
             this.Users = new List<User>();
         }
@@ -27,6 +28,7 @@ namespace TAS360.Models.ViewModel
         public List<Roll_Operacion> Rol_OperacionResp { get; set; }
         public List<Roll_Operacion> Rol_OperacionContac { get; set; }
         public List<Roll_Operacion> Rol_OperacionVist { get; set; }
+        public List<Roll_Operacion> Rol_OperacionCerti { get; set; }
         public List<Operacion> Operacions { get; set; }
         public List<User> Users { get; set; }
     }
