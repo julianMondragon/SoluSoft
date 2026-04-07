@@ -1,0 +1,60 @@
+﻿@model TAS360.Models.ViewModel.CursoViewModel
+@{
+    ViewBag.Title = "Editar Curso";
+    Layout = "~/Views/Shared/_Layout3.cshtml";
+}
+<div class="container">
+
+    <div class="jumbotron">
+        <div class="col-md-2">
+            <img src="~/Content/img/Negmon-logo.jpeg" style="max-height:120px;" />
+        </div>
+        <h2>Editar Curso: @Model.Id </h2>
+        <p class="text-muted">Edita el curso: @Model.Nombre</p>
+    </div>
+    @using (Html.BeginForm())
+    {
+        <div class="panel panel-default">
+
+            <div class="panel-heading">
+                <h4>Editar curso</h4>
+            </div>
+
+            <div class="panel-body">
+
+                <!-- Nombre -->
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Nombre)
+                    @Html.TextBoxFor(m => m.Nombre, new { @class = "form-control", placeholder = "Ej. Manejo de extintores" })
+                    @Html.ValidationMessageFor(m => m.Nombre, "", new { @class = "text-danger" })
+                </div>
+
+                <!-- Duración -->
+                <div class="form-group">
+                    @Html.LabelFor(m => m.DuracionHoras)
+                    @Html.TextBoxFor(m => m.DuracionHoras, new { @class = "form-control", type = "number", min = "1" })
+                    @Html.ValidationMessageFor(m => m.DuracionHoras, "", new { @class = "text-danger" })
+                </div>
+
+                <!-- Área Temática -->
+                <div class="form-group">
+                    @Html.LabelFor(m => m.AreaTematicaId)
+                    @Html.DropDownListFor(
+                        m => m.AreaTematicaId,
+                        Model.AreasTematicas,
+                        "-- Selecciona un área temática --",
+                        new { @class = "form-control" }
+                    )
+                    @Html.ValidationMessageFor(m => m.AreaTematicaId, "", new { @class = "text-danger" })
+                </div>
+
+            </div>
+
+            <div class="panel-footer text-right">
+                <button type="submit" class="btn btn-success">Guardar</button>
+                <a href="@Url.Action("Index")" class="btn btn-default">Cancelar</a>
+            </div>
+
+        </div>
+    }
+</div>

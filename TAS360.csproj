@@ -154,6 +154,7 @@
     <Compile Include="Controllers\AcculoadController.cs" />
     <Compile Include="Controllers\Calculo_FCVController.cs" />
     <Compile Include="Controllers\ContactoSSFController.cs" />
+    <Compile Include="Controllers\CursoController.cs" />
     <Compile Include="Controllers\DanloadController.cs" />
     <Compile Include="Controllers\DocumentacionController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
@@ -300,6 +301,7 @@
     <Compile Include="Models\ViewModel\ConnexionSQLViewModel.cs" />
     <Compile Include="Models\ViewModel\ContactoSSFViewModel.cs" />
     <Compile Include="Models\ViewModel\CreateReportViewModel.cs" />
+    <Compile Include="Models\ViewModel\CursoViewModel.cs" />
     <Compile Include="Models\ViewModel\DocumentItemModel.cs" />
     <Compile Include="Models\ViewModel\DocumentSectionModel.cs" />
     <Compile Include="Models\ViewModel\DocumentSignatureModel.cs" />
@@ -903,6 +905,9 @@
     <Content Include="Views\Empresa\Index.cshtml" />
     <Content Include="Views\Empresa\Create.cshtml" />
     <Content Include="Views\Empresa\Edit.cshtml" />
+    <Content Include="Views\Curso\Index.cshtml" />
+    <Content Include="Views\Curso\Edit.cshtml" />
+    <Content Include="Views\Curso\Create.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
