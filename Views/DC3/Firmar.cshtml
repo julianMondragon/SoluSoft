@@ -1,0 +1,40 @@
+@model TAS360.Models.ViewModel.ManageDC3.DC3ViewModel
+@{
+    ViewBag.Title = "Firmar DC3";
+    Layout = "~/Views/Shared/_Layout3.cshtml";
+}
+<div class="container">
+    <div class="panel panel-default" style="max-width:700px;margin:20px auto;">
+        <div class="panel-heading"><h3>Firmar certificado DC-3</h3></div>
+        @using (Html.BeginForm("Firmar", "DC3", new { id = Model.Id }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            @Html.AntiForgeryToken()
+            <div class="panel-body">
+                <p><strong>Folio:</strong> @Model.Folio</p>
+                <p><strong>Firma actual del capacitador:</strong></p>
+                @if (!string.IsNullOrEmpty(Model.RutaFirmaCapacitador))
+                {
+                    <img src="@Url.Content(Model.RutaFirmaCapacitador)" style="max-height:120px;" />
+                }
+                else
+                {
+                    <p class="text-warning">El capacitador no tiene firma registrada.</p>
+                }
+
+                <hr />
+                <div class="form-group">
+                    <label>Firma representante (opcional)</label>
+                    <input type="file" name="FirmaRepresentanteFile" class="form-control" accept="image/*" />
+                </div>
+                <div class="form-group">
+                    <label>Firma trabajador (opcional)</label>
+                    <input type="file" name="FirmaTrabajadorFile" class="form-control" accept="image/*" />
+                </div>
+            </div>
+            <div class="panel-footer text-right">
+                <button type="submit" class="btn btn-success">Guardar firmas</button>
+                <a class="btn btn-default" href="@Url.Action("Details", new { id = Model.Id })">Cancelar</a>
+            </div>
+        }
+    </div>
+</div>

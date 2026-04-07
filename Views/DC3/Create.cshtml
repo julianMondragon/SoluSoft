@@ -1,0 +1,67 @@
+@model TAS360.Models.ViewModel.ManageDC3.DC3ViewModel
+@{
+    ViewBag.Title = "Crear DC3";
+    Layout = "~/Views/Shared/_Layout3.cshtml";
+}
+<div class="container">
+    <div class="jumbotron"><h2>Crear certificado DC-3</h2></div>
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        <div class="panel panel-default">
+            <div class="panel-body">
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <div class="row">
+                    <div class="col-md-6 form-group">
+                        @Html.LabelFor(m => m.EmpresaId)
+                        @Html.DropDownListFor(m => m.EmpresaId, Model.Empresas, "-- Selecciona --", new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.EmpresaId, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-6 form-group">
+                        @Html.LabelFor(m => m.TrabajadorId)
+                        @Html.DropDownListFor(m => m.TrabajadorId, Model.Trabajadores, "-- Selecciona --", new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.TrabajadorId, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-6 form-group">
+                        @Html.LabelFor(m => m.CursoId)
+                        @Html.DropDownListFor(m => m.CursoId, Model.Cursos, "-- Selecciona --", new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.CursoId, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-6 form-group">
+                        @Html.LabelFor(m => m.CapacitadorId)
+                        @Html.DropDownListFor(m => m.CapacitadorId, Model.Capacitadores, "-- Selecciona --", new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.CapacitadorId, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-3 form-group">
+                        @Html.LabelFor(m => m.FechaInicio)
+                        @Html.TextBoxFor(m => m.FechaInicio, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+                    </div>
+                    <div class="col-md-3 form-group">
+                        @Html.LabelFor(m => m.FechaFin)
+                        @Html.TextBoxFor(m => m.FechaFin, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+                    </div>
+                    <div class="col-md-3 form-group">
+                        @Html.LabelFor(m => m.DuracionHoras)
+                        @Html.TextBoxFor(m => m.DuracionHoras, new { @class = "form-control", type = "number" })
+                    </div>
+                    <div class="col-md-3 form-group">
+                        @Html.LabelFor(m => m.FechaEmision)
+                        @Html.TextBoxFor(m => m.FechaEmision, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+                    </div>
+                    <div class="col-md-6 form-group">
+                        @Html.LabelFor(m => m.Puesto)
+                        @Html.TextBoxFor(m => m.Puesto, new { @class = "form-control" })
+                    </div>
+                    <div class="col-md-6 form-group">
+                        @Html.LabelFor(m => m.Ocupacion)
+                        @Html.TextBoxFor(m => m.Ocupacion, new { @class = "form-control" })
+                    </div>
+                </div>
+            </div>
+            <div class="panel-footer text-right">
+                <button type="submit" class="btn btn-success">Guardar</button>
+                <a class="btn btn-default" href="@Url.Action("Index")">Cancelar</a>
+            </div>
+        </div>
+    }
+</div>
