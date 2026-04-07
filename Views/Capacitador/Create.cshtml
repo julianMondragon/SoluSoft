@@ -1,0 +1,57 @@
+﻿@model TAS360.Models.ViewModel.ManageDC3.CapacitadorViewModel
+@{
+    ViewBag.Title = "Crear Capacitador";
+    Layout = "~/Views/Shared/_Layout3.cshtml";
+}
+<div class="container">
+
+    <div class="jumbotron">
+        <div class="col-md-2">
+            <img src="~/Content/img/Negmon-logo.jpeg" style="max-height:120px;" />
+        </div>
+        <h2>Capacitador +</h2>
+        <p>
+            Creá Capacitador(es) para la generación de los DC-3
+        </p>
+    </div>
+    @using (Html.BeginForm(null, null, FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
+        <div class="panel panel-default">
+
+            <div class="panel-heading">
+                <h4>Registrar capacitador</h4>
+            </div>
+
+            <div class="panel-body">
+
+                <!-- Nombre -->
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Nombre)
+                    @Html.TextBoxFor(m => m.Nombre, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.Nombre, "", new { @class = "text-danger" })
+                </div>
+
+                <!-- STPS -->
+                <div class="form-group">
+                    @Html.LabelFor(m => m.NumeroRegistroSTPS)
+                    @Html.TextBoxFor(m => m.NumeroRegistroSTPS, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.NumeroRegistroSTPS, "", new { @class = "text-danger" })
+                </div>
+
+                <!-- Firma -->
+                <div class="form-group">
+                    @Html.LabelFor(m => m.FirmaFile)
+                    <input type="file" name="FirmaFile" class="form-control" />
+                </div>
+
+            </div>
+
+            <div class="panel-footer text-right">
+                <button type="submit" class="btn btn-success">Guardar</button>
+                <a href="@Url.Action("Index")" class="btn btn-default">Cancelar</a>
+            </div>
+
+        </div>
+    }
+</div>

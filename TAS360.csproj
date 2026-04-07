@@ -154,7 +154,8 @@
     <Compile Include="Controllers\AcculoadController.cs" />
     <Compile Include="Controllers\Calculo_FCVController.cs" />
     <Compile Include="Controllers\ContactoSSFController.cs" />
-    <Compile Include="Controllers\CursoController.cs" />
+    <Compile Include="Controllers\ManagerDC3\CapacitadorController.cs" />
+    <Compile Include="Controllers\ManagerDC3\CursoController.cs" />
     <Compile Include="Controllers\DanloadController.cs" />
     <Compile Include="Controllers\DocumentacionController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
@@ -312,6 +313,7 @@
     <Compile Include="Models\ViewModel\FilterTicketsViewModel.cs" />
     <Compile Include="Models\ViewModel\G_TicketsByCategoriaViewModel.cs" />
     <Compile Include="Models\ViewModel\G_TicketsByStatusViewModel.cs" />
+    <Compile Include="Models\ViewModel\ManageDC3\CapacitadorViewModel.cs" />
     <Compile Include="Models\ViewModel\PDFViewModel.cs" />
     <Compile Include="Models\ViewModel\G_TicketsModificadoViewModel.cs" />
     <Compile Include="Models\ViewModel\G_TicketsByTerminalViewModel.cs" />
@@ -908,6 +910,10 @@
     <Content Include="Views\Curso\Index.cshtml" />
     <Content Include="Views\Curso\Edit.cshtml" />
     <Content Include="Views\Curso\Create.cshtml" />
+    <Content Include="Views\Capacitador\Create.cshtml" />
+    <Content Include="Views\Capacitador\Index.cshtml" />
+    <Content Include="Views\Capacitador\Edit.cshtml" />
+    <Content Include="Views\Shared\_Layout3.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -917,6 +923,7 @@
     <Folder Include="Tablas_Pendientes\" />
     <Folder Include="Tablas_Tickets\" />
     <Folder Include="TicketFiles\" />
+    <Folder Include="Uploads\Firmas\" />
     <Folder Include="Views\ManageDocController\" />
   </ItemGroup>
   <ItemGroup>

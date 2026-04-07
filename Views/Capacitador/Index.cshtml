@@ -1,0 +1,106 @@
+﻿@model List<TAS360.Models.Capacitador>
+@{
+    ViewBag.Title = "Capacitadores registrados";
+    Layout = "~/Views/Shared/_Layout3.cshtml";
+}
+<div class="container">
+
+    <div class="jumbotron">
+        <div class="col-md-2">
+            <img src="~/Content/img/Negmon-logo.jpeg" style="max-height:120px;" />
+        </div>
+        <h2>Capacitadores</h2>
+        <p>
+            Capacitadores registrados para la firma de los DC-3
+        </p>
+        <a href="@Url.Action("Create")" class="btn btn-success btn-sm pull-right">
+            + Nuevo Capacitador
+        </a>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4>Firmas: (@Model.Count)</h4>
+            <div class="clearfix"></div>
+        </div>
+
+        <div class="panel-body">
+
+            @if (Model != null && Model.Any())
+            {
+                <div class="row">
+
+                    @foreach (var item in Model)
+                    {
+                        <div class="col-md-3">
+
+                            <div class="panel panel-default" style="border-radius:10px; overflow:hidden;">
+
+                                <!-- FIRMA -->
+                                <div style="height:140px; display:flex; align-items:center; justify-content:center; background:#f5f5f5;">
+                                    @if (!string.IsNullOrEmpty(item.RutaFirmaBase))
+                                    {
+                                        <img src="@Url.Content(item.RutaFirmaBase)" style="max-height:100px;" />
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">Sin firma</span>
+                                    }
+                                </div>
+
+                                <!-- INFO -->
+                                <div class="panel-body text-center">
+
+                                    <h5 style="margin-bottom:5px;">
+                                        @item.Nombre
+                                    </h5>
+
+                                    <p class="text-muted" style="font-size:12px;">
+                                        @item.NumeroRegistroSTPS
+                                    </p>
+
+                                </div>
+
+                                <!-- ACCIONES -->
+                                <div class="panel-footer text-center">
+                                    <div class="col-lg-6">
+                                        <a href="@Url.Action("Edit", new { id = item.Id })"
+                                           class="btn btn-primary btn-xs">
+                                            Editar
+                                        </a>
+                                    </div>
+                                    @using (Html.BeginForm("DeleteConfirmed", "Capacitador", new { id = item.Id }, FormMethod.Post))
+                                    {
+                                        @Html.AntiForgeryToken()
+
+                                        <button type="submit"
+                                                class="btn btn-danger btn-xs"
+                                                onclick="return confirm('¿Seguro que deseas eliminar este capacitador?');">
+                                            Eliminar
+                                        </button>
+                                    }
+                                </div>
+
+                            </div>
+
+                        </div>
+                    }
+
+                </div>
+            }
+            else
+            {
+                <div class="text-center text-muted">
+                    No hay capacitadores registrados
+                </div>
+            }
+
+        </div>
+    </div>
+</div>
+<style>
+    .panel:hover {
+        transform: scale(1.02);
+        transition: 0.2s;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    }
+</style>

@@ -1,0 +1,76 @@
+﻿@model TAS360.Models.ViewModel.ManageDC3.CapacitadorViewModel
+@{
+    ViewBag.Title = "Capacitador registrados";
+    Layout = "~/Views/Shared/_Layout3.cshtml";
+}
+<div class="container">
+
+    <div class="jumbotron">
+        <div class="col-md-2">
+            <img src="~/Content/img/Negmon-logo.jpeg" style="max-height:120px;" />
+        </div>
+        <h2>Editar capacitador</h2>
+        <p>
+            @Model.Nombre , con registro STPS @Model.NumeroRegistroSTPS
+        </p>
+    </div>
+    @using (Html.BeginForm(null, null, FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        @Html.HiddenFor(m => m.Id)
+        @Html.AntiForgeryToken()
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <p class="text-muted">Actualiza la información del capacitador y su firma</p>
+            </div>
+
+            <div class="panel-body">
+
+                <!-- Nombre -->
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Nombre)
+                    @Html.TextBoxFor(m => m.Nombre, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.Nombre, "", new { @class = "text-danger" })
+                </div>
+
+                <!-- Registro STPS -->
+                <div class="form-group">
+                    @Html.LabelFor(m => m.NumeroRegistroSTPS)
+                    @Html.TextBoxFor(m => m.NumeroRegistroSTPS, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.NumeroRegistroSTPS, "", new { @class = "text-danger" })
+                </div>
+
+                <!-- Firma actual -->
+                <div class="form-group">
+                    <label>Firma actual</label>
+                    <div style="margin-bottom:10px;">
+                        @if (!string.IsNullOrEmpty(Model.RutaFirmaBase))
+                        {
+                            <img src="@Url.Content(Model.RutaFirmaBase)"
+                                 style="max-height:120px; border:1px solid #ccc; padding:5px;" />
+                        }
+                        else
+                        {
+                            <span class="text-muted">Sin firma registrada</span>
+                        }
+                    </div>
+                </div>
+
+                <!-- Nueva firma -->
+                <div class="form-group">
+                    @Html.LabelFor(m => m.FirmaFile, "Reemplazar firma (opcional)")
+                    <input type="file" name="FirmaFile" class="form-control" />
+                    <p class="text-muted" style="font-size:12px;">
+                        Si seleccionas una nueva imagen, se reemplazará la actual.
+                    </p>
+                </div>
+
+            </div>
+
+            <div class="panel-footer text-right">
+                <button type="submit" class="btn btn-success">Guardar cambios</button>
+                <a href="@Url.Action("Index")" class="btn btn-default">Cancelar</a>
+            </div>
+
+        </div>
+    }
+</div>
