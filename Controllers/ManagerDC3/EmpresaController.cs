@@ -116,7 +116,7 @@ namespace TAS360.Controllers.ManagerDC3
             // 🔴 VALIDACIÓN RFC DUPLICADO
             int userId = GetUserId();
             bool existeRFC = _context.Empresa
-                .Any(e => e.RFC == model.RFC && e.CertificadorId == userId);
+                .Any(e => e.RFC == model.RFC && e.CertificadorId == userId && e.Id != model.Id);
 
             if (existeRFC)
             {
