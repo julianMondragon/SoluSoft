@@ -164,6 +164,7 @@
     <Compile Include="Controllers\LSAController.cs" />
     <Compile Include="Controllers\ManageDocControllerController.cs" />
     <Compile Include="Controllers\ManagerDC3\EmpresaController.cs" />
+    <Compile Include="Controllers\ManagerDC3\TrabajadorController.cs" />
     <Compile Include="Controllers\PendientesController.cs" />
     <Compile Include="Controllers\ProductSSFController.cs" />
     <Compile Include="Controllers\ReportsController.cs" />
@@ -314,6 +315,7 @@
     <Compile Include="Models\ViewModel\G_TicketsByCategoriaViewModel.cs" />
     <Compile Include="Models\ViewModel\G_TicketsByStatusViewModel.cs" />
     <Compile Include="Models\ViewModel\ManageDC3\CapacitadorViewModel.cs" />
+    <Compile Include="Models\ViewModel\ManageDC3\TrabajadorViewModel.cs" />
     <Compile Include="Models\ViewModel\PDFViewModel.cs" />
     <Compile Include="Models\ViewModel\G_TicketsModificadoViewModel.cs" />
     <Compile Include="Models\ViewModel\G_TicketsByTerminalViewModel.cs" />
@@ -914,6 +916,9 @@
     <Content Include="Views\Capacitador\Index.cshtml" />
     <Content Include="Views\Capacitador\Edit.cshtml" />
     <Content Include="Views\Shared\_Layout3.cshtml" />
+    <Content Include="Views\Trabajador\Index.cshtml" />
+    <Content Include="Views\Trabajador\Create.cshtml" />
+    <Content Include="Views\Trabajador\Edit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

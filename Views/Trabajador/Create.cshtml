@@ -1,0 +1,75 @@
+﻿@model TAS360.Models.ViewModel.ManageDC3.TrabajadorViewModel
+@{
+    ViewBag.Title = "Crear trabajador";
+    Layout = "~/Views/Shared/_Layout3.cshtml";
+}
+<div class="container">
+
+    <div class="jumbotron">
+        <div class="col-md-2">
+            <img src="~/Content/img/Negmon-logo.jpeg" style="max-height:120px;" />
+        </div>
+        <h2>Trabajador +</h2>
+        <p class="text-muted">Registra trabajadores asociados a empresas para los DC-3</p>
+    </div>
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4>Nuevo trabajador</h4>
+            </div>
+
+            <div class="panel-body">
+
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Nombre)
+                    @Html.TextBoxFor(m => m.Nombre, new { @class = "form-control", placeholder = "Nombre completo" })
+                    @Html.ValidationMessageFor(m => m.Nombre, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(m => m.CURP)
+                    @Html.TextBoxFor(m => m.CURP, new { @class = "form-control", maxlength = "18", minlength = "18" })
+                    @Html.ValidationMessageFor(m => m.CURP, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Puesto)
+                    @Html.TextBoxFor(m => m.Puesto, new { @class = "form-control", placeholder = "Puesto" })
+                    @Html.ValidationMessageFor(m => m.Puesto, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(m => m.EmpresaId)
+                    @Html.DropDownListFor(
+                        m => m.EmpresaId,
+                        Model.Empresas,
+                        "-- Selecciona una empresa --",
+                        new { @class = "form-control" }
+                    )
+                    @Html.ValidationMessageFor(m => m.EmpresaId, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(m => m.OcupacionId)
+                    @Html.DropDownListFor(
+                        m => m.OcupacionId,
+                        Model.Ocupaciones,
+                        "-- Selecciona una ocupación --",
+                        new { @class = "form-control" }
+                    )
+                    @Html.ValidationMessageFor(m => m.OcupacionId, "", new { @class = "text-danger" })
+                </div>
+
+            </div>
+
+            <div class="panel-footer text-right">
+                <button type="submit" class="btn btn-success">Guardar</button>
+                <a href="@Url.Action("Index")" class="btn btn-default">Cancelar</a>
+            </div>
+        </div>
+    }
+</div>

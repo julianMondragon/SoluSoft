@@ -30,7 +30,7 @@
                     User usuario = (User)HttpContext.Current.Session["user"];
                 }
                 <ul class="nav navbar-nav">
-                    <li class="dropdown">                        
+                    <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">DC-3 <span class="caret"></span></a>
                         <ul class="dropdown-menu">
                             <li>@Html.ActionLink("Crear DC-3", "Consultoring", "ServicesSSF")</li>
@@ -39,10 +39,16 @@
                             <li>@Html.ActionLink("Generar QR", "POS", "ServicesSSF")</li>
                         </ul>
                     </li>
-                    <li>@Html.ActionLink("Empresas" + "", "Index", "Empresa")</li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Empresas<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li>@Html.ActionLink("Empresas" + "", "Index", "Empresa")</li>
+                            <li>@Html.ActionLink("Trabajadores", "Index", "Trabajador")</li>
+                        </ul>
+                    </li>                    
                     <li>@Html.ActionLink("Cursos" + "", "Index", "Curso")</li>
                     <li>@Html.ActionLink("Capacitador" + "", "Index", "Capacitador")</li>
-                    <li class="dropdown">                        
+                    <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Otros<span class="caret"></span></a>
                         <ul class="dropdown-menu">
                             <li>@Html.ActionLink("TEMÁTICAS DE LOS CURSOS", "Consultoring", "ServicesSSF")</li>
@@ -65,7 +71,7 @@
                                     <li role="separator" class="divider"></li>
                                     <li>@Html.ActionLink("Usuarios", "Index", "User")</li>
                                     <li role="separator" class="divider"></li>
-                                <li>@Html.ActionLink("Document+", "CreateDocument", "ManageDoc")</li>
+                                    <li>@Html.ActionLink("Document+", "CreateDocument", "ManageDoc")</li>
                                     @*<li class="nav-item px-lg-4"><a href="@Url.Content("~/logout/logout")">Cerrar Sesion</a></li>*@
                                 </ul>
                             </li>
