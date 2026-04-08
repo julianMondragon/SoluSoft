@@ -927,6 +927,7 @@
     <Content Include="Views\Trabajador\Index.cshtml" />
     <Content Include="Views\Trabajador\Create.cshtml" />
     <Content Include="Views\Trabajador\Edit.cshtml" />
+    <Content Include="Views\DC3\DC3Report.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

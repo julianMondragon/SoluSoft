@@ -1,4 +1,5 @@
 using DocumentFormat.OpenXml.EMMA;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Rotativa;
 using System;
 using System.Data.Entity;
@@ -337,10 +338,10 @@ namespace TAS360.Controllers.ManagerDC3
             }
         }
 
-        [AuthorizeUser(idOperacion: 61)]
-        public ActionResult DC3Report(int id)
+        //[AuthorizeUser(idOperacion: 61)]
+        public ActionResult DC3Report(int id , int userId)
         {
-            int userId = GetUserId();
+            
             var entity = GetDc3ById(id, userId);
 
             if (entity == null)
@@ -351,16 +352,27 @@ namespace TAS360.Controllers.ManagerDC3
             return View(model); // Vista limpia SOLO para PDF
         }
 
-        [AuthorizeUser(idOperacion: 64)]
-        public ActionResult PrintDC3(int id)
+        public ActionResult PrintDC3(int id, int userId)
         {
-            return new ActionAsPdf("DC3Report", new { id })
+            return new ActionAsPdf("DC3Report", new { id, userId })
             {
-                FileName = $"DC3_{id}.pdf",
+                FileName = $"Reporte_DC3_{id}.pdf",
                 PageSize = Rotativa.Options.Size.A4,
                 PageOrientation = Rotativa.Options.Orientation.Portrait
             };
         }
+        //public ActionResult PrintDC3(int id , int userId)
+        //{
+            
+        //    var entity = GetDc3ById(id, userId);
+        //    if (entity == null)
+        //        return new HttpStatusCodeResult(HttpStatusCode.Forbidden);
+
+        //    var pdfBytes = new ActionAsPdf("DC3Report", new { id })
+        //        .BuildFile(ControllerContext);
+
+        //    return File(pdfBytes, "application/pdf", $"DC3_{id}.pdf");
+        //}
 
         [AuthorizeUser(idOperacion: 64)]
         //public ActionResult GenerarPdf(int id)
@@ -543,6 +555,7 @@ namespace TAS360.Controllers.ManagerDC3
             return new DC3ViewModel
             {
                 Id = x.Id,
+                CertificadorId = x.CertificadorId,
                 Folio = x.Folio,
                 EmpresaId = x.EmpresaId,
                 TrabajadorId = x.TrabajadorId,
@@ -553,6 +566,7 @@ namespace TAS360.Controllers.ManagerDC3
                 DuracionHoras = x.Curso != null ? x.Curso.DuracionHoras : 0,
                 Puesto = x.Trabajador != null ? x.Trabajador.Puesto : string.Empty,
                 OcupacionId = x.Trabajador != null && x.Trabajador.Ocupacion != null ? x.Trabajador.Ocupacion.Id : 0,
+                OcupacionNombre = x.Trabajador != null && x.Trabajador.Ocupacion != null ? x.Trabajador.Ocupacion.Nombre : "",
                 RepresentanteTrabajadores = firmaRep != null ? firmaRep.NombreFirmante : null,
                 FechaEmision = x.FechaCreacion ?? DateTime.Now,
                 RutaFirmaCapacitador = firmaCap != null ? firmaCap.RutaArchivo : null,
@@ -564,7 +578,28 @@ namespace TAS360.Controllers.ManagerDC3
                 EmpresaNombre = x.Empresa != null ? x.Empresa.Nombre : string.Empty,
                 TrabajadorNombre = x.Trabajador != null ? x.Trabajador.Nombre : string.Empty,
                 CursoNombre = x.Curso != null ? x.Curso.Nombre : string.Empty,
-                CapacitadorNombre = x.Capacitador != null ? x.Capacitador.Nombre : string.Empty
+                CapacitadorNombre = x.Capacitador != null ? x.Capacitador.Nombre : string.Empty,
+                CapacitadorSTPS = x.Capacitador != null ? x.Capacitador.NumeroRegistroSTPS : string.Empty,
+                CURP = x.Trabajador != null ? x.Trabajador.CURP : "",
+                RFC = x.Empresa != null ? x.Empresa.RFC : "",
+                CURPArray = !string.IsNullOrEmpty(x.Trabajador.CURP)
+                ? x.Trabajador.CURP.ToCharArray()
+                : new char[18],
+                            RFCArray = !string.IsNullOrEmpty(x.Empresa.RFC)
+                ? x.Empresa.RFC.ToCharArray()
+                : new char[13],
+                FechaInicioArray = new[]
+                {
+                    x.FechaInicio.Year.ToString(),
+                    x.FechaInicio.Month.ToString("D2"),
+                    x.FechaInicio.Day.ToString("D2")
+                },
+                FechaFinArray = new[]
+                {
+                    x.FechaFin.Year.ToString(),
+                    x.FechaFin.Month.ToString("D2"),
+                    x.FechaFin.Day.ToString("D2")
+                }
             };
         }
 
@@ -613,27 +648,27 @@ namespace TAS360.Controllers.ManagerDC3
 
         private void GeneratePseudoQr(string content, string outputPath)
         {
-            using (var bitmap = new Bitmap(350, 350))
-            using (var g = Graphics.FromImage(bitmap))
-            {
-                g.Clear(Color.White);
-                using (var pen = new Pen(Color.Black, 2))
-                {
-                    g.DrawRectangle(pen, 5, 5, 340, 340);
-                    g.DrawRectangle(pen, 25, 25, 65, 65);
-                    g.DrawRectangle(pen, 260, 25, 65, 65);
-                    g.DrawRectangle(pen, 25, 260, 65, 65);
-                }
+            //using (var bitmap = new Bitmap(350, 350))
+            //using (var g = Graphics.FromImage(bitmap))
+            //{
+            //    g.Clear(White);
+            //    using (var pen = new Pen(Color.Black, 2))
+            //    {
+            //        g.DrawRectangle(pen, 5, 5, 340, 340);
+            //        g.DrawRectangle(pen, 25, 25, 65, 65);
+            //        g.DrawRectangle(pen, 260, 25, 65, 65);
+            //        g.DrawRectangle(pen, 25, 260, 65, 65);
+            //    }
 
-                using (var font = new Font("Arial", 8))
-                using (var brush = new SolidBrush(Color.Black))
-                {
-                    g.DrawString("QR", new Font("Arial", 24, FontStyle.Bold), brush, new PointF(145, 145));
-                    g.DrawString(content, font, brush, new RectangleF(20, 305, 310, 40));
-                }
+            //    using (var font = new Font("Arial", 8))
+            //    using (var brush = new SolidBrush(Color.Black))
+            //    {
+            //        g.DrawString("QR", new Font("Arial", 24, FontStyle.Bold), brush, new PointF(145, 145));
+            //        g.DrawString(content, font, brush, new RectangleF(20, 305, 310, 40));
+            //    }
 
-                bitmap.Save(outputPath, ImageFormat.Png);
-            }
+            //    bitmap.Save(outputPath, ImageFormat.Png);
+            //}
         }
     }
 }

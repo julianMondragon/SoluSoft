@@ -45,7 +45,8 @@
                                 <a class="btn btn-xs btn-primary" href="@Url.Action("Edit", new { id = item.Id })">Editar</a>
                                 <a class="btn btn-xs btn-warning" href="@Url.Action("Firmar", new { id = item.Id })">Firmar</a>
                                 <a class="btn btn-xs btn-default" href="@Url.Action("GenerarQR", new { id = item.Id })">QR</a>
-                                <a class="btn btn-xs btn-success" href="@Url.Action("DC3Report", new { id = item.Id })">PDF</a>
+                                <a class="btn btn-xs btn-success" href="@Url.Action("DC3Report", new { id = item.Id , userId = item.CertificadorId })">PDF</a>
+                                <a class="btn btn-xs btn-success" href="@Url.Action("PrintDC3", new { id = item.Id , userId = item.CertificadorId })">Descargar</a>
                                 @using (Html.BeginForm("DeleteConfirmed", "DC3", new { id = item.Id }, FormMethod.Post, new { style = "display:inline-block" }))
                                 {
                                     @Html.AntiForgeryToken()
