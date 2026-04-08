@@ -2,9 +2,18 @@
 @{
     ViewBag.Title = "Editar DC3";
     Layout = "~/Views/Shared/_Layout3.cshtml";
+    string exception = ViewBag.ExceptionMessage;
 }
 <div class="container">
-    <div class="jumbotron"><h2>Editar certificado DC-3</h2></div>
+    <div class="jumbotron">
+        <h2>Editar certificado DC-3</h2>
+        @if (exception != null)
+        {
+            <div class="alert alert-danger" role="alert">
+                @exception
+            </div>
+        }
+    </div>
     @using (Html.BeginForm())
     {
         @Html.AntiForgeryToken()
@@ -21,10 +30,10 @@
                     <div class="col-md-3 form-group">@Html.LabelFor(m => m.FechaFin) @Html.TextBoxFor(m => m.FechaFin, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })</div>
                     <div class="col-md-3 form-group">@Html.LabelFor(m => m.DuracionHoras) @Html.TextBoxFor(m => m.DuracionHoras, new { @class = "form-control", type = "number" })</div>
                     <div class="col-md-3 form-group">@Html.LabelFor(m => m.FechaEmision) @Html.TextBoxFor(m => m.FechaEmision, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })</div>
-                    <div class="col-md-6 form-group">@Html.LabelFor(m => m.Puesto) @Html.TextBoxFor(m => m.Puesto, new { @class = "form-control" })</div>
+                    <div class="col-md-6 form-group">@Html.LabelFor(m => m.Puesto) @Html.TextBoxFor(m => m.Puesto, new { @class = "form-control", @readonly = "readonly" })</div>
                     <div class="col-md-6 form-group">
                         @Html.LabelFor(m => m.OcupacionId)
-                        @Html.DropDownListFor(m => m.OcupacionId, Model.Ocupaciones, "-- Selecciona --", new { @class = "form-control" })
+                        @Html.DropDownListFor(m => m.OcupacionId, Model.Ocupaciones, "-- Selecciona --", new { @class = "form-control", @readonly = "readonly" })
                         @Html.ValidationMessageFor(m => m.OcupacionId, "", new { @class = "text-danger" })
                     </div>
                 </div>

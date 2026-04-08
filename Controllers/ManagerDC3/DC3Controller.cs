@@ -183,6 +183,7 @@ namespace TAS360.Controllers.ManagerDC3
             {
                 oLog.Add("ERROR EDIT: " + ex.Message);
                 LoadCatalogs(model);
+                ViewBag.ExceptionMessage = ex.Message;
                 return View(model);
             }
         }
@@ -560,6 +561,7 @@ namespace TAS360.Controllers.ManagerDC3
                 EmpresaId = x.EmpresaId,
                 TrabajadorId = x.TrabajadorId,
                 CursoId = x.CursoId,
+                CursoTematica = x.Curso.AreaTematica != null ? x.Curso.AreaTematica.Nombre : "",
                 CapacitadorId = x.CapacitadorId,
                 FechaInicio = x.FechaInicio,
                 FechaFin = x.FechaFin,

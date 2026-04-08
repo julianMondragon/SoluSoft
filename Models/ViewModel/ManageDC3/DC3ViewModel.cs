@@ -84,7 +84,7 @@ namespace TAS360.Models.ViewModel.ManageDC3
         public string CapacitadorNombre { get; set; }
         public string CapacitadorSTPS { get; set; }
         public string OcupacionNombre { get; set; }
-
+        public string CursoTematica { get; set; }
         public string CURP { get; set; }
         public string RFC { get; set; }
 
