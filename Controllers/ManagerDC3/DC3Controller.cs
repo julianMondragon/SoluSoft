@@ -1,6 +1,8 @@
+using DocumentFormat.OpenXml.EMMA;
 using Rotativa;
 using System;
 using System.Data.Entity;
+using System.Data.Entity.Validation;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -54,7 +56,8 @@ namespace TAS360.Controllers.ManagerDC3
                 Empresas = GetEmpresas(),
                 Trabajadores = GetTrabajadores(),
                 Cursos = GetCursos(),
-                Capacitadores = GetCapacitadores()
+                Capacitadores = GetCapacitadores(),
+                Ocupaciones = GetOcupaciones()
             };
 
             return View(model);
@@ -97,15 +100,29 @@ namespace TAS360.Controllers.ManagerDC3
                 _context.DC3.Add(entity);
                 _context.SaveChanges();
 
-                SaveOrUpdateSignature(entity.Id, "Capacitador", GetCapacitadorSignature(model.CapacitadorId));
+                SaveOrUpdateSignature(entity.Id, "Capacitador", GetCapacitadorSignature(model.CapacitadorId), ((User)Session["User"]).nombre);
                 _context.SaveChanges();
 
                 oLog.Add("DC3 creado ID: " + entity.Id);
 
                 return RedirectToAction("Index");
             }
+            catch (DbEntityValidationException ex)
+            {
+                foreach (var entityErrors in ex.EntityValidationErrors)
+                {
+                    foreach (var validationError in entityErrors.ValidationErrors)
+                    {
+                        oLog.Add($"ERROR VALIDATION: {validationError.PropertyName} - {validationError.ErrorMessage}");
+                    }
+                }
+
+                ViewBag.ExceptionMessage = ex.Message;
+                return View(model);
+            }
             catch (Exception ex)
             {
+                ViewBag.ExceptionMessage = ex.Message;
                 oLog.Add("ERROR CREATE: " + ex.Message);
                 LoadCatalogs(model);
                 return View(model);
@@ -154,7 +171,7 @@ namespace TAS360.Controllers.ManagerDC3
                 entity.FechaInicio = model.FechaInicio;
                 entity.FechaFin = model.FechaFin;
 
-                SaveOrUpdateSignature(entity.Id, "Capacitador", GetCapacitadorSignature(model.CapacitadorId));
+                SaveOrUpdateSignature(entity.Id, "Capacitador", GetCapacitadorSignature(model.CapacitadorId), ((User)Session["User"]).nombre);
 
                 _context.SaveChanges();
 
@@ -170,7 +187,7 @@ namespace TAS360.Controllers.ManagerDC3
         }
 
         [HttpGet]
-        [AuthorizeUser(idOperacion: 60)]
+        [AuthorizeUser(idOperacion: 61)]
         public ActionResult Details(int id)
         {
             int userId = GetUserId();
@@ -182,7 +199,7 @@ namespace TAS360.Controllers.ManagerDC3
         }
 
         [HttpPost]
-        [AuthorizeUser(idOperacion: 61)]
+        [AuthorizeUser(idOperacion: 60)]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
@@ -237,7 +254,7 @@ namespace TAS360.Controllers.ManagerDC3
                     return new HttpStatusCodeResult(HttpStatusCode.Forbidden);
 
                 string rutaCap = GetCapacitadorSignature(entity.CapacitadorId);
-                SaveOrUpdateSignature(entity.Id, "Capacitador", rutaCap);
+                SaveOrUpdateSignature(entity.Id, "Capacitador", rutaCap, ((User)Session["User"]).nombre);
 
                 string folder = Server.MapPath("~/Content/Firmas/DC3/");
                 if (!Directory.Exists(folder))
@@ -246,19 +263,32 @@ namespace TAS360.Controllers.ManagerDC3
                 if (FirmaRepresentanteFile != null && FirmaRepresentanteFile.ContentLength > 0)
                 {
                     string rutaRep = SaveSignatureFile(FirmaRepresentanteFile, folder, "/Content/Firmas/DC3/");
-                    SaveOrUpdateSignature(entity.Id, "Representante", rutaRep);
+                    SaveOrUpdateSignature(entity.Id, "Representante", rutaRep, ((User)Session["User"]).nombre);
                 }
 
                 if (FirmaTrabajadorFile != null && FirmaTrabajadorFile.ContentLength > 0)
                 {
                     string rutaTrab = SaveSignatureFile(FirmaTrabajadorFile, folder, "/Content/Firmas/DC3/");
-                    SaveOrUpdateSignature(entity.Id, "Trabajador", rutaTrab);
+                    SaveOrUpdateSignature(entity.Id, "Trabajador", rutaTrab, ((User)Session["User"]).nombre);
                 }
 
                 _context.SaveChanges();
 
                 oLog.Add("DC3 firmado ID: " + id);
                 return RedirectToAction("Details", new { id });
+            }
+            catch (DbEntityValidationException ex)
+            {
+                foreach (var entityErrors in ex.EntityValidationErrors)
+                {
+                    foreach (var validationError in entityErrors.ValidationErrors)
+                    {
+                        oLog.Add($"ERROR VALIDATION: {validationError.PropertyName} - {validationError.ErrorMessage}");
+                    }
+                }
+
+                ViewBag.ExceptionMessage = ex.Message;
+                return RedirectToAction("Firmar", new { id });
             }
             catch (Exception ex)
             {
@@ -307,49 +337,99 @@ namespace TAS360.Controllers.ManagerDC3
             }
         }
 
+        [AuthorizeUser(idOperacion: 61)]
+        public ActionResult DC3Report(int id)
+        {
+            int userId = GetUserId();
+            var entity = GetDc3ById(id, userId);
+
+            if (entity == null)
+                return new HttpStatusCodeResult(HttpStatusCode.Forbidden);
+
+            var model = MapToViewModel(entity);
+
+            return View(model); // Vista limpia SOLO para PDF
+        }
+
         [AuthorizeUser(idOperacion: 64)]
+        public ActionResult PrintDC3(int id)
+        {
+            return new ActionAsPdf("DC3Report", new { id })
+            {
+                FileName = $"DC3_{id}.pdf",
+                PageSize = Rotativa.Options.Size.A4,
+                PageOrientation = Rotativa.Options.Orientation.Portrait
+            };
+        }
+
+        [AuthorizeUser(idOperacion: 64)]
+        //public ActionResult GenerarPdf(int id)
+        //{
+        //    string path = Server.MapPath("~/Logs/DC3/");
+        //    Log oLog = new Log(path);
+
+        //    try
+        //    {
+        //        int userId = GetUserId();
+        //        var entity = GetDc3ById(id, userId);
+        //        if (entity == null)
+        //            return new HttpStatusCodeResult(HttpStatusCode.Forbidden);
+
+        //        string folder = Server.MapPath("~/Content/DC3/PDF/");
+        //        if (!Directory.Exists(folder))
+        //            Directory.CreateDirectory(folder);
+
+        //        string fileName = "dc3_" + id + "_" + DateTime.Now.Ticks + ".pdf";
+        //        string filePath = Path.Combine(folder, fileName);
+
+        //        var pdfResult = new ActionAsPdf("Details", new { id })
+        //        {
+        //            FileName = fileName,
+        //            SaveOnServerPath = filePath,
+        //            PageSize = Rotativa.Options.Size.A4,
+        //            PageOrientation = Rotativa.Options.Orientation.Portrait
+        //        };
+
+        //        pdfResult.BuildPdf(ControllerContext);
+
+        //        var doc = GetOrCreateDocumento(entity.Id);
+        //        doc.RutaPDF = "/Content/DC3/PDF/" + fileName;
+        //        doc.FechaGeneracion = DateTime.Now;
+        //        _context.SaveChanges();
+
+        //        oLog.Add("PDF generado para ID: " + id);
+        //        return RedirectToAction("Details", new { id });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        oLog.Add("ERROR PDF: " + ex.Message);
+        //        return RedirectToAction("Index");
+        //    }
+        //}
         public ActionResult GenerarPdf(int id)
         {
-            string path = Server.MapPath("~/Logs/DC3/");
-            Log oLog = new Log(path);
+            int userId = GetUserId();
+            var entity = GetDc3ById(id, userId);
 
-            try
-            {
-                int userId = GetUserId();
-                var entity = GetDc3ById(id, userId);
-                if (entity == null)
-                    return new HttpStatusCodeResult(HttpStatusCode.Forbidden);
+            string folder = Server.MapPath("~/Content/DC3/PDF/");
+            if (!Directory.Exists(folder))
+                Directory.CreateDirectory(folder);
 
-                string folder = Server.MapPath("~/Content/DC3/PDF/");
-                if (!Directory.Exists(folder))
-                    Directory.CreateDirectory(folder);
+            string fileName = $"dc3_{id}_{DateTime.Now.Ticks}.pdf";
+            string filePath = Path.Combine(folder, fileName);
 
-                string fileName = "dc3_" + id + "_" + DateTime.Now.Ticks + ".pdf";
-                string filePath = Path.Combine(folder, fileName);
+            var pdfBytes = new ActionAsPdf("DC3Report", new { id })
+                .BuildFile(ControllerContext);
 
-                var pdfResult = new ActionAsPdf("Details", new { id })
-                {
-                    FileName = fileName,
-                    SaveOnServerPath = filePath,
-                    PageSize = Rotativa.Options.Size.A4,
-                    PageOrientation = Rotativa.Options.Orientation.Portrait
-                };
+            System.IO.File.WriteAllBytes(filePath, pdfBytes);
 
-                pdfResult.BuildPdf(ControllerContext);
+            var doc = GetOrCreateDocumento(entity.Id);
+            doc.RutaPDF = "/Content/DC3/PDF/" + fileName;
+            doc.FechaGeneracion = DateTime.Now;
 
-                var doc = GetOrCreateDocumento(entity.Id);
-                doc.RutaPDF = "/Content/DC3/PDF/" + fileName;
-                doc.FechaGeneracion = DateTime.Now;
-                _context.SaveChanges();
+            _context.SaveChanges();
 
-                oLog.Add("PDF generado para ID: " + id);
-                return RedirectToAction("Details", new { id });
-            }
-            catch (Exception ex)
-            {
-                oLog.Add("ERROR PDF: " + ex.Message);
-                return RedirectToAction("Index");
-            }
+            return RedirectToAction("Details", new { id });
         }
 
         [AllowAnonymous]
@@ -396,7 +476,7 @@ namespace TAS360.Controllers.ManagerDC3
             return doc;
         }
 
-        private void SaveOrUpdateSignature(int dc3Id, string tipoFirma, string ruta)
+        private void SaveOrUpdateSignature(int dc3Id, string tipoFirma, string ruta, string nombre)
         {
             if (string.IsNullOrWhiteSpace(ruta))
                 return;
@@ -409,7 +489,8 @@ namespace TAS360.Controllers.ManagerDC3
                     DC3Id = dc3Id,
                     TipoFirma = tipoFirma,
                     RutaArchivo = ruta,
-                    FechaFirma = DateTime.Now
+                    FechaFirma = DateTime.Now,
+                    NombreFirmante = nombre
                 };
                 _context.DC3Firma.Add(firma);
             }
@@ -471,7 +552,7 @@ namespace TAS360.Controllers.ManagerDC3
                 FechaFin = x.FechaFin,
                 DuracionHoras = x.Curso != null ? x.Curso.DuracionHoras : 0,
                 Puesto = x.Trabajador != null ? x.Trabajador.Puesto : string.Empty,
-                Ocupacion = x.Trabajador != null && x.Trabajador.Ocupacion != null ? x.Trabajador.Ocupacion.Nombre : string.Empty,
+                OcupacionId = x.Trabajador != null && x.Trabajador.Ocupacion != null ? x.Trabajador.Ocupacion.Id : 0,
                 RepresentanteTrabajadores = firmaRep != null ? firmaRep.NombreFirmante : null,
                 FechaEmision = x.FechaCreacion ?? DateTime.Now,
                 RutaFirmaCapacitador = firmaCap != null ? firmaCap.RutaArchivo : null,
@@ -493,6 +574,7 @@ namespace TAS360.Controllers.ManagerDC3
             model.Trabajadores = GetTrabajadores();
             model.Cursos = GetCursos();
             model.Capacitadores = GetCapacitadores();
+            model.Ocupaciones = GetOcupaciones();
         }
 
         private SelectList GetEmpresas()
@@ -511,6 +593,11 @@ namespace TAS360.Controllers.ManagerDC3
         {
             int userId = GetUserId();
             return new SelectList(_context.Curso.Where(x => x.CertificadorId == userId && x.Activo == true).OrderBy(x => x.Nombre).ToList(), "Id", "Nombre");
+        }
+
+        private SelectList GetOcupaciones()
+        {
+             return new SelectList(_context.Ocupacion.Where(x => x.Activo == true).OrderBy(x => x.Nombre).ToList(), "Id", "Nombre");
         }
 
         private SelectList GetCapacitadores()

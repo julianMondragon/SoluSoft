@@ -46,9 +46,9 @@ namespace TAS360.Models.ViewModel.ManageDC3
         [Display(Name = "Puesto")]
         public string Puesto { get; set; }
 
-        [StringLength(200)]
-        [Display(Name = "Ocupación")]
-        public string Ocupacion { get; set; }
+        [Required]
+        [Display(Name = "Ocupacion")]
+        public int OcupacionId { get; set; }
 
         [StringLength(200)]
         [Display(Name = "Representante de trabajadores")]
@@ -72,7 +72,7 @@ namespace TAS360.Models.ViewModel.ManageDC3
         public IEnumerable<SelectListItem> Trabajadores { get; set; }
         public IEnumerable<SelectListItem> Cursos { get; set; }
         public IEnumerable<SelectListItem> Capacitadores { get; set; }
-
+        public IEnumerable<SelectListItem> Ocupaciones { get; set; }
         public HttpPostedFileBase FirmaRepresentanteFile { get; set; }
         public HttpPostedFileBase FirmaTrabajadorFile { get; set; }
 

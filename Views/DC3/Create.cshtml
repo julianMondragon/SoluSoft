@@ -2,9 +2,24 @@
 @{
     ViewBag.Title = "Crear DC3";
     Layout = "~/Views/Shared/_Layout3.cshtml";
+    string exception = ViewBag.ExceptionMessage;
 }
 <div class="container">
-    <div class="jumbotron"><h2>Crear certificado DC-3</h2></div>
+    <div class="jumbotron">
+        <div class="col-md-2">
+            <img src="~/Content/img/Negmon-logo.jpeg" style="max-height:120px;" />
+        </div>
+        <h2>Crear certificado DC-3</h2>
+        <p>
+            ingresa los datos del nuevo certificado
+        </p>
+        @if (exception != null)
+        {
+            <div class="alert alert-danger" role="alert">
+                @exception
+            </div>
+        }
+    </div>
     @using (Html.BeginForm())
     {
         @Html.AntiForgeryToken()
@@ -52,9 +67,14 @@
                         @Html.LabelFor(m => m.Puesto)
                         @Html.TextBoxFor(m => m.Puesto, new { @class = "form-control" })
                     </div>
-                    <div class="col-md-6 form-group">
+                    @*<div class="col-md-6 form-group">
                         @Html.LabelFor(m => m.Ocupacion)
                         @Html.TextBoxFor(m => m.Ocupacion, new { @class = "form-control" })
+                    </div>*@
+                    <div class="col-md-6 form-group">
+                        @Html.LabelFor(m => m.OcupacionId)
+                        @Html.DropDownListFor(m => m.OcupacionId, Model.Ocupaciones, "-- Selecciona --", new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.OcupacionId, "", new { @class = "text-danger" })
                     </div>
                 </div>
             </div>

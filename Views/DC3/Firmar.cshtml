@@ -2,7 +2,23 @@
 @{
     ViewBag.Title = "Firmar DC3";
     Layout = "~/Views/Shared/_Layout3.cshtml";
+    string exception = ViewBag.ExceptionMessage;
 }
+<div class="jumbotron">
+    <div class="col-md-2">
+        <img src="~/Content/img/Negmon-logo.jpeg" style="max-height:120px;" />
+    </div>
+    <h2>Folio: @Model.Folio</h2>
+    <p>
+        Te mostramos las firmas antes de la generacion de DC-3
+    </p>
+    @if (exception != null)
+    {
+        <div class="alert alert-danger" role="alert">
+            @exception
+        </div>
+    }
+</div>
 <div class="container">
     <div class="panel panel-default" style="max-width:700px;margin:20px auto;">
         <div class="panel-heading"><h3>Firmar certificado DC-3</h3></div>

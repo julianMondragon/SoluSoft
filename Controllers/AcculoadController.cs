@@ -145,7 +145,9 @@ namespace TAS360.Controllers
             }
             catch (Exception ex)
             {
-                //warnings = ex.Message;
+                string path = Server.MapPath("~/Logs/Accuload/");
+                Log oLog = new Log(path);
+                oLog.Add("ERROR PDF: " + ex.Message);
             }
             return Redirect("Index");
         }

@@ -931,6 +931,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="ArchivosASA\" />
+    <Folder Include="Content\DC3\" />
     <Folder Include="Logs\" />
     <Folder Include="Tablas_CSV\" />
     <Folder Include="Tablas_Pendientes\" />

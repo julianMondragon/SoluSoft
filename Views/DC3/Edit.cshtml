@@ -22,7 +22,11 @@
                     <div class="col-md-3 form-group">@Html.LabelFor(m => m.DuracionHoras) @Html.TextBoxFor(m => m.DuracionHoras, new { @class = "form-control", type = "number" })</div>
                     <div class="col-md-3 form-group">@Html.LabelFor(m => m.FechaEmision) @Html.TextBoxFor(m => m.FechaEmision, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })</div>
                     <div class="col-md-6 form-group">@Html.LabelFor(m => m.Puesto) @Html.TextBoxFor(m => m.Puesto, new { @class = "form-control" })</div>
-                    <div class="col-md-6 form-group">@Html.LabelFor(m => m.Ocupacion) @Html.TextBoxFor(m => m.Ocupacion, new { @class = "form-control" })</div>
+                    <div class="col-md-6 form-group">
+                        @Html.LabelFor(m => m.OcupacionId)
+                        @Html.DropDownListFor(m => m.OcupacionId, Model.Ocupaciones, "-- Selecciona --", new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.OcupacionId, "", new { @class = "text-danger" })
+                    </div>
                 </div>
             </div>
             <div class="panel-footer text-right">

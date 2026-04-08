@@ -2,12 +2,19 @@
 @{
     ViewBag.Title = "Certificados DC-3";
     Layout = "~/Views/Shared/_Layout3.cshtml";
+    string exception = ViewBag.ExceptionMessage;
 }
 <div class="container">
     <div class="jumbotron">
-        <h2>Certificados DC-3</h2>
-        <p>Gestión completa de constancias STPS.</p>
+        <h2>Mis Certificados DC-3</h2>
+        <p>Gestion completa de constancias STPS.</p>
         <a class="btn btn-success" href="@Url.Action("Create")">+ Crear certificado</a>
+        @if (exception != null)
+        {
+            <div class="alert alert-danger" role="alert">
+                @exception
+            </div>
+        }
     </div>
 
     <div class="panel panel-default">
@@ -38,7 +45,7 @@
                                 <a class="btn btn-xs btn-primary" href="@Url.Action("Edit", new { id = item.Id })">Editar</a>
                                 <a class="btn btn-xs btn-warning" href="@Url.Action("Firmar", new { id = item.Id })">Firmar</a>
                                 <a class="btn btn-xs btn-default" href="@Url.Action("GenerarQR", new { id = item.Id })">QR</a>
-                                <a class="btn btn-xs btn-success" href="@Url.Action("GenerarPdf", new { id = item.Id })">PDF</a>
+                                <a class="btn btn-xs btn-success" href="@Url.Action("DC3Report", new { id = item.Id })">PDF</a>
                                 @using (Html.BeginForm("DeleteConfirmed", "DC3", new { id = item.Id }, FormMethod.Post, new { style = "display:inline-block" }))
                                 {
                                     @Html.AntiForgeryToken()
