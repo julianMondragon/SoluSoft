@@ -47,7 +47,7 @@ namespace TAS360.Controllers
 			}
 			catch(Exception ex)
             {
-				//ViewBag.warning = ex.Message;
+				ViewBag.warning = ex.Message;
             }
 			
 

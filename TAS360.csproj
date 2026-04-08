@@ -154,6 +154,7 @@
     <Compile Include="Controllers\AcculoadController.cs" />
     <Compile Include="Controllers\Calculo_FCVController.cs" />
     <Compile Include="Controllers\ContactoSSFController.cs" />
+    <Compile Include="Controllers\ManagerDC3\DC3Controller.cs" />
     <Compile Include="Controllers\ManagerDC3\CapacitadorController.cs" />
     <Compile Include="Controllers\ManagerDC3\CursoController.cs" />
     <Compile Include="Controllers\DanloadController.cs" />
@@ -315,6 +316,7 @@
     <Compile Include="Models\ViewModel\G_TicketsByCategoriaViewModel.cs" />
     <Compile Include="Models\ViewModel\G_TicketsByStatusViewModel.cs" />
     <Compile Include="Models\ViewModel\ManageDC3\CapacitadorViewModel.cs" />
+    <Compile Include="Models\ViewModel\ManageDC3\DC3ViewModel.cs" />
     <Compile Include="Models\ViewModel\ManageDC3\TrabajadorViewModel.cs" />
     <Compile Include="Models\ViewModel\PDFViewModel.cs" />
     <Compile Include="Models\ViewModel\G_TicketsModificadoViewModel.cs" />
@@ -910,6 +912,12 @@
     <Content Include="Views\Empresa\Create.cshtml" />
     <Content Include="Views\Empresa\Edit.cshtml" />
     <Content Include="Views\Curso\Index.cshtml" />
+    <Content Include="Views\DC3\Create.cshtml" />
+    <Content Include="Views\DC3\Details.cshtml" />
+    <Content Include="Views\DC3\Edit.cshtml" />
+    <Content Include="Views\DC3\Firmar.cshtml" />
+    <Content Include="Views\DC3\Index.cshtml" />
+    <Content Include="Views\DC3\Validar.cshtml" />
     <Content Include="Views\Curso\Edit.cshtml" />
     <Content Include="Views\Curso\Create.cshtml" />
     <Content Include="Views\Capacitador\Create.cshtml" />
@@ -919,10 +927,12 @@
     <Content Include="Views\Trabajador\Index.cshtml" />
     <Content Include="Views\Trabajador\Create.cshtml" />
     <Content Include="Views\Trabajador\Edit.cshtml" />
+    <Content Include="Views\DC3\DC3Report.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="ArchivosASA\" />
+    <Folder Include="Content\DC3\" />
     <Folder Include="Logs\" />
     <Folder Include="Tablas_CSV\" />
     <Folder Include="Tablas_Pendientes\" />

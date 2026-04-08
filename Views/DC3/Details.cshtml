@@ -1,0 +1,58 @@
+@model TAS360.Models.ViewModel.ManageDC3.DC3ViewModel
+@{
+    ViewBag.Title = "Detalle DC3";
+    Layout = "~/Views/Shared/_Layout3.cshtml";
+}
+<div class="container">
+    <div class="jumbotron">
+        <div class="col-md-2">
+            <img src="~/Content/img/Negmon-logo.jpeg" style="max-height:120px;" />
+        </div>
+        <h2>Folio: @Model.Folio</h2>
+        <p>
+            Te mostramos los detalles antes de la generacion de DC-3
+        </p>       
+    </div>
+    <div class="panel panel-default" style="max-width:900px;margin:20px auto;">
+        <div class="panel-heading text-center"><h3>CONSTANCIA DC-3</h3></div>
+        <div class="panel-body">
+            <p><strong>Folio:</strong> @Model.Folio</p>
+            <p><strong>Empresa:</strong> @Model.EmpresaNombre</p>
+            <p><strong>Trabajador:</strong> @Model.TrabajadorNombre</p>
+            <p><strong>Curso:</strong> @Model.CursoNombre</p>
+            <p><strong>Capacitador:</strong> @Model.CapacitadorNombre</p>
+            <p><strong>Periodo:</strong> @Model.FechaInicio.ToString("dd/MM/yyyy") - @Model.FechaFin.ToString("dd/MM/yyyy")</p>
+            <p><strong>Duracion:</strong> @Model.DuracionHoras horas</p>
+            <p><strong>Puesto:</strong> @Model.Puesto</p>
+            <p><strong>Ocupacion:</strong> @Model.OcupacionId</p>
+
+            <div class="row" style="margin-top:30px;">
+                <div class="col-md-4 text-center">
+                    <strong>Firma Capacitador</strong><br />
+                    @if (!string.IsNullOrEmpty(Model.RutaFirmaCapacitador))
+                    {<img src="@Url.Content(Model.RutaFirmaCapacitador)" style="max-height:100px;" />}
+                </div>
+                <div class="col-md-4 text-center">
+                    <strong>Firma Representante</strong><br />
+                    @if (!string.IsNullOrEmpty(Model.RutaFirmaRepresentante))
+                    {<img src="@Url.Content(Model.RutaFirmaRepresentante)" style="max-height:100px;" />}
+                </div>
+                <div class="col-md-4 text-center">
+                    <strong>Firma Trabajador</strong><br />
+                    @if (!string.IsNullOrEmpty(Model.RutaFirmaTrabajador))
+                    {<img src="@Url.Content(Model.RutaFirmaTrabajador)" style="max-height:100px;" />}
+                </div>
+            </div>
+
+            <div class="text-center" style="margin-top:20px;">
+                @if (!string.IsNullOrEmpty(Model.QRUrl))
+                {
+                    <img src="@Url.Content(Model.QRUrl)" style="max-height:150px;" />
+                }
+            </div>
+        </div>
+        <div class="panel-footer text-right">
+            <a class="btn btn-default" href="@Url.Action("Index")">Volver</a>
+        </div>
+    </div>
+</div>
