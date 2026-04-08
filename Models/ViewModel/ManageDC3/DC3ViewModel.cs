@@ -18,6 +18,8 @@ namespace TAS360.Models.ViewModel.ManageDC3
         [Display(Name = "Trabajador")]
         public int TrabajadorId { get; set; }
 
+        public int CertificadorId { get; set; }
+
         [Required]
         [Display(Name = "Curso")]
         public int CursoId { get; set; }
@@ -80,5 +82,18 @@ namespace TAS360.Models.ViewModel.ManageDC3
         public string TrabajadorNombre { get; set; }
         public string CursoNombre { get; set; }
         public string CapacitadorNombre { get; set; }
+        public string CapacitadorSTPS { get; set; }
+        public string OcupacionNombre { get; set; }
+
+        public string CURP { get; set; }
+        public string RFC { get; set; }
+
+        // Fechas desglosadas para pdf
+        public string[] FechaInicioArray { get; set; }
+        public string[] FechaFinArray { get; set; }
+
+        // CURP y RFC en arreglo para pdf
+        public char[] CURPArray { get; set; }
+        public char[] RFCArray { get; set; }
     }
 }
