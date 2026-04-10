@@ -1,5 +1,6 @@
 using DocumentFormat.OpenXml.EMMA;
 using DocumentFormat.OpenXml.Spreadsheet;
+using QRCoder;
 using Rotativa;
 using System;
 using System.Data.Entity;
@@ -95,7 +96,7 @@ namespace TAS360.Controllers.ManagerDC3
                     FechaFin = model.FechaFin,
                     CertificadorId = userId,
                     FechaCreacion = DateTime.Now,
-                    Estatus = "Activo"
+                    Estatus = "Borrador"
                 };
 
                 _context.DC3.Add(entity);
@@ -104,8 +105,7 @@ namespace TAS360.Controllers.ManagerDC3
                 SaveOrUpdateSignature(entity.Id, "Capacitador", GetCapacitadorSignature(model.CapacitadorId), ((User)Session["User"]).nombre);
                 _context.SaveChanges();
 
-                oLog.Add("DC3 creado ID: " + entity.Id);
-
+                oLog.Add("DC3 creado ID: " + entity.Id + " Por usuario: " + ((User)Session["User"]).nombre + " id: " + ((User)Session["User"]).id);
                 return RedirectToAction("Index");
             }
             catch (DbEntityValidationException ex)
@@ -134,11 +134,16 @@ namespace TAS360.Controllers.ManagerDC3
         [AuthorizeUser(idOperacion: 59)]
         public ActionResult Edit(int id)
         {
+            
             int userId = GetUserId();
             var entity = GetDc3ById(id, userId);
             if (entity == null)
                 return new HttpStatusCodeResult(HttpStatusCode.Forbidden);
-
+            if (entity.Estatus == "Firmado")
+            {
+                ViewBag.InfoMessage = "No puedes editar un DC3 Firmado";
+                return RedirectToAction("Index"); ;
+            }
             var model = MapToViewModel(entity);
             LoadCatalogs(model);
             return View(model);
@@ -273,7 +278,7 @@ namespace TAS360.Controllers.ManagerDC3
                     string rutaTrab = SaveSignatureFile(FirmaTrabajadorFile, folder, "/Content/Firmas/DC3/");
                     SaveOrUpdateSignature(entity.Id, "Trabajador", rutaTrab, ((User)Session["User"]).nombre);
                 }
-
+                entity.Estatus = "Firmado";
                 _context.SaveChanges();
 
                 oLog.Add("DC3 firmado ID: " + id);
@@ -299,6 +304,31 @@ namespace TAS360.Controllers.ManagerDC3
             }
         }
 
+
+        /// <summary>
+        /// Metodo que se encarga de descargar el archivo en pdf que fue generado
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="NameFile"></param>
+        /// <returns></returns>
+        public FileResult DownloadQRDC3(string path, string FileName)
+        {
+            string rute = Server.MapPath("~" + path);
+            return File(rute, "application/png", FileName + ".png");
+        }
+
+        /// <summary>
+        /// Metodo que se encarga de descargar el archivo en pdf que fue generado
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="NameFile"></param>
+        /// <returns></returns>
+        public FileResult DownloadFileDC3(string path , string FileName)
+        {
+            string rute = Server.MapPath("~" + path);
+            return File(rute, "application/pdf", FileName + ".pdf");
+        }
+
         [AuthorizeUser(idOperacion: 63)]
         public ActionResult GenerarQR(int id)
         {
@@ -309,33 +339,86 @@ namespace TAS360.Controllers.ManagerDC3
             {
                 int userId = GetUserId();
                 var entity = GetDc3ById(id, userId);
+
                 if (entity == null)
                     return new HttpStatusCodeResult(HttpStatusCode.Forbidden);
 
-                string qrContent = Url.Action("Validar", "DC3", new { id }, Request.Url.Scheme);
+                // ============================
+                // 📄 1. GENERAR PDF
+                // ============================
+
+                string pdfFolder = Server.MapPath("~/Content/DC3/PDF/");
+                if (!Directory.Exists(pdfFolder))
+                    Directory.CreateDirectory(pdfFolder);
+
+                string pdfFileName = $"dc3_{id}_{DateTime.Now.Ticks}.pdf";
+                string pdfFullPath = Path.Combine(pdfFolder, pdfFileName);
+
+                var pdfBytes = new ActionAsPdf("DC3Report", new { id, userId })
+                    .BuildFile(ControllerContext);
+
+                System.IO.File.WriteAllBytes(pdfFullPath, pdfBytes);
+
+                string pdfVirtualPath = "/Content/DC3/PDF/" + pdfFileName;
+
+                // ============================
+                // 🔗 2. GENERAR URL PUBLICA
+                // ============================
+
+                string pdfUrl = Request.Url.GetLeftPart(UriPartial.Authority) + pdfVirtualPath;
+
+                // ============================
+                // 🧾 3. GENERAR QR
+                // ============================
+
                 string qrFolder = Server.MapPath("~/Content/DC3/QR/");
                 if (!Directory.Exists(qrFolder))
                     Directory.CreateDirectory(qrFolder);
 
-                string fileName = "qr_" + id + "_" + DateTime.Now.Ticks + ".png";
-                string fullPath = Path.Combine(qrFolder, fileName);
+                string qrFileName = $"qr_{id}_{DateTime.Now.Ticks}.png";
+                string qrFullPath = Path.Combine(qrFolder, qrFileName);
 
-                GeneratePseudoQr(qrContent, fullPath);
+                GenerateQr(pdfUrl, qrFullPath);
+
+                string qrVirtualPath = "/Content/DC3/QR/" + qrFileName;
+
+                // ============================
+                // 💾 4. GUARDAR EN BD
+                // ============================
 
                 var doc = GetOrCreateDocumento(entity.Id);
-                doc.RutaQR = "/Content/DC3/QR/" + fileName;
-                doc.UrlPublica = qrContent;
+
+                doc.RutaPDF = pdfVirtualPath;
+                doc.RutaQR = qrVirtualPath;
+                doc.UrlPublica = pdfUrl;
                 doc.FechaGeneracion = DateTime.Now;
+
+                // ============================
+                // 🔄 5. ACTUALIZAR ESTATUS
+                // ============================
+
+                entity.Estatus = "Generado";
 
                 _context.SaveChanges();
 
-                oLog.Add("QR generado para ID: " + id);
+                oLog.Add($"Documento completo generado (PDF + QR) para DC3 ID: {id}");
+
                 return RedirectToAction("Details", new { id });
             }
             catch (Exception ex)
             {
-                oLog.Add("ERROR QR: " + ex.Message);
+                oLog.Add("ERROR GENERAR DOCUMENTO: " + ex.Message);
                 return RedirectToAction("Index");
+            }
+        }
+        private void GenerateQr(string content, string outputPath)
+        {
+            using (QRCodeGenerator qrGenerator = new QRCodeGenerator())
+            using (QRCodeData qrCodeData = qrGenerator.CreateQrCode(content, QRCodeGenerator.ECCLevel.Q))
+            using (QRCode qrCode = new QRCode(qrCodeData))
+            using (Bitmap qrCodeImage = qrCode.GetGraphic(20))
+            {
+                qrCodeImage.Save(outputPath, ImageFormat.Png);
             }
         }
 
@@ -376,49 +459,6 @@ namespace TAS360.Controllers.ManagerDC3
         //}
 
         [AuthorizeUser(idOperacion: 64)]
-        //public ActionResult GenerarPdf(int id)
-        //{
-        //    string path = Server.MapPath("~/Logs/DC3/");
-        //    Log oLog = new Log(path);
-
-        //    try
-        //    {
-        //        int userId = GetUserId();
-        //        var entity = GetDc3ById(id, userId);
-        //        if (entity == null)
-        //            return new HttpStatusCodeResult(HttpStatusCode.Forbidden);
-
-        //        string folder = Server.MapPath("~/Content/DC3/PDF/");
-        //        if (!Directory.Exists(folder))
-        //            Directory.CreateDirectory(folder);
-
-        //        string fileName = "dc3_" + id + "_" + DateTime.Now.Ticks + ".pdf";
-        //        string filePath = Path.Combine(folder, fileName);
-
-        //        var pdfResult = new ActionAsPdf("Details", new { id })
-        //        {
-        //            FileName = fileName,
-        //            SaveOnServerPath = filePath,
-        //            PageSize = Rotativa.Options.Size.A4,
-        //            PageOrientation = Rotativa.Options.Orientation.Portrait
-        //        };
-
-        //        pdfResult.BuildPdf(ControllerContext);
-
-        //        var doc = GetOrCreateDocumento(entity.Id);
-        //        doc.RutaPDF = "/Content/DC3/PDF/" + fileName;
-        //        doc.FechaGeneracion = DateTime.Now;
-        //        _context.SaveChanges();
-
-        //        oLog.Add("PDF generado para ID: " + id);
-        //        return RedirectToAction("Details", new { id });
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        oLog.Add("ERROR PDF: " + ex.Message);
-        //        return RedirectToAction("Index");
-        //    }
-        //}
         public ActionResult GenerarPdf(int id)
         {
             int userId = GetUserId();
@@ -565,6 +605,7 @@ namespace TAS360.Controllers.ManagerDC3
                 CapacitadorId = x.CapacitadorId,
                 FechaInicio = x.FechaInicio,
                 FechaFin = x.FechaFin,
+                Status = x.Estatus,
                 DuracionHoras = x.Curso != null ? x.Curso.DuracionHoras : 0,
                 Puesto = x.Trabajador != null ? x.Trabajador.Puesto : string.Empty,
                 OcupacionId = x.Trabajador != null && x.Trabajador.Ocupacion != null ? x.Trabajador.Ocupacion.Id : 0,
@@ -650,27 +691,27 @@ namespace TAS360.Controllers.ManagerDC3
 
         private void GeneratePseudoQr(string content, string outputPath)
         {
-            //using (var bitmap = new Bitmap(350, 350))
-            //using (var g = Graphics.FromImage(bitmap))
-            //{
-            //    g.Clear(White);
-            //    using (var pen = new Pen(Color.Black, 2))
-            //    {
-            //        g.DrawRectangle(pen, 5, 5, 340, 340);
-            //        g.DrawRectangle(pen, 25, 25, 65, 65);
-            //        g.DrawRectangle(pen, 260, 25, 65, 65);
-            //        g.DrawRectangle(pen, 25, 260, 65, 65);
-            //    }
+            using (var bitmap = new Bitmap(350, 350))
+            using (var g = Graphics.FromImage(bitmap))
+            {
+                g.Clear(System.Drawing.Color.White);
+                using (var pen = new Pen(System.Drawing.Color.Black, 2))
+                {
+                    g.DrawRectangle(pen, 5, 5, 340, 340);
+                    g.DrawRectangle(pen, 25, 25, 65, 65);
+                    g.DrawRectangle(pen, 260, 25, 65, 65);
+                    g.DrawRectangle(pen, 25, 260, 65, 65);
+                }
 
-            //    using (var font = new Font("Arial", 8))
-            //    using (var brush = new SolidBrush(Color.Black))
-            //    {
-            //        g.DrawString("QR", new Font("Arial", 24, FontStyle.Bold), brush, new PointF(145, 145));
-            //        g.DrawString(content, font, brush, new RectangleF(20, 305, 310, 40));
-            //    }
+                using (var font = new System.Drawing.Font("Arial", 8))
+                using (var brush = new SolidBrush(System.Drawing.Color.Black))
+                {
+                    g.DrawString("QR", new System.Drawing.Font("Arial", 24, FontStyle.Bold), brush, new PointF(145, 145));
+                    g.DrawString(content, font, brush, new RectangleF(20, 305, 310, 40));
+                }
 
-            //    bitmap.Save(outputPath, ImageFormat.Png);
-            //}
+                bitmap.Save(outputPath, ImageFormat.Png);
+            }
         }
     }
 }

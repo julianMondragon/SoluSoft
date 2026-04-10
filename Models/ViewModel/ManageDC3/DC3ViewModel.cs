@@ -64,6 +64,8 @@ namespace TAS360.Models.ViewModel.ManageDC3
         public string RutaFirmaRepresentante { get; set; }
         public string RutaFirmaTrabajador { get; set; }
 
+        public string Status { get; set; }
+
         public string QRUrl { get; set; }
         public string PdfUrl { get; set; }
 

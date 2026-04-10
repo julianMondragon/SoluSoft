@@ -3,6 +3,7 @@
     ViewBag.Title = "Certificados DC-3";
     Layout = "~/Views/Shared/_Layout3.cshtml";
     string exception = ViewBag.ExceptionMessage;
+    string Info = ViewBag.InfoMessage;
 }
 <div class="container">
     <div class="jumbotron">
@@ -13,6 +14,12 @@
         {
             <div class="alert alert-danger" role="alert">
                 @exception
+            </div>
+        }
+        @if (Info != null)
+        {
+            <div class="alert alert-info" role="alert">
+                @Info
             </div>
         }
     </div>
@@ -34,24 +41,43 @@
                 <tbody>
                     @foreach (var item in Model)
                     {
-                        <tr>
+                        <tr  class="@GetRowClass(item.Status)">
                             <td>@item.Folio</td>
                             <td>@item.TrabajadorNombre</td>
                             <td>@item.EmpresaNombre</td>
                             <td>@item.CursoNombre</td>
                             <td>@item.FechaInicio.ToString("dd/MM/yyyy") - @item.FechaFin.ToString("dd/MM/yyyy")</td>
                             <td>
-                                <a class="btn btn-xs btn-info" href="@Url.Action("Details", new { id = item.Id })">Detalle</a>
-                                <a class="btn btn-xs btn-primary" href="@Url.Action("Edit", new { id = item.Id })">Editar</a>
-                                <a class="btn btn-xs btn-warning" href="@Url.Action("Firmar", new { id = item.Id })">Firmar</a>
-                                <a class="btn btn-xs btn-default" href="@Url.Action("GenerarQR", new { id = item.Id })">QR</a>
-                                <a class="btn btn-xs btn-success" href="@Url.Action("DC3Report", new { id = item.Id , userId = item.CertificadorId })">PDF</a>
-                                <a class="btn btn-xs btn-success" href="@Url.Action("PrintDC3", new { id = item.Id , userId = item.CertificadorId })">Descargar</a>
-                                @using (Html.BeginForm("DeleteConfirmed", "DC3", new { id = item.Id }, FormMethod.Post, new { style = "display:inline-block" }))
+                                @*@if (item.Status != "Firmado")
+        {
+
+
+        }*@
+                                @if (item.Status == "Borrador")
                                 {
-                                    @Html.AntiForgeryToken()
-                                    <button type="submit" class="btn btn-xs btn-danger" onclick="return confirm('¿Eliminar lógicamente este certificado?');">Eliminar</button>
+                                    <a class="btn btn-xs btn-info" href="@Url.Action("Details", new { id = item.Id })">Detalle</a>
+                                    <a class="btn btn-xs btn-primary" href="@Url.Action("Edit", new { id = item.Id })">Editar</a>
+                                    <a class="btn btn-xs btn-default" href="@Url.Action("GenerarQR", new { id = item.Id })">Generar PDF</a>
+
                                 }
+                                @if (item.Status == "Generado")
+                                {
+                                    <a class="btn btn-xs btn-warning" href="@Url.Action("Firmar", new { id = item.Id })">Firmar</a>
+                                    <a class="btn btn-xs btn-success" href="@Url.Action("DC3Report", new { id = item.Id , userId = item.CertificadorId })">PDF</a>
+
+                                }
+                                @if (item.Status == "Firmado")
+                                {
+                                    <a class="btn btn-xs btn-info" href="@Url.Action("DownloadQRDC3", new { path = item.QRUrl , FileName = item.Folio})">QR</a>
+                                    <a class="btn btn-xs btn-success" href="@Url.Action("DownloadFileDC3", new { path = item.PdfUrl , FileName = item.Folio})">PDF</a>
+                                    using (Html.BeginForm("DeleteConfirmed", "DC3", new { id = item.Id }, FormMethod.Post, new { style = "display:inline-block" }))
+                                    {
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-xs btn-danger" onclick="return confirm('¿Eliminar lógicamente este certificado?');">Eliminar</button>
+                                    }
+
+                                }
+
                             </td>
                         </tr>
                     }
@@ -60,3 +86,21 @@
         </div>
     </div>
 </div>
+@functions {
+    public string GetRowClass(string status)
+    {
+        switch (status)
+        {
+            case "Borrador":
+                return "warning";   // amarillo
+            case "Generado":
+                return "info";      // azul
+            case "Firmado":
+                return "success";   // verde
+            case "Cancelado":
+                return "danger";    // rojo
+            default:
+                return "";
+        }
+    }
+}
