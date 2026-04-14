@@ -8,9 +8,9 @@
         <div class="col-md-2">
             <img src="~/Content/img/Negmon-logo.jpeg" style="max-height:120px;" />
         </div>
-        <h2>Folio: @Model.Folio</h2>
+        <h2>Folio: @Model.Folio </h2>
         <p>
-            Te mostramos los detalles antes de la generacion de DC-3
+            Estatus: @Model.Status
         </p>       
     </div>
     <div class="panel panel-default" style="max-width:900px;margin:20px auto;">
@@ -53,6 +53,34 @@
             </div>
         </div>
         <div class="panel-footer text-right">
+            @if (Model.Status == "Borrador")
+            {
+                @*<a class="btn btn-info" href="@Url.Action("Details", new { id = Model.Id })">Detalle</a>*@
+                <a class="btn btn-primary" href="@Url.Action("Edit", new { id = Model.Id })">Editar</a>
+                <a class="btn btn-warning" href="@Url.Action("Firmar", new { id = Model.Id })">Firmar</a>
+
+
+            }
+            @if (Model.Status == "Firmado")
+            {
+                <a class="btn btn-info" href="@Url.Action("Details", new { id = Model.Id })">Detalle</a>
+                <a class="btn btn-default" href="@Url.Action("GenerarQR", new { id = Model.Id })">Generar PDF</a>
+                @*<a class="btn btn-xs btn-info" href="@Url.Action("DownloadQRDC3", new { path = item.QRUrl , FileName = item.Folio})">QR</a>*@
+
+
+            }
+            @if (Model.Status == "Generado")
+            {
+                @*<a class="btn btn-success" href="@Url.Action("DC3Report", new { id = Model.Id , userId = Model.CertificadorId })">PDF</a>*@
+                <a class="btn btn-success" href="@Url.Action("DownloadFileDC3", new { path = Model.PdfUrl , FileName = Model.Folio})">Descargar</a>
+                using (Html.BeginForm("DeleteConfirmed", "DC3", new { id = Model.Id }, FormMethod.Post, new { style = "display:inline-block" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-danger" onclick="return confirm('¿Eliminar lógicamente este certificado?');">Eliminar</button>
+                }
+
+            }
+
             <a class="btn btn-default" href="@Url.Action("Index")">Volver</a>
         </div>
     </div>

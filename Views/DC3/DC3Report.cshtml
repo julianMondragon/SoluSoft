@@ -342,5 +342,11 @@
                 ANVERSO
             </div>
         </div>
+        @if (!string.IsNullOrEmpty(Model.QRUrl))
+        {
+            <div style="text-align:center; margin-top:20px;">
+                <img src="@Url.Content(Model.QRUrl)" width="150" />
+            </div>
+        }
     </body>
 </html>

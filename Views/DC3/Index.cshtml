@@ -48,28 +48,26 @@
                             <td>@item.CursoNombre</td>
                             <td>@item.FechaInicio.ToString("dd/MM/yyyy") - @item.FechaFin.ToString("dd/MM/yyyy")</td>
                             <td>
-                                @*@if (item.Status != "Firmado")
-        {
-
-
-        }*@
                                 @if (item.Status == "Borrador")
                                 {
                                     <a class="btn btn-xs btn-info" href="@Url.Action("Details", new { id = item.Id })">Detalle</a>
                                     <a class="btn btn-xs btn-primary" href="@Url.Action("Edit", new { id = item.Id })">Editar</a>
-                                    <a class="btn btn-xs btn-default" href="@Url.Action("GenerarQR", new { id = item.Id })">Generar PDF</a>
-
-                                }
-                                @if (item.Status == "Generado")
-                                {
                                     <a class="btn btn-xs btn-warning" href="@Url.Action("Firmar", new { id = item.Id })">Firmar</a>
-                                    <a class="btn btn-xs btn-success" href="@Url.Action("DC3Report", new { id = item.Id , userId = item.CertificadorId })">PDF</a>
+
 
                                 }
                                 @if (item.Status == "Firmado")
                                 {
-                                    <a class="btn btn-xs btn-info" href="@Url.Action("DownloadQRDC3", new { path = item.QRUrl , FileName = item.Folio})">QR</a>
-                                    <a class="btn btn-xs btn-success" href="@Url.Action("DownloadFileDC3", new { path = item.PdfUrl , FileName = item.Folio})">PDF</a>
+                                    <a class="btn btn-xs btn-info" href="@Url.Action("Details", new { id = item.Id })">Detalle</a>
+                                    <a class="btn btn-xs btn-default" href="@Url.Action("GenerarQR", new { id = item.Id })">Generar PDF</a>
+                                    @*<a class="btn btn-xs btn-info" href="@Url.Action("DownloadQRDC3", new { path = item.QRUrl , FileName = item.Folio})">QR</a>*@
+
+
+                                }
+                                @if (item.Status == "Generado")
+                                {
+                                    @*<a class="btn btn-xs btn-success" href="@Url.Action("DC3Report", new { id = item.Id , userId = item.CertificadorId })">PDF</a>*@
+                                    <a class="btn btn-xs btn-success" href="@Url.Action("DownloadFileDC3", new { path = item.PdfUrl , FileName = item.Folio})">Descargar</a>
                                     using (Html.BeginForm("DeleteConfirmed", "DC3", new { id = item.Id }, FormMethod.Post, new { style = "display:inline-block" }))
                                     {
                                         @Html.AntiForgeryToken()
@@ -77,7 +75,6 @@
                                     }
 
                                 }
-
                             </td>
                         </tr>
                     }

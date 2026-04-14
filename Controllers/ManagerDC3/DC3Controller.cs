@@ -281,7 +281,7 @@ namespace TAS360.Controllers.ManagerDC3
                 entity.Estatus = "Firmado";
                 _context.SaveChanges();
 
-                oLog.Add("DC3 firmado ID: " + id);
+                oLog.Add("DC3 firmado ID: " + id + " Usuario: " + ((User)Session["User"]).nombre);
                 return RedirectToAction("Details", new { id });
             }
             catch (DbEntityValidationException ex)
@@ -343,8 +343,47 @@ namespace TAS360.Controllers.ManagerDC3
                 if (entity == null)
                     return new HttpStatusCodeResult(HttpStatusCode.Forbidden);
 
+                // 🔒 Evitar regeneración
+                if (entity.Estatus == "Generado" )
+                {
+                    oLog.Add("Intento de regenerar documento bloqueado ID: " + id);
+                    return RedirectToAction("Details", new { id });
+                }
+
                 // ============================
-                // 📄 1. GENERAR PDF
+                // 🔗 1. GENERAR URL PUBLICA (ANTES DE TODO)
+                // ============================
+
+                string pdfUrl = Url.Action("Validar", "DC3", new { id }, Request.Url.Scheme);
+
+                // ============================
+                // 🧾 2. GENERAR QR (PRIMERO)
+                // ============================
+
+                string qrFolder = Server.MapPath("~/Content/DC3/QR/");
+                if (!Directory.Exists(qrFolder))
+                    Directory.CreateDirectory(qrFolder);
+
+                string qrFileName = $"qr_{id}_{DateTime.Now.Ticks}.png";
+                string qrFullPath = Path.Combine(qrFolder, qrFileName);
+
+                GenerateQr(pdfUrl, qrFullPath);
+
+                string qrVirtualPath = "/Content/DC3/QR/" + qrFileName;
+
+                // ============================
+                // 💾 3. GUARDAR QR EN BD (ANTES DEL PDF)
+                // ============================
+
+                var doc = GetOrCreateDocumento(entity.Id);
+                doc.RutaQR = qrVirtualPath;
+                doc.UrlPublica = pdfUrl;
+                doc.FechaGeneracion = DateTime.Now;
+
+                _context.SaveChanges(); // 🔥 IMPORTANTE: guardar antes de generar PDF
+
+                // ============================
+                // 📄 4. GENERAR PDF (YA CON QR DISPONIBLE)
                 // ============================
 
                 string pdfFolder = Server.MapPath("~/Content/DC3/PDF/");
@@ -362,46 +401,20 @@ namespace TAS360.Controllers.ManagerDC3
                 string pdfVirtualPath = "/Content/DC3/PDF/" + pdfFileName;
 
                 // ============================
-                // 🔗 2. GENERAR URL PUBLICA
+                // 💾 5. ACTUALIZAR PDF EN BD
                 // ============================
-
-                string pdfUrl = Request.Url.GetLeftPart(UriPartial.Authority) + pdfVirtualPath;
-
-                // ============================
-                // 🧾 3. GENERAR QR
-                // ============================
-
-                string qrFolder = Server.MapPath("~/Content/DC3/QR/");
-                if (!Directory.Exists(qrFolder))
-                    Directory.CreateDirectory(qrFolder);
-
-                string qrFileName = $"qr_{id}_{DateTime.Now.Ticks}.png";
-                string qrFullPath = Path.Combine(qrFolder, qrFileName);
-
-                GenerateQr(pdfUrl, qrFullPath);
-
-                string qrVirtualPath = "/Content/DC3/QR/" + qrFileName;
-
-                // ============================
-                // 💾 4. GUARDAR EN BD
-                // ============================
-
-                var doc = GetOrCreateDocumento(entity.Id);
 
                 doc.RutaPDF = pdfVirtualPath;
-                doc.RutaQR = qrVirtualPath;
-                doc.UrlPublica = pdfUrl;
-                doc.FechaGeneracion = DateTime.Now;
 
                 // ============================
-                // 🔄 5. ACTUALIZAR ESTATUS
+                // 🔄 6. ACTUALIZAR ESTATUS
                 // ============================
 
                 entity.Estatus = "Generado";
 
                 _context.SaveChanges();
 
-                oLog.Add($"Documento completo generado (PDF + QR) para DC3 ID: {id}");
+                oLog.Add($"Documento completo generado (QR + PDF) ID: {id}");
 
                 return RedirectToAction("Details", new { id });
             }
@@ -444,19 +457,7 @@ namespace TAS360.Controllers.ManagerDC3
                 PageSize = Rotativa.Options.Size.A4,
                 PageOrientation = Rotativa.Options.Orientation.Portrait
             };
-        }
-        //public ActionResult PrintDC3(int id , int userId)
-        //{
-            
-        //    var entity = GetDc3ById(id, userId);
-        //    if (entity == null)
-        //        return new HttpStatusCodeResult(HttpStatusCode.Forbidden);
-
-        //    var pdfBytes = new ActionAsPdf("DC3Report", new { id })
-        //        .BuildFile(ControllerContext);
-
-        //    return File(pdfBytes, "application/pdf", $"DC3_{id}.pdf");
-        //}
+        }        
 
         [AuthorizeUser(idOperacion: 64)]
         public ActionResult GenerarPdf(int id)

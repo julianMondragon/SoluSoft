@@ -356,8 +356,6 @@
     <Content Include="Backup_Database\Sprint_4\SQLQuery3 %28Crea registro en usr_profile de User%29.sql" />
     <Content Include="Backup_Database\Sprint_4\SQLQuery4 %28trigger para usr_profile de nuevo user%29.sql" />
     <Content Include="Backup_Database\Sprint_4\SQLQuery_cambio_nombre_roles.sql" />
-    <Content Include="Backup_Database\Triger_Entradas_auditoria.sql" />
-    <Content Include="Backup_Database\Trigger_Salidas_auditoria.sql" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
