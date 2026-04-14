@@ -500,7 +500,14 @@ namespace TAS360.Controllers.ManagerDC3
             if (entity == null)
                 return HttpNotFound("El certificado no existe o no está activo.");
 
-            return View(MapToViewModel(entity));
+            var doc = entity.DC3Documento.FirstOrDefault();
+
+            if (doc == null || string.IsNullOrEmpty(doc.RutaPDF))
+                return HttpNotFound("El documento no está disponible.");
+
+            string path = Server.MapPath(doc.RutaPDF);
+
+            return File(path, "application/pdf");
         }
 
         private DC3 GetDc3ById(int id, int userId)

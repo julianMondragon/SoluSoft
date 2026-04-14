@@ -43,12 +43,10 @@ namespace TAS360.Models.ViewModel.ManageDC3
         [Display(Name = "Duración (horas)")]
         public int DuracionHoras { get; set; }
 
-        [Required]
-        [StringLength(200)]
+        
         [Display(Name = "Puesto")]
         public string Puesto { get; set; }
 
-        [Required]
         [Display(Name = "Ocupacion")]
         public int OcupacionId { get; set; }
 
