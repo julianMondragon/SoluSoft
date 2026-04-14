@@ -7,6 +7,12 @@
     <h1>
         Editar Perfil
     </h1>
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-info">
+            @TempData["ErrorMessage"]
+        </div>
+    }
 </div>
 
 @using (Html.BeginForm("Editprofile", "Profile", FormMethod.Post, new { enctype = "multipart/form-data" })) // Asegúrate de incluir enctype para la carga de archivos

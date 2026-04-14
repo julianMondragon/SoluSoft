@@ -49,6 +49,27 @@ namespace TAS360.Controllers.ManagerDC3
         [AuthorizeUser(idOperacion: 58)]
         public ActionResult Create()
         {
+            int userId = GetUserId();
+
+            var profile = _context.usr_profile.FirstOrDefault(x => x.id_User == userId);
+
+            if (profile == null)
+                return HttpNotFound();
+
+            // 🔒 Validar disponibilidad
+            if (profile.NumeroCertificadosDisponibles <= 0)
+            {
+                TempData["InfoMessage"] = "Ya no cuentas con certificados disponibles. Contacta al administrador.";
+                return RedirectToAction("Index");
+            }
+
+            // 🔒 Validar vigencia
+            //if (profile.FechaVigenciaPaquete != null && profile.FechaVigenciaPaquete < DateTime.Now)
+            //{
+            //    TempData["ErrorMessage"] = "Tu paquete ha expirado. Contacta al administrador.";
+            //    return RedirectToAction("Index");
+            //}
+
             var model = new DC3ViewModel
             {
                 FechaInicio = DateTime.Today,
@@ -106,6 +127,11 @@ namespace TAS360.Controllers.ManagerDC3
                 _context.SaveChanges();
 
                 oLog.Add("DC3 creado ID: " + entity.Id + " Por usuario: " + ((User)Session["User"]).nombre + " id: " + ((User)Session["User"]).id);
+                var profile = _context.usr_profile.FirstOrDefault(x => x.id_User == userId);
+                profile.NumeroCertificadosDisponibles -= 1;
+                profile.NumeroCertificadosUsados = (profile.NumeroCertificadosUsados ?? 0) + 1;
+                _context.SaveChanges();
+
                 return RedirectToAction("Index");
             }
             catch (DbEntityValidationException ex)

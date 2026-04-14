@@ -323,9 +323,9 @@
           <Property Name="createdAt" Type="date" />
           <Property Name="updateAt" Type="date" />
           <Property Name="fecha nacimeinto" Type="datetime" />
-          <Property Name="Cel" Type="varchar" MaxLength="1" />
-          <Property Name="Género" Type="varchar" MaxLength="1" />
-          <Property Name="Estado" Type="varchar" MaxLength="1" />
+          <Property Name="Cel" Type="varchar" MaxLength="10" />
+          <Property Name="Género" Type="varchar" MaxLength="20" />
+          <Property Name="Estado" Type="varchar" MaxLength="100" />
           <Property Name="Foto_usuario" Type="varbinary(max)" />
           <Property Name="id_User" Type="int" Nullable="false" />
           <Property Name="NumeroCertificadosDisponibles" Type="int" />
@@ -836,11 +836,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        
-        
-        
-        
-        
         <EntityContainer Name="HelpDeskModelStoreContainer">
           <EntitySet Name="AreaTematica" EntityType="Self.AreaTematica" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Capacitador" EntityType="Self.Capacitador" Schema="dbo" store:Type="Tables" />
@@ -1563,9 +1558,9 @@
           <Property Name="createdAt" Type="DateTime" Precision="0" />
           <Property Name="updateAt" Type="DateTime" Precision="0" />
           <Property Name="fecha_nacimeinto" Type="DateTime" Precision="3" />
-          <Property Name="Cel" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="Género" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="Estado" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="Cel" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="Género" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="Estado" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="Foto_usuario" Type="Binary" MaxLength="Max" FixedLength="false" />
           <Property Name="id_User" Type="Int32" Nullable="false" />
           <NavigationProperty Name="User" Relationship="HelpDeskModel.FK_usr_profile_User" FromRole="usr_profile" ToRole="User" />

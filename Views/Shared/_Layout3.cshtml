@@ -57,6 +57,7 @@
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">@usuario.nombre <span class="caret"></span></a>
                             <ul class="dropdown-menu">
+                                <li>@Html.ActionLink("Perfil", "Index", "Profile")</li>
                                 <li class="nav-item px-lg-4"><a href="@Url.Content("~/logout/logout")">Cerrar Sesion</a></li>
                             </ul>
                         </li>

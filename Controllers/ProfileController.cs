@@ -1,15 +1,16 @@
-﻿using DocumentFormat.OpenXml.Office2010.Excel;
+﻿using DocumentFormat.OpenXml.EMMA;
+using DocumentFormat.OpenXml.Office2010.Excel;
 using Microsoft.Ajax.Utilities;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity.Validation;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.Mvc;
 using TAS360.Models;
 using TAS360.Models.ViewModel;
-using System.Web;
-using System.IO;
-using DocumentFormat.OpenXml.EMMA;
 
 namespace TAS360.Controllers
 {
@@ -35,7 +36,8 @@ namespace TAS360.Controllers
                     perfil.Género = usuario.Género;
                     perfil.Estado = usuario.Estado;
                     perfil.Foto_usuario = usuario.Foto_usuario;
-
+                    perfil.DC3Disponibles = (int)usuario.NumeroCertificadosDisponibles;
+                    perfil.DC3Usados = usuario.NumeroCertificadosUsados == null ? 0 : (int)usuario.NumeroCertificadosUsados;
                 }
                 else
                 {
@@ -91,7 +93,7 @@ namespace TAS360.Controllers
                     using (HelpDesk_Entities1 db = new HelpDesk_Entities1())
                     {
                         int userId = ((User)Session["User"]).id;
-
+                        var user = db.User.Find(userId);
                         // Buscar el perfil del usuario en la base de datos usando el ID del usuario
                         var profile = db.usr_profile.FirstOrDefault(u => u.id_User == userId);
                         if (profile == null)
@@ -108,8 +110,8 @@ namespace TAS360.Controllers
                         profile.Cel = perfil.Cel;
                         profile.Género = perfil.Género;
                         profile.Estado = perfil.Estado;
-
-                        var user = db.User.Find(userId);
+                        profile.id_User = userId;
+                        
                         if (user == null)
                         {
                             GetGeneroOptions(perfil.Género);
@@ -128,10 +130,23 @@ namespace TAS360.Controllers
                 ViewBag.ErrorMessage = "Por favor, complete todos los campos requeridos.";   
                 return View(perfil);
             }
+            catch (DbEntityValidationException ex)
+            {
+                foreach (var entityErrors in ex.EntityValidationErrors)
+                {
+                    foreach (var validationError in entityErrors.ValidationErrors)
+                    {
+                        TempData["ErrorMessage"] += ($"ERROR VALIDATION: {validationError.PropertyName} - {validationError.ErrorMessage}");
+                    }
+                }
+                GetGeneroOptions(perfil.Género);
+                GetEstadoOptions(perfil.Estado);
+                return View(perfil);
+            }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine("Error al guardar el registro: " + ex.Message);
-                ViewBag.ErrorMessage = "Ocurrió un error inesperado. Por favor, inténtelo de nuevo más tarde.";
+                TempData["ErrorMessage"] = "Ocurrió un error inesperado. Por favor, inténtelo de nuevo más tarde.";
                 GetGeneroOptions(perfil.Género);
                 GetEstadoOptions(perfil.Estado);
                 return View(perfil);

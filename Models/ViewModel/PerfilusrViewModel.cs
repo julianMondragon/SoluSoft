@@ -24,14 +24,17 @@ namespace TAS360.Models.ViewModel
         [Display(Name = "Correo Electrónico")]
         public string email { get; set; }
 
+        [StringLength(10)]
         [Required(ErrorMessage = "El teléfono es obligatorio.")]
         [Display(Name = "Teléfono")]
         public string Cel { get; set; }
 
         [Display(Name = "Género")]
+        [StringLength(20)]
         public string Género { get; set; }
 
         [Display(Name = "Estado")]
+        [StringLength(100)]
         public string Estado { get; set; }
 
         [Display(Name = "Foto de Usuario")]
@@ -46,6 +49,16 @@ namespace TAS360.Models.ViewModel
 
         [Display(Name = "Actualizado el")]
         public DateTimeFormat updateAt { get; set; }
+
+        [Display(Name = "Certificados Disponibles")]
+        public int DC3Disponibles { get; set; }
+
+        [Display(Name = "Certificados Usados")]
+        public int DC3Usados { get; set; }
+
+        [Display(Name = "Fecha de vigencia del paquete")]
+        [DataType(DataType.Date)]
+        public DateTime fecha_vigencia { get; set; }
     }
 
 }
