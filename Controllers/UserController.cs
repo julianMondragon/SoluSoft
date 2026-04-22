@@ -17,46 +17,157 @@ namespace TAS360.Controllers
 {
     public class UserController : Controller
     {
-        private string contenidoHtml = @"
-                                        <!DOCTYPE html>
-                                        <html lang='es'>
-                                        <head>
-                                            <meta charset='UTF-8'>
-                                            <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-                                            <title>Actualización de Ticket</title>
-                                            <style>
-                                                body { font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 0; }
-                                                .container { width: 100%; max-width: 600px; margin: 0 auto; background-color: #ffffff; border: 1px solid #dddddd; border-radius: 5px; overflow: hidden; }
-                                                .header { background-color: #4CAF50; color: #ffffff; padding: 20px; text-align: center; }
-                                                .content { padding: 20px; }
-                                                .footer { background-color: #f1f1f1; color: #888888; padding: 10px; text-align: center; }
-                                                .button { display: inline-block; background-color: #4CAF50; color: #ffffff; padding: 10px 20px; text-decoration: none; border-radius: 5px; }
-                                            </style>
-                                        </head>
-                                        <body>
-                                            <div class='container'>
-                                                <div class='header'>
-                                                    <h1>Bienvenido al Help Desk de PTS</h1>
-                                                </div>
-                                                <div class='content'>
-                                                    <p>Estimado/a <strong>{usuarioName}</strong>,</p>
-                                                    <p>Ahora cuentas con acceso al <strong>Help Desk </strong> de PTS . A continuación se muestran los detalles:</p>
-                                                    <ul>
-                                                        <li><strong>Nombre:</strong> {usuarioName}</li>
-                                                        <li><strong>Rol:</strong> {Rol}</li>
-                                                        <li><strong>Email:</strong> {email}</li>
-                                                        <li><strong>Contraseña:</strong> {password}</li>
-                                                    </ul>
-                                                    <p>Para más informacion, por favor accede a tu cuenta.</p>
-                                                    <p><a href='{enlaceTicket}' class='button'>Iniciar sesion</a></p>
-                                                </div>
-                                                <div class='footer'>
-                                                    <p>Este es un mensaje automático, por favor no responda a este correo.</p>
-                                                    <p>&copy; 2024 HelpDesk PTS, Developed by Julian Mondragon</p>
-                                                </div>
-                                            </div>
-                                        </body>
-                                        </html>";
+        private string contenidoHtml = $@"
+            <!DOCTYPE html>
+            <html lang='es'>
+            <head>
+            <meta charset='UTF-8'>
+            <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+            <title>Bienvenido a NEGMON</title>
+
+            <style>
+            body {{
+                margin:0;
+                padding:0;
+                background:#f4f6f9;
+                font-family: Arial, Helvetica, sans-serif;
+            }}
+
+            .container {{
+                width:100%;
+                max-width:620px;
+                margin:auto;
+                background:#ffffff;
+                border-radius:6px;
+                overflow:hidden;
+                box-shadow:0px 3px 12px rgba(0,0,0,0.08);
+            }}
+
+            .header {{
+                background:#1f3c5a;
+                color:white;
+                padding:25px;
+                text-align:center;
+            }}
+
+            .logo {{
+                font-size:24px;
+                font-weight:bold;
+            }}
+
+            .subtitle {{
+                font-size:14px;
+                opacity:0.9;
+            }}
+
+            .content {{
+                padding:30px;
+                color:#333;
+            }}
+
+            .info-box {{
+                background:#f8f9fb;
+                border:1px solid #e3e6eb;
+                border-radius:5px;
+                padding:20px;
+                margin-top:15px;
+            }}
+
+            .info-row {{
+                margin-bottom:10px;
+            }}
+
+            .label {{
+                font-weight:bold;
+                color:#1f3c5a;
+            }}
+
+            .button {{
+                display:inline-block;
+                margin-top:25px;
+                padding:12px 22px;
+                background:#2d7ef7;
+                color:white;
+                text-decoration:none;
+                border-radius:4px;
+                font-size:14px;
+            }}
+
+            .footer {{
+                background:#f1f3f6;
+                text-align:center;
+                padding:18px;
+                font-size:12px;
+                color:#777;
+            }}
+
+            .alert {{
+                padding:15px;
+                border-radius:4px;
+                margin-bottom:20px;
+            }}
+
+            .alert-success {{
+                background-color:#dff0d8;
+                color:#3c763d;
+                border:1px solid #d6e9c6;
+            }}
+
+            </style>
+            </head>
+
+            <body>
+
+            <div class='container'>
+
+                <div class='header'>
+                    <div class='logo'>NEGMON</div>
+                    <div class='subtitle'>Gestión inteligente de operaciones</div>
+                </div>
+
+                <div class='content'>
+
+                    <div class='alert alert-success'>
+                        Tu cuenta ha sido creada exitosamente
+                    </div>
+
+                    <h2>Bienvenido, {{usuarioName}}</h2>
+
+                    <p>Ahora cuentas con acceso a la plataforma <strong>NEGMON</strong>. A continuación se muestran tus credenciales de acceso:</p>
+
+                    <div class='info-box'>
+                        <div class='info-row'>
+                            <span class='label'>Usuario:</span> {{email}}
+                        </div>
+
+                        <div class='info-row'>
+                            <span class='label'>Contraseña:</span> {{password}}
+                        </div>
+
+                        <div class='info-row'>
+                            <span class='label'>Rol:</span> {{Rol}}
+                        </div>
+                    </div>
+
+                    <p>Te recomendamos cambiar tu contraseña después de iniciar sesión por primera vez.</p>
+
+                    <center>
+                        <a href='https://negmon.com/Acceso/Login' class='button'>
+                            Iniciar sesión
+                        </a>
+                    </center>
+
+                </div>
+
+                <div class='footer'>
+                    <p>Este es un mensaje automático, por favor no responder.</p>
+                    <p><strong>NEGMON</strong> | Soluciones tecnológicas empresariales</p>
+                </div>
+
+            </div>
+
+            </body>
+            </html>";
         // GET: User/Index
         [AuthorizeUser(idOperacion: 17)]
         public ActionResult Index()
@@ -273,7 +384,7 @@ namespace TAS360.Controllers
                         };
 
 
-                            db.User.Add(newUser);
+                        db.User.Add(newUser);
                         db.SaveChanges();
 
                         User newUserAdded = db.User.FirstOrDefault(u => u.email == model.email);
@@ -383,8 +494,7 @@ namespace TAS360.Controllers
                     contenidoHtml = contenidoHtml.Replace("{usuarioName}", subjet.nombre)
                              .Replace("{Rol}", GetRoles((int)subjet.id_Roll))
                              .Replace("{email}", subjet.email.ToString())
-                             .Replace("{password}", "Alfer3z")
-                             .Replace("{enlaceTicket}", "https://pts-tools.com.mx/Acceso/Login/");
+                             .Replace("{password}", "Alfer3z");
                 }
 
                 // Configuración del cliente SMTP
@@ -404,8 +514,8 @@ namespace TAS360.Controllers
                 // Crear el mensaje de correo
                 MailMessage mensaje = new MailMessage
                 {
-                    From = new MailAddress("soporte.tas360@pts.mx"),
-                    Subject = "Bienvenido al Help Desk de PTS",
+                    From = new MailAddress("contacto@negmon.com"),
+                    Subject = "Bienvenido a NEGMON",
                     Body = contenidoHtml,
                     IsBodyHtml = true 
                 };
@@ -413,11 +523,11 @@ namespace TAS360.Controllers
                 // Añadir destinatario
                 mensaje.To.Add(destinatario);
                 // Añadir en copia (CC)
-                mensaje.CC.Add(origen);
+                //mensaje.CC.Add(origen);
                 
-                if (origen != "julian.mondragon@pts.mx")
+                if (origen != "jmondragon@negmon.com")
                 {
-                    mensaje.CC.Add("julian.mondragon@pts.mx");
+                    mensaje.CC.Add("jmondragon@negmon.com");
                 }
                 
                 // Enviar el correo
