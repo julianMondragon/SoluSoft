@@ -1,0 +1,20 @@
+@model TAS360.Models.ViewModel.Documentos.DocumentoEditViewModel
+@{
+    ViewBag.Title = "Eliminar documento";
+    Layout = "~/Views/Shared/_Layout3.cshtml";
+}
+
+<div class="container">
+    <div class="page-header"><h2>Eliminar documento</h2></div>
+    @if (TempData["ErrorMessage"] != null) { <div class="alert alert-danger">@TempData["ErrorMessage"]</div> }
+    <div class="alert alert-warning">
+        <h4>¿Confirma la eliminación lógica?</h4>
+        <p>El documento <strong>@Model.Folio — @Model.Titulo</strong> dejará de mostrarse. No se eliminarán filas ni archivos físicos.</p>
+    </div>
+    @using (Html.BeginForm("Delete", "Documento", new { id = Model.Id }, FormMethod.Post, null))
+    {
+        @Html.AntiForgeryToken()
+        <a class="btn btn-default" href="@Url.Action("Index")">Cancelar</a>
+        <button class="btn btn-danger" type="submit">Eliminar lógicamente</button>
+    }
+</div>

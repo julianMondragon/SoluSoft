@@ -55,6 +55,11 @@ namespace TAS360.Models
         public virtual DbSet<DC3> DC3 { get; set; }
         public virtual DbSet<DC3Documento> DC3Documento { get; set; }
         public virtual DbSet<DC3Firma> DC3Firma { get; set; }
+        public virtual DbSet<Documento> Documento { get; set; }
+        public virtual DbSet<DocumentoConcepto> DocumentoConcepto { get; set; }
+        public virtual DbSet<DocumentoFirma> DocumentoFirma { get; set; }
+        public virtual DbSet<DocumentoSeccion> DocumentoSeccion { get; set; }
+        public virtual DbSet<DocumentoSeccionImagen> DocumentoSeccionImagen { get; set; }
         public virtual DbSet<Empresa> Empresa { get; set; }
         public virtual DbSet<Ocupacion> Ocupacion { get; set; }
         public virtual DbSet<Trabajador> Trabajador { get; set; }

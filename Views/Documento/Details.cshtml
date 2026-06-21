@@ -1,0 +1,29 @@
+@model TAS360.Models.ViewModel.Documentos.DocumentoEditViewModel
+@{
+    ViewBag.Title = "Detalle de documento";
+    Layout = "~/Views/Shared/_Layout3.cshtml";
+}
+
+<div class="container">
+    <div class="page-header"><h2>@Model.Titulo <small>@Model.Folio</small></h2></div>
+    <p><strong>Tipo:</strong> @Model.TipoDocumento &nbsp; <strong>Estado:</strong> @Model.Estado &nbsp; <strong>Emisión:</strong> @Model.FechaEmision.Value.ToString("dd/MM/yyyy")</p>
+    @if (!string.IsNullOrWhiteSpace(Model.Descripcion)) { <p>@Model.Descripcion</p> }
+    <p><a class="btn btn-default" href="@Url.Action("Index")">Volver</a> <a class="btn btn-primary" href="@Url.Action("Edit", new { id = Model.Id })">Editar</a></p>
+
+    <h3>Secciones</h3>
+    @foreach (var seccion in Model.Secciones)
+    {
+        <div class="panel panel-default"><div class="panel-heading"><strong>@seccion.Orden. @seccion.Titulo</strong></div><div class="panel-body">
+            <p style="white-space:pre-wrap">@seccion.Contenido</p>
+            <div class="row">@foreach (var image in seccion.Imagenes) { <div class="col-sm-3"><img class="img-responsive img-thumbnail" src="@Url.Content("~" + image.RutaArchivo)" alt="@image.TextoAlternativo" /></div> }</div>
+        </div></div>
+    }
+
+    <h3>Conceptos</h3>
+    <div class="table-responsive"><table class="table table-bordered table-striped"><thead><tr><th>Orden</th><th>Clave</th><th>Descripción</th><th>Unidad</th><th>Cantidad</th><th>P. unitario</th><th>Importe</th></tr></thead><tbody>
+        @foreach (var item in Model.Conceptos) { <tr><td>@item.Orden</td><td>@item.Clave</td><td>@item.Descripcion</td><td>@item.Unidad</td><td>@item.Cantidad</td><td>@item.PrecioUnitario.ToString("C")</td><td>@item.Importe.ToString("C")</td></tr> }
+    </tbody></table></div>
+
+    <h3>Firmas</h3>
+    <div class="row">@foreach (var signature in Model.Firmas) { <div class="col-sm-4"><div class="well"><strong>@signature.NombreFirmante</strong><br />@signature.CargoFirmante<br /><small>@signature.TipoFirma @(signature.FechaFirma.HasValue ? "- " + signature.FechaFirma.Value.ToString("dd/MM/yyyy HH:mm") : "")</small></div></div> }</div>
+</div>
