@@ -6,7 +6,7 @@
 
 <div class="jumbotron">
     <h1>Documentos</h1>
-    <p class="lead">Gestión persistente de documentos activos (@Model.Documentos.Count)</p>
+    <p class="lead">Gestion persistente de documentos activos (@Model.Documentos.Count)</p>
     @if (Model.CanCreate)
     {
         <a class="btn btn-success" href="@Url.Action("Create")">
@@ -41,7 +41,7 @@
     <div class="table-responsive">
         <table id="DocumentTable" class="table table-success table-striped table-hover">
             <thead>
-                <tr><th>Folio</th><th>Tipo</th><th>Título</th><th>Cliente</th><th>Emisión</th><th>Estado</th><th>Acciones</th></tr>
+                <tr><th>Folio</th><th>Tipo</th><th>Título</th><th>Cliente</th><th>Emision</th><th>Estado</th><th>Acciones</th></tr>
             </thead>
             <tbody>
             @if (!Model.Documentos.Any())
