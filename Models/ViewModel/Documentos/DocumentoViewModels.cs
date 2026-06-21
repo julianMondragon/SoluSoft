@@ -21,6 +21,7 @@ namespace TAS360.Models.ViewModel.Documentos
         public bool CanCreate { get; set; }
         public bool CanEdit { get; set; }
         public bool CanDelete { get; set; }
+        public bool CanGenerate { get; set; }
 
         public IEnumerable<SelectListItem> TiposDocumento { get { return DocumentoCatalogos.TiposDocumento(); } }
         public IEnumerable<SelectListItem> EstadosDocumento { get { return DocumentoCatalogos.EstadosDocumento(); } }
@@ -36,6 +37,7 @@ namespace TAS360.Models.ViewModel.Documentos
         public string Cliente { get; set; }
         public DateTime FechaEmision { get; set; }
         public DateTime UpdatedAt { get; set; }
+        public bool HasPdf { get; set; }
     }
 
     public class DocumentoEditViewModel
@@ -72,6 +74,24 @@ namespace TAS360.Models.ViewModel.Documentos
         [Display(Name = "Cliente")]
         public string Cliente { get; set; }
 
+        [Display(Name = "Observaciones")]
+        public string Observaciones { get; set; }
+
+        [Display(Name = "Notas")]
+        public string Notas { get; set; }
+
+        [StringLength(200)]
+        [Display(Name = "Responsable")]
+        public string ResponsableNombre { get; set; }
+
+        [StringLength(150)]
+        [Display(Name = "Puesto del responsable")]
+        public string ResponsablePuesto { get; set; }
+
+        [StringLength(250)]
+        [Display(Name = "Lugar de emisión")]
+        public string LugarEmision { get; set; }
+
         [Required(ErrorMessage = "La fecha de emisión es obligatoria.")]
         [DataType(DataType.Date)]
         [Display(Name = "Fecha de emisión")]
@@ -80,6 +100,17 @@ namespace TAS360.Models.ViewModel.Documentos
         [Required]
         [StringLength(20)]
         public string Estado { get; set; }
+
+        [Display(Name = "Subtotal")]
+        public decimal SubTotal { get; set; }
+
+        [Range(typeof(decimal), "0", "99999999999999.9999")]
+        public decimal IVA { get; set; }
+
+        public decimal Total { get; set; }
+        public string RutaUltimoPdf { get; set; }
+        public DateTime? PdfGeneratedAt { get; set; }
+        public bool HasPdf { get { return !string.IsNullOrWhiteSpace(RutaUltimoPdf); } }
 
         public IList<DocumentoSeccionViewModel> Secciones { get; set; }
         public IList<DocumentoConceptoViewModel> Conceptos { get; set; }
@@ -167,6 +198,9 @@ namespace TAS360.Models.ViewModel.Documentos
     {
         public int Id { get; set; }
         public int DocumentoId { get; set; }
+
+        [Range(0, int.MaxValue)]
+        public int Orden { get; set; }
 
         [Required(ErrorMessage = "El tipo de firma es obligatorio.")]
         [StringLength(50)]

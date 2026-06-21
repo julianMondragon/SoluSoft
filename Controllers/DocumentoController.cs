@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data.Entity;
 using System.IO;
 using System.Linq;
@@ -7,6 +8,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using Newtonsoft.Json.Linq;
+using Rotativa;
 using TAS360.Filters;
 using TAS360.Models;
 using TAS360.Models.ViewModel.Documentos;
@@ -15,9 +17,19 @@ namespace TAS360.Controllers
 {
     public class DocumentoController : Controller
     {
-        private const int MaxImageBytes = 5 * 1024 * 1024;
         private static readonly HashSet<string> ImageExtensions =
-            new HashSet<string>(new[] { ".jpg", ".jpeg", ".png", ".gif", ".webp" }, StringComparer.OrdinalIgnoreCase);
+            new HashSet<string>(new[] { ".jpg", ".jpeg", ".png" }, StringComparer.OrdinalIgnoreCase);
+
+        private static int MaxImageBytes
+        {
+            get
+            {
+                int configured;
+                return int.TryParse(ConfigurationManager.AppSettings["DocumentImageMaxBytes"], out configured) && configured > 0
+                    ? configured
+                    : 5 * 1024 * 1024;
+            }
+        }
 
         private readonly HelpDesk_Entities1 db = new HelpDesk_Entities1();
 
@@ -37,7 +49,9 @@ namespace TAS360.Controllers
 
                 if (folio != null) query = query.Where(x => x.Folio.Contains(folio));
                 if (titulo != null) query = query.Where(x => x.Titulo.Contains(titulo));
-                if (cliente != null) query = query.Where(x => x.ContenidoJson != null && x.ContenidoJson.Contains(cliente));
+                if (cliente != null) query = query.Where(x =>
+                    (x.ClienteNombre != null && x.ClienteNombre.Contains(cliente)) ||
+                    (x.ContenidoJson != null && x.ContenidoJson.Contains(cliente)));
                 if (tipoDocumento != null) query = query.Where(x => x.TipoDocumento == tipoDocumento);
                 if (estado != null) query = query.Where(x => x.Estado == estado);
 
@@ -52,6 +66,7 @@ namespace TAS360.Controllers
                     CanCreate = HasPermission("Crear_Documento"),
                     CanEdit = HasPermission("Editar_Documento"),
                     CanDelete = HasPermission("Eliminar_Documento"),
+                    CanGenerate = HasPermission("Generar_Documento"),
                     Documentos = rows.Select(x => new DocumentoListItemViewModel
                     {
                         Id = x.Id,
@@ -59,9 +74,10 @@ namespace TAS360.Controllers
                         TipoDocumento = x.TipoDocumento,
                         Estado = x.Estado,
                         Titulo = x.Titulo,
-                        Cliente = ReadClient(x.ContenidoJson),
+                        Cliente = x.ClienteNombre ?? ReadClient(x.ContenidoJson),
                         FechaEmision = x.FechaDocumento ?? DateTime.MinValue,
-                        UpdatedAt = x.UpdatedAt
+                        UpdatedAt = x.UpdatedAt,
+                        HasPdf = !string.IsNullOrEmpty(x.RutaUltimoPdf)
                     }).ToList()
                 };
 
@@ -108,6 +124,15 @@ namespace TAS360.Controllers
                     Estado = "Borrador",
                     Titulo = model.Titulo.Trim(),
                     Descripcion = NullIfWhiteSpace(model.Descripcion),
+                    Observaciones = NullIfWhiteSpace(model.Observaciones),
+                    Notas = NullIfWhiteSpace(model.Notas),
+                    ClienteNombre = NullIfWhiteSpace(model.Cliente),
+                    ResponsableNombre = NullIfWhiteSpace(model.ResponsableNombre),
+                    ResponsablePuesto = NullIfWhiteSpace(model.ResponsablePuesto),
+                    LugarEmision = NullIfWhiteSpace(model.LugarEmision),
+                    SubTotal = 0,
+                    IVA = model.IVA,
+                    Total = model.IVA,
                     ContenidoJson = WriteClient(null, model.Cliente),
                     FechaDocumento = model.FechaEmision.Value.Date,
                     Activo = true,
@@ -119,13 +144,13 @@ namespace TAS360.Controllers
 
                 db.Documento.Add(documento);
                 db.SaveChanges();
-                SafeLog("Documento creado ID: " + documento.Id + ", folio: " + documento.Folio + ", usuario: " + userId);
+                AuditLog("Crear documento", documento.Id, documento.Folio, "Documento creado.");
                 TempData["InfoMessage"] = "Documento creado. Ya puede agregar secciones, conceptos, firmas e imágenes.";
                 return RedirectToAction("Edit", new { id = documento.Id });
             }
             catch (Exception ex)
             {
-                SafeLog("ERROR CREATE: " + ex);
+                AuditLog("Error al crear documento", null, model == null ? null : model.Folio, null, ex);
                 ViewBag.ExceptionMessage = "No fue posible crear el documento. " + ex.Message;
                 return View(model);
             }
@@ -138,6 +163,7 @@ namespace TAS360.Controllers
             try
             {
                 var model = BuildDocumentViewModel(id);
+                ViewBag.ImageMaxBytes = MaxImageBytes;
                 return model == null ? (ActionResult)HttpNotFound() : View(model);
             }
             catch (Exception ex)
@@ -162,6 +188,7 @@ namespace TAS360.Controllers
                 if (!ModelState.IsValid)
                 {
                     FillChildren(model);
+                    ViewBag.ImageMaxBytes = MaxImageBytes;
                     return View(model);
                 }
 
@@ -171,20 +198,29 @@ namespace TAS360.Controllers
                 documento.Estado = model.Estado;
                 documento.Titulo = model.Titulo.Trim();
                 documento.Descripcion = NullIfWhiteSpace(model.Descripcion);
+                documento.Observaciones = NullIfWhiteSpace(model.Observaciones);
+                documento.Notas = NullIfWhiteSpace(model.Notas);
+                documento.ClienteNombre = NullIfWhiteSpace(model.Cliente);
+                documento.ResponsableNombre = NullIfWhiteSpace(model.ResponsableNombre);
+                documento.ResponsablePuesto = NullIfWhiteSpace(model.ResponsablePuesto);
+                documento.LugarEmision = NullIfWhiteSpace(model.LugarEmision);
+                documento.IVA = model.IVA;
+                RecalculateTotals(documento);
                 documento.ContenidoJson = WriteClient(documento.ContenidoJson, model.Cliente);
                 documento.FechaDocumento = model.FechaEmision.Value.Date;
                 documento.UpdatedAt = DateTime.UtcNow;
                 documento.UpdatedByUserId = userId;
                 db.SaveChanges();
 
-                SafeLog("Documento editado ID: " + documento.Id + ", usuario: " + userId);
+                AuditLog("Editar documento", documento.Id, documento.Folio, "Datos generales actualizados.");
                 TempData["InfoMessage"] = "Documento actualizado correctamente.";
                 return RedirectToAction("Edit", new { id = documento.Id });
             }
             catch (Exception ex)
             {
-                SafeLog("ERROR EDIT POST ID " + model.Id + ": " + ex);
+                AuditLog("Error al editar documento", model.Id, model.Folio, null, ex);
                 FillChildren(model);
+                ViewBag.ImageMaxBytes = MaxImageBytes;
                 ViewBag.ExceptionMessage = "No fue posible actualizar el documento. " + ex.Message;
                 return View(model);
             }
@@ -197,11 +233,93 @@ namespace TAS360.Controllers
             try
             {
                 var model = BuildDocumentViewModel(id);
+                ViewBag.CanGenerate = HasPermission("Generar_Documento");
                 return model == null ? (ActionResult)HttpNotFound() : View(model);
             }
             catch (Exception ex)
             {
                 SafeLog("ERROR DETAILS ID " + id + ": " + ex);
+                return new HttpStatusCodeResult(HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpGet]
+        [AuthorizeUser("Generar_Documento")]
+        public ActionResult DocumentPdf(int id)
+        {
+            var model = BuildDocumentViewModel(id);
+            return model == null ? (ActionResult)HttpNotFound() : View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [AuthorizeUser("Generar_Documento")]
+        public ActionResult GeneratePdf(int id)
+        {
+            try
+            {
+                var documento = GetActiveDocument(id);
+                if (documento == null) return HttpNotFound();
+
+                string relativeFolder = "/DocumentFiles/" + id + "/Pdf/";
+                string physicalFolder = Server.MapPath("~" + relativeFolder);
+                Directory.CreateDirectory(physicalFolder);
+                string fileName = "Documento_" + id + ".pdf";
+                string physicalPath = Path.Combine(physicalFolder, fileName);
+                string temporaryPath = physicalPath + ".tmp";
+
+                var bytes = new ActionAsPdf("DocumentPdf", new { id })
+                {
+                    PageSize = Rotativa.Options.Size.A4,
+                    PageOrientation = Rotativa.Options.Orientation.Portrait,
+                    CustomSwitches = "--margin-top 12 --margin-right 12 --margin-bottom 12 --margin-left 12 --print-media-type"
+                }.BuildFile(ControllerContext);
+
+                System.IO.File.WriteAllBytes(temporaryPath, bytes);
+                if (System.IO.File.Exists(physicalPath)) System.IO.File.Replace(temporaryPath, physicalPath, null);
+                else System.IO.File.Move(temporaryPath, physicalPath);
+
+                documento.RutaUltimoPdf = relativeFolder + fileName;
+                documento.PdfGeneratedAt = DateTime.UtcNow;
+                documento.Estado = "Generado";
+                documento.UpdatedAt = DateTime.UtcNow;
+                documento.UpdatedByUserId = GetCurrentUserId();
+                db.SaveChanges();
+
+                AuditLog("Generar PDF", documento.Id, documento.Folio, "Último PDF reemplazado: " + documento.RutaUltimoPdf);
+                TempData["InfoMessage"] = "PDF generado correctamente.";
+                return RedirectToAction("Details", new { id });
+            }
+            catch (Exception ex)
+            {
+                AuditLog("Error al generar PDF", id, GetDocumentFolio(id), null, ex);
+                TempData["ErrorMessage"] = "No fue posible generar el PDF.";
+                return RedirectToAction("Details", new { id });
+            }
+        }
+
+        [HttpGet]
+        [AuthorizeUser("Mostrar_Documentos")]
+        public ActionResult DownloadPdf(int id)
+        {
+            try
+            {
+                var documento = db.Documento.AsNoTracking().FirstOrDefault(x => x.Id == id && x.Activo);
+                if (documento == null) return HttpNotFound();
+                if (string.IsNullOrWhiteSpace(documento.RutaUltimoPdf))
+                    return new HttpStatusCodeResult(HttpStatusCode.NotFound, "El documento todavía no tiene PDF.");
+
+                string allowedFolder = Path.GetFullPath(Server.MapPath("~/DocumentFiles/" + id + "/Pdf/"));
+                string physicalPath = Path.GetFullPath(Server.MapPath("~" + documento.RutaUltimoPdf));
+                if (!physicalPath.StartsWith(allowedFolder, StringComparison.OrdinalIgnoreCase) || !System.IO.File.Exists(physicalPath))
+                    return HttpNotFound();
+
+                AuditLog("Descargar PDF", id, documento.Folio, documento.RutaUltimoPdf);
+                return File(physicalPath, "application/pdf", SafePdfFileName(documento.Folio));
+            }
+            catch (Exception ex)
+            {
+                AuditLog("Error al descargar PDF", id, GetDocumentFolio(id), null, ex);
                 return new HttpStatusCodeResult(HttpStatusCode.InternalServerError);
             }
         }
@@ -253,13 +371,13 @@ namespace TAS360.Controllers
                     transaction.Commit();
                 }
 
-                SafeLog("Documento eliminado logicamente ID: " + id + ", usuario: " + userId);
+                AuditLog("Eliminar documento", id, documento.Folio, "Eliminación lógica; archivos físicos conservados.");
                 TempData["InfoMessage"] = "Documento eliminado lógicamente.";
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
-                SafeLog("ERROR DELETE ID " + id + ": " + ex);
+                AuditLog("Error al eliminar documento", id, GetDocumentFolio(id), null, ex);
                 TempData["ErrorMessage"] = "No fue posible eliminar el documento.";
                 return RedirectToAction("Delete", new { id });
             }
@@ -303,12 +421,12 @@ namespace TAS360.Controllers
                 entity.UpdatedAt = now;
                 entity.UpdatedByUserId = userId;
                 db.SaveChanges();
-                SafeLog("Seccion guardada ID: " + entity.Id + ", documento: " + model.DocumentoId);
+                AuditLog("Guardar sección", model.DocumentoId, GetDocumentFolio(model.DocumentoId), "SeccionId: " + entity.Id + "; Orden: " + entity.Orden);
                 return RedirectToEdit(model.DocumentoId, "Sección guardada correctamente.");
             }
             catch (Exception ex)
             {
-                SafeLog("ERROR SAVE SECTION: " + ex);
+                AuditLog("Error al guardar sección", model.DocumentoId, GetDocumentFolio(model.DocumentoId), null, ex);
                 return RedirectWithError(model.DocumentoId, "No fue posible guardar la sección. Verifique que el orden no esté repetido.");
             }
         }
@@ -327,7 +445,7 @@ namespace TAS360.Controllers
                 SetInactive(new[] { section }, userId, now);
                 SetInactive(db.DocumentoSeccionImagen.Where(x => x.DocumentoSeccionId == id && x.Activo).ToList(), userId, now);
                 db.SaveChanges();
-                SafeLog("Seccion eliminada logicamente ID: " + id);
+                AuditLog("Eliminar sección", documentoId, GetDocumentFolio(documentoId), "SeccionId: " + id + "; eliminación lógica.");
                 return RedirectToEdit(documentoId, "Sección eliminada lógicamente.");
             }
             catch (Exception ex)
@@ -378,12 +496,14 @@ namespace TAS360.Controllers
                 entity.UpdatedAt = now;
                 entity.UpdatedByUserId = userId;
                 db.SaveChanges();
-                SafeLog("Concepto guardado ID: " + entity.Id + ", documento: " + model.DocumentoId);
+                RecalculateTotals(GetActiveDocument(model.DocumentoId));
+                db.SaveChanges();
+                AuditLog("Guardar concepto", model.DocumentoId, GetDocumentFolio(model.DocumentoId), "ConceptoId: " + entity.Id);
                 return RedirectToEdit(model.DocumentoId, "Concepto guardado correctamente.");
             }
             catch (Exception ex)
             {
-                SafeLog("ERROR SAVE CONCEPT: " + ex);
+                AuditLog("Error al guardar concepto", model.DocumentoId, GetDocumentFolio(model.DocumentoId), null, ex);
                 return RedirectWithError(model.DocumentoId, "No fue posible guardar el concepto.");
             }
         }
@@ -436,6 +556,7 @@ namespace TAS360.Controllers
                     if (entity == null) return HttpNotFound();
                 }
 
+                entity.Orden = model.Orden;
                 entity.TipoFirma = model.TipoFirma.Trim();
                 entity.NombreFirmante = model.NombreFirmante.Trim();
                 entity.CargoFirmante = NullIfWhiteSpace(model.CargoFirmante);
@@ -443,12 +564,12 @@ namespace TAS360.Controllers
                 entity.UpdatedAt = now;
                 entity.UpdatedByUserId = userId;
                 db.SaveChanges();
-                SafeLog("Firma guardada ID: " + entity.Id + ", documento: " + model.DocumentoId);
+                AuditLog("Guardar firma", model.DocumentoId, GetDocumentFolio(model.DocumentoId), "FirmaId: " + entity.Id);
                 return RedirectToEdit(model.DocumentoId, "Firma guardada correctamente.");
             }
             catch (Exception ex)
             {
-                SafeLog("ERROR SAVE SIGNATURE: " + ex);
+                AuditLog("Error al guardar firma", model.DocumentoId, GetDocumentFolio(model.DocumentoId), null, ex);
                 return RedirectWithError(model.DocumentoId, "No fue posible guardar la firma.");
             }
         }
@@ -534,14 +655,14 @@ namespace TAS360.Controllers
                     transaction.Commit();
                 }
 
-                SafeLog(files.Count + " imagen(es) cargadas en seccion: " + sectionId);
+                AuditLog("Cargar imágenes", documentoId, GetDocumentFolio(documentoId), files.Count + " imagen(es); SeccionId: " + sectionId);
                 return RedirectToEdit(documentoId, "Imágenes cargadas correctamente.");
             }
             catch (Exception ex)
             {
                 foreach (string file in savedFiles)
                     try { if (System.IO.File.Exists(file)) System.IO.File.Delete(file); } catch { }
-                SafeLog("ERROR UPLOAD IMAGES: " + ex);
+                AuditLog("Error al cargar imágenes", documentoId > 0 ? (int?)documentoId : null, GetDocumentFolio(documentoId), null, ex);
                 return RedirectWithError(documentoId, "No fue posible guardar las imágenes.");
             }
         }
@@ -558,13 +679,42 @@ namespace TAS360.Controllers
                 if (image == null || section == null || GetActiveDocument(documentoId) == null) return HttpNotFound();
                 SetInactive(new[] { image }, GetCurrentUserId(), DateTime.UtcNow);
                 db.SaveChanges();
-                SafeLog("Imagen eliminada logicamente ID: " + id + ". El archivo fisico se conserva.");
+                AuditLog("Retirar imagen", documentoId, GetDocumentFolio(documentoId), "ImagenId: " + id + "; archivo físico conservado.");
                 return RedirectToEdit(documentoId, "Imagen retirada del documento; el archivo físico se conservó.");
             }
             catch (Exception ex)
             {
                 SafeLog("ERROR DELETE IMAGE: " + ex);
                 return RedirectWithError(documentoId, "No fue posible retirar la imagen.");
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [AuthorizeUser("Editar_Documento")]
+        public ActionResult SaveImageMetadata(int id, int documentoId, int orden, string textoAlternativo)
+        {
+            try
+            {
+                if (orden < 0) return RedirectWithError(documentoId, "El orden de la imagen no puede ser negativo.");
+                if (!string.IsNullOrWhiteSpace(textoAlternativo) && textoAlternativo.Trim().Length > 250)
+                    return RedirectWithError(documentoId, "El texto alternativo admite máximo 250 caracteres.");
+                var image = db.DocumentoSeccionImagen.FirstOrDefault(x => x.Id == id && x.Activo);
+                var section = image == null ? null : db.DocumentoSeccion.FirstOrDefault(x => x.Id == image.DocumentoSeccionId && x.DocumentoId == documentoId && x.Activo);
+                if (image == null || section == null || GetActiveDocument(documentoId) == null) return HttpNotFound();
+
+                image.Orden = orden;
+                image.TextoAlternativo = NullIfWhiteSpace(textoAlternativo);
+                image.UpdatedAt = DateTime.UtcNow;
+                image.UpdatedByUserId = GetCurrentUserId();
+                db.SaveChanges();
+                AuditLog("Ordenar imagen", documentoId, GetDocumentFolio(documentoId), "ImagenId: " + id + "; Orden: " + orden);
+                return RedirectToEdit(documentoId, "Imagen actualizada correctamente.");
+            }
+            catch (Exception ex)
+            {
+                AuditLog("Error al actualizar imagen", documentoId, GetDocumentFolio(documentoId), "ImagenId: " + id, ex);
+                return RedirectWithError(documentoId, "No fue posible actualizar la imagen.");
             }
         }
 
@@ -581,8 +731,18 @@ namespace TAS360.Controllers
                 Estado = documento.Estado,
                 Titulo = documento.Titulo,
                 Descripcion = documento.Descripcion,
-                Cliente = ReadClient(documento.ContenidoJson),
-                FechaEmision = documento.FechaDocumento
+                Observaciones = documento.Observaciones,
+                Notas = documento.Notas,
+                Cliente = documento.ClienteNombre ?? ReadClient(documento.ContenidoJson),
+                ResponsableNombre = documento.ResponsableNombre,
+                ResponsablePuesto = documento.ResponsablePuesto,
+                LugarEmision = documento.LugarEmision,
+                FechaEmision = documento.FechaDocumento,
+                SubTotal = documento.SubTotal,
+                IVA = documento.IVA,
+                Total = documento.Total,
+                RutaUltimoPdf = documento.RutaUltimoPdf,
+                PdfGeneratedAt = documento.PdfGeneratedAt
             };
             FillChildren(model);
             return model;
@@ -620,10 +780,10 @@ namespace TAS360.Controllers
                 }).ToList();
 
             model.Firmas = db.DocumentoFirma.AsNoTracking()
-                .Where(x => x.DocumentoId == model.Id && x.Activo).OrderBy(x => x.Id)
+                .Where(x => x.DocumentoId == model.Id && x.Activo).OrderBy(x => x.Orden).ThenBy(x => x.Id)
                 .Select(x => new DocumentoFirmaViewModel
                 {
-                    Id = x.Id, DocumentoId = x.DocumentoId, TipoFirma = x.TipoFirma,
+                    Id = x.Id, DocumentoId = x.DocumentoId, Orden = x.Orden, TipoFirma = x.TipoFirma,
                     NombreFirmante = x.NombreFirmante, CargoFirmante = x.CargoFirmante, FechaFirma = x.FechaFirma
                 }).ToList();
         }
@@ -648,9 +808,9 @@ namespace TAS360.Controllers
         {
             string extension = Path.GetExtension(file.FileName);
             if (string.IsNullOrWhiteSpace(extension) || !ImageExtensions.Contains(extension))
-                return "Formato no permitido. Use JPG, JPEG, PNG, GIF o WEBP.";
+                return "Formato no permitido. Use JPG, JPEG o PNG.";
             if (file.ContentLength > MaxImageBytes)
-                return "Cada imagen debe pesar como máximo 5 MB.";
+                return "Cada imagen debe pesar como máximo " + Math.Ceiling(MaxImageBytes / 1048576m) + " MB.";
             if (string.IsNullOrWhiteSpace(file.ContentType) || !file.ContentType.StartsWith("image/", StringComparison.OrdinalIgnoreCase))
                 return "El archivo seleccionado no tiene un tipo MIME de imagen válido.";
             return null;
@@ -667,12 +827,17 @@ namespace TAS360.Controllers
                 else if (entity is DocumentoFirma) SetInactive(new[] { (DocumentoFirma)entity }, userId, now);
                 else return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
                 db.SaveChanges();
-                SafeLog(entityName + " eliminado logicamente del documento: " + documentoId);
+                if (entity is DocumentoConcepto)
+                {
+                    RecalculateTotals(GetActiveDocument(documentoId));
+                    db.SaveChanges();
+                }
+                AuditLog("Eliminar " + entityName, documentoId, GetDocumentFolio(documentoId), "Eliminación lógica.");
                 return RedirectToEdit(documentoId, entityName + " eliminado lógicamente.");
             }
             catch (Exception ex)
             {
-                SafeLog("ERROR DELETE " + entityName.ToUpperInvariant() + ": " + ex);
+                AuditLog("Error al eliminar " + entityName, documentoId, GetDocumentFolio(documentoId), null, ex);
                 return RedirectWithError(documentoId, "No fue posible eliminar el registro.");
             }
         }
@@ -705,9 +870,26 @@ namespace TAS360.Controllers
 
         private void SafeLog(string message)
         {
-            string userContext = GetLogUserContext();
-            try { new Log(Server.MapPath("~/Logs/Documentos/")).Add(userContext + " - " + message); }
-            catch { System.Diagnostics.Trace.TraceError(userContext + " - " + message); }
+            AuditLog(message, null, null);
+        }
+
+        private void AuditLog(string action, int? documentoId, string folio, string detail = null, Exception exception = null)
+        {
+            User user = null;
+            string ip = null;
+            try { user = Session == null ? null : Session["User"] as User; } catch { }
+            try { ip = Request == null ? null : Request.UserHostAddress; } catch { }
+            string entry = "FechaUtc: " + DateTime.UtcNow.ToString("o") +
+                " | UsuarioId: " + (user == null ? "N/D" : user.id.ToString()) +
+                " | NombreUsuario: " + (user == null ? "N/D" : user.nombre) +
+                " | IP: " + (string.IsNullOrWhiteSpace(ip) ? "N/D" : ip) +
+                " | Acción: " + action +
+                " | DocumentoId: " + (documentoId.HasValue ? documentoId.Value.ToString() : "N/D") +
+                " | Folio: " + (string.IsNullOrWhiteSpace(folio) ? "N/D" : folio) +
+                (string.IsNullOrWhiteSpace(detail) ? "" : " | Detalle: " + detail) +
+                (exception == null ? "" : " | Excepción: " + exception);
+            try { new Log(Server.MapPath("~/Logs/Documentos/")).Add(entry); }
+            catch { System.Diagnostics.Trace.TraceError(entry); }
         }
 
         private bool HasPermission(string operationName)
@@ -719,12 +901,25 @@ namespace TAS360.Controllers
                 x.Operacion.nombre == operationName);
         }
 
-        private string GetLogUserContext()
+        private void RecalculateTotals(Documento documento)
         {
-            var user = Session["User"] as User;
-            return user == null
-                ? "Usuario: sesion-no-disponible"
-                : "UsuarioId: " + user.id + ", Usuario: " + user.nombre + ", RolId: " + user.id_Roll;
+            if (documento == null) return;
+            documento.SubTotal = db.DocumentoConcepto
+                .Where(x => x.DocumentoId == documento.Id && x.Activo)
+                .Select(x => (decimal?)x.Importe).Sum() ?? 0;
+            documento.Total = documento.SubTotal + documento.IVA;
+        }
+
+        private string GetDocumentFolio(int id)
+        {
+            return db.Documento.AsNoTracking().Where(x => x.Id == id).Select(x => x.Folio).FirstOrDefault();
+        }
+
+        private static string SafePdfFileName(string folio)
+        {
+            string value = string.IsNullOrWhiteSpace(folio) ? "Documento" : folio;
+            foreach (char invalid in Path.GetInvalidFileNameChars()) value = value.Replace(invalid, '_');
+            return value + ".pdf";
         }
 
         private static string ReadClient(string contentJson)

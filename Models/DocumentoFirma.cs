@@ -13,6 +13,7 @@ namespace TAS360.Models
         public int Id { get; set; }
         public int DocumentoId { get; set; }
         public Guid SyncGuid { get; set; }
+        public int Orden { get; set; }
         public string TipoFirma { get; set; }
         public string NombreFirmante { get; set; }
         public string CargoFirmante { get; set; }

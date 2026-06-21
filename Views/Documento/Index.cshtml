@@ -73,6 +73,18 @@
                                 <span class="glyphicon glyphicon-trash"></span> Eliminar
                             </a>
                         }
+                        @if (item.HasPdf)
+                        {
+                            <a class="btn btn-xs btn-success" href="@Url.Action("DownloadPdf", new { id = item.Id })" title="Descargar último PDF"><span class="glyphicon glyphicon-download-alt"></span> PDF</a>
+                        }
+                        @if (Model.CanGenerate)
+                        {
+                            using (Html.BeginForm("GeneratePdf", "Documento", FormMethod.Post, new { style = "display:inline-block" }))
+                            {
+                                @Html.AntiForgeryToken()<input type="hidden" name="id" value="@item.Id" />
+                                <button class="btn btn-xs btn-warning" title="Generar o reemplazar PDF"><span class="glyphicon glyphicon-file"></span> Generar</button>
+                            }
+                        }
                     </td>
                 </tr>
             }

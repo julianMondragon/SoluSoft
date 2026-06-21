@@ -1,113 +1,76 @@
-# Validación funcional — CRUD Documentos Web
+# CRUD y PDF de Documentos Web
 
 ## Alcance
 
-Validación del módulo persistente Documentos en ASP.NET MVC 5, .NET Framework 4.7.2 y Entity Framework 6 Database First.
+Módulo persistente en ASP.NET MVC 5, .NET Framework 4.7.2 y Entity Framework 6 Database First. Permite administrar documentos y generar/descargar el último PDF. No incluye API móvil ni sincronización MAUI.
 
-No se incluyen generación PDF, API móvil ni sincronización MAUI.
+## Migración requerida
 
-## Seguridad
+Antes de publicar el código, ejecutar en la BD destino:
 
-El módulo utiliza `AuthorizeUser` resolviendo operaciones por nombre, para evitar depender de IDs `IDENTITY` distintos entre ambientes.
+`Backup_Database/Migraciones/Alter_Documentos_Pdf_Fields.sql`
+
+El script es incremental e idempotente; no elimina registros. Agrega metadatos de cotización, `SubTotal`, `IVA`, `Total`, ruta/fecha del último PDF y `Orden` en firmas. Después, respaldar y regenerar el EDMX con **Update Model from Database** si se vuelve a generar el modelo desde Visual Studio; los cambios del EDMX ya están incluidos en esta rama.
+
+## Datos y orden visual
+
+- `DocumentoSeccion`, `DocumentoConcepto`, `DocumentoFirma` y `DocumentoSeccionImagen` se consultan por `Orden` ascendente.
+- Se persisten descripción general, observaciones, notas, cliente, responsable, puesto, fecha y lugar de emisión.
+- El importe de cada concepto es `Cantidad × PrecioUnitario`.
+- Al guardar o retirar un concepto se recalcula `SubTotal`; `Total = SubTotal + IVA`.
+- Todos los registros visibles requieren `Activo = true`; las bajas siguen siendo lógicas y los archivos físicos se conservan.
+
+## Imágenes
+
+- Ruta física: `/DocumentFiles/{DocumentoId}/Images/`; la BD guarda sólo la ruta relativa.
+- La vista permite selección o arrastre múltiple y muestra miniaturas antes de enviar.
+- Extensiones permitidas: JPG, JPEG y PNG; además se valida MIME `image/*`.
+- El límite se configura con `DocumentImageMaxBytes` en `Web.config` (5 MB por defecto) y se valida en cliente y servidor.
+- Orden y texto alternativo pueden editarse por imagen.
+
+## PDF
+
+- `GeneratePdf` requiere `Generar_Documento`, usa Rotativa y formato A4 vertical.
+- El PDF respeta el orden de secciones, imágenes, conceptos y firmas.
+- Se guarda en `/DocumentFiles/{DocumentoId}/Pdf/Documento_{DocumentoId}.pdf`.
+- La regeneración reemplaza el mismo archivo; no se conserva historial de PDFs.
+- La BD guarda la ruta relativa en `RutaUltimoPdf` y la fecha UTC en `PdfGeneratedAt`.
+- `DownloadPdf` requiere `Mostrar_Documentos`, valida que la ruta permanezca dentro de la carpeta permitida y entrega un nombre basado en el folio.
+
+## Seguridad y logs
 
 | Acción | Operación |
 |---|---|
-| Index y Details | `Mostrar_Documentos` |
+| Index, Details y descarga | `Mostrar_Documentos` |
 | Create | `Crear_Documento` |
-| Edit y administración de secciones, imágenes, conceptos y firmas | `Editar_Documento` |
+| Edit e hijos | `Editar_Documento` |
 | Delete lógico | `Eliminar_Documento` |
+| Generación y vista interna del PDF | `Generar_Documento` |
 
-Las acciones POST incluyen `ValidateAntiForgeryToken`. El Index calcula los permisos del rol autenticado y sólo muestra los botones Crear, Editar y Eliminar autorizados. Details se muestra cuando el usuario tiene `Mostrar_Documentos`.
+Todos los POST incluyen `ValidateAntiForgeryToken`. El log existente en `/Logs/Documentos/` registra fecha UTC, ID y nombre de usuario, IP, acción, DocumentoId, folio, detalle y excepción controlada cuando aplica.
 
-## Persistencia y archivos
+## Validaciones técnicas realizadas
 
-- Todas las consultas del CRUD filtran `Activo = true`.
-- Create guarda `SyncGuid`, `CreatedAt`, `CreatedByUserId`, `UpdatedAt`, `UpdatedByUserId` y `Activo = true`.
-- Edit actualiza `UpdatedAt` y `UpdatedByUserId`.
-- Delete cambia `Activo = false` y `Estado = Eliminado`; también desactiva los hijos en una transacción.
-- Las imágenes se guardan físicamente en `/DocumentFiles/{DocumentoId}/Images/`.
-- `DocumentoSeccionImagen` conserva sólo `RutaArchivo`; `Imagen` permanece `NULL`.
-- Retirar imágenes o eliminar documentos/secciones no borra archivos físicos.
-- Sólo se elimina un archivo recién cargado si falla su propia transacción, para no dejar archivos huérfanos de una operación fallida.
-- Extensiones permitidas: JPG, JPEG, PNG, GIF y WEBP; máximo 5 MB por archivo y MIME `image/*` obligatorio.
+- Compilación MSBuild correcta; quedan seis warnings preexistentes fuera del módulo.
+- EDMX válido como XML y procesado correctamente durante la compilación.
+- `git diff --check` sin errores.
+- El script SQL usa `IF COL_LENGTH`/catálogos de SQL Server para poder repetirse y no contiene `DELETE` ni `DROP`.
+- La precompilación global ASP.NET del equipo queda bloqueada por la dependencia de diseño preexistente `System.Data.Entity.Design.AspNet.EntityDesignerBuildProvider`; no es un error de estas vistas.
+- No se ejecutó la migración ni se alteró la BD local.
 
-## Cliente y filtros
+## Checklist manual después de ejecutar la migración
 
-La tabla existente no tiene una columna `Cliente`. Para evitar otra migración, el valor se conserva dentro de `Documento.ContenidoJson` con la propiedad `Cliente`. El JSON existente se preserva al editar.
-
-Index permite combinar filtros server-side por:
-
-- folio;
-- título;
-- cliente;
-- tipo de documento;
-- estado.
-
-## Logs
-
-Se reutiliza `Log` y se escribe en `/Logs/Documentos/`. Cada entrada incluye:
-
-- ID del usuario de sesión;
-- nombre del usuario;
-- ID del rol;
-- operación o excepción controlada.
-
-Se registran creación, edición, eliminación lógica, altas/cambios/bajas de hijos, carga de imágenes y errores.
-
-## Prueba de integración ejecutada
-
-Se ejecutó el controlador compilado contra la BD local configurada por el proyecto con una sesión autenticada simulada. La prueba creó o actualizó:
-
-- Tipo: `Requerimiento`;
-- Folio: `REQ-001`;
-- Título: `Prueba módulo documentos`;
-- Cliente: `Cliente prueba NEGMON`;
-- una sección con descripción;
-- dos imágenes;
-- dos conceptos;
-- una firma.
-
-Resultado: **27 validaciones correctas, 0 errores**.
-
-Validaciones cubiertas:
-
-- campos obligatorios por DataAnnotations;
-- presencia de `AuthorizeUser` en las acciones;
-- antiforgery en todos los POST;
-- auditoría y `SyncGuid` en Create/Edit;
-- dos archivos físicos y sólo rutas relativas en BD;
-- Details con secciones ordenadas e hijos activos;
-- búsqueda combinada por los cinco criterios;
-- acciones visibles según permisos;
-- rechazo de extensión/MIME inválidos;
-- eliminación lógica y exclusión posterior del Index;
-- logs con datos del usuario autenticado.
-
-También se creó y eliminó lógicamente `REQ-DELETE-TEST` para validar Delete sin afectar `REQ-001`.
-
-## Validación técnica
-
-- Compilación MSBuild: correcta.
-- Las cinco vistas del módulo pasan el parser Razor.
-- EDMX válido y procesado durante compilación.
-- Permanecen seis warnings C# preexistentes en archivos ajenos al módulo.
-- La precompilación global de vistas sigue bloqueada por una referencia preexistente en `Views/Aditivo/VolTotalizado.cshtml` a `RepTotalizadoViewModel`.
-- El sitio IIS activo redirige correctamente a Login al intentar entrar a `/Documento/Index`; no se sustituyó ese despliegue porque apunta a `C:\Projects\Negmon` y no es un checkout Git.
-
-## Checklist manual posterior al despliegue
-
-- [ ] Publicar/ejecutar la rama sobre el sitio local IIS.
-- [ ] Iniciar sesión con un rol que tenga las cuatro operaciones del CRUD.
-- [ ] Abrir Documentos desde el menú.
-- [ ] Confirmar que `REQ-001` aparece y que los cinco filtros lo encuentran.
-- [ ] Confirmar visualmente que las acciones cambian al usar roles con permisos distintos.
-- [ ] Abrir Details y comprobar sección, dos imágenes, dos conceptos y una firma.
-- [ ] Editar datos generales y confirmar auditoría en BD.
-- [ ] Cargar varias imágenes válidas y probar tamaño/extensión inválidos.
-- [ ] Retirar una imagen y confirmar que el archivo físico permanece.
-- [ ] Eliminar lógicamente un documento desechable y confirmar que desaparece del Index.
-- [ ] Revisar `/Logs/Documentos/log_YYYY_M_D.txt`.
+- [ ] Crear una cotización y completar cliente, responsable, puesto, fecha, lugar, descripción, observaciones y notas.
+- [ ] Agregar secciones, imágenes, conceptos y firmas con órdenes fuera de secuencia; confirmar que Details y PDF los ordenan.
+- [ ] Arrastrar dos JPG/PNG juntos y revisar miniaturas antes de guardar.
+- [ ] Rechazar extensión no permitida y archivo mayor a `DocumentImageMaxBytes`.
+- [ ] Confirmar `Importe`, `SubTotal`, `IVA` y `Total` en pantalla, BD y PDF.
+- [ ] Generar PDF, descargarlo y comprobar contenido/imágenes/saltos de página.
+- [ ] Regenerar PDF y confirmar que sólo existe `Documento_{Id}.pdf`.
+- [ ] Retirar una imagen y comprobar `Activo = 0` y que el archivo físico permanece.
+- [ ] Probar accesos con y sin `Mostrar_Documentos`, `Editar_Documento` y `Generar_Documento`.
+- [ ] Revisar los campos estructurados del log para crear, editar, cargar imágenes, generar, descargar, eliminar y errores.
 
 ## Commit sugerido
 
-`fix(documentos): completar filtros permisos logs y validación funcional`
+`feat(documentos): generar y descargar último PDF con totales y orden`

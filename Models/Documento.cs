@@ -17,8 +17,19 @@ namespace TAS360.Models
         public string Estado { get; set; }
         public string Titulo { get; set; }
         public string Descripcion { get; set; }
+        public string Observaciones { get; set; }
+        public string Notas { get; set; }
+        public string ClienteNombre { get; set; }
+        public string ResponsableNombre { get; set; }
+        public string ResponsablePuesto { get; set; }
+        public string LugarEmision { get; set; }
         public Nullable<DateTime> FechaDocumento { get; set; }
         public string ContenidoJson { get; set; }
+        public decimal SubTotal { get; set; }
+        public decimal IVA { get; set; }
+        public decimal Total { get; set; }
+        public string RutaUltimoPdf { get; set; }
+        public Nullable<DateTime> PdfGeneratedAt { get; set; }
         public bool Activo { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }

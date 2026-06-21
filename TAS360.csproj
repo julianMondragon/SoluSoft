@@ -365,6 +365,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Backup_Database\dc3_negmon_final.sql" />
+    <Content Include="Backup_Database\Migraciones\Alter_Documentos_Pdf_Fields.sql" />
     <Content Include="Docs\Documentos\CRUD_Documentos_Web.md" />
     <Content Include="Backup_Database\Migraciones\Alter_Pendiente_Add_properties.sql" />
     <Content Include="Backup_Database\Migraciones\Create_Table_Pendiente_Files.sql" />
@@ -897,6 +898,7 @@
     <Content Include="Views\Documento\Edit.cshtml" />
     <Content Include="Views\Documento\Details.cshtml" />
     <Content Include="Views\Documento\Delete.cshtml" />
+    <Content Include="Views\Documento\DocumentPdf.cshtml" />
     <Content Include="Views\LSA\Index.cshtml" />
     <Content Include="Views\User\Index.cshtml" />
     <Content Include="Views\User\Edit.cshtml" />

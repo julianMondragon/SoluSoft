@@ -1,0 +1,24 @@
+@model TAS360.Models.ViewModel.Documentos.DocumentoEditViewModel
+@{ Layout = null; }
+<!DOCTYPE html>
+<html><head><meta charset="utf-8" /><style>
+    body { font-family: Arial, sans-serif; color:#222; font-size:11px; line-height:1.35; }
+    .header { border-bottom:3px solid #ef7d00; padding-bottom:8px; margin-bottom:14px; }
+    .logo { width:150px; } h1 { font-size:20px; margin:5px 0; color:#174f78; } h2 { font-size:15px; color:#174f78; border-bottom:1px solid #ccc; padding-bottom:3px; }
+    .meta { width:100%; border-collapse:collapse; } .meta td { padding:3px 7px; border:1px solid #ddd; }
+    .section, .signature { page-break-inside:avoid; } .section-image { max-width:100%; max-height:410px; margin:6px auto; display:block; }
+    table.items { width:100%; border-collapse:collapse; margin-top:8px; } .items th { background:#174f78; color:#fff; } .items th,.items td { border:1px solid #bbb; padding:5px; }
+    .number { text-align:right; white-space:nowrap; } .totals { width:42%; margin-left:auto; margin-top:8px; } .totals td { padding:4px 7px; border-bottom:1px solid #ccc; }
+    .signatures { width:100%; display:table; table-layout:fixed; margin-top:28px; } .signature { display:table-cell; text-align:center; padding:15px; } .line { border-top:1px solid #333; padding-top:5px; margin-top:38px; }
+    .preserve { white-space:pre-wrap; } .footer { color:#777; font-size:9px; text-align:center; margin-top:20px; }
+</style></head><body>
+    <div class="header"><img class="logo" src="@Url.Content("~/Content/img/Negmon-logo.jpeg")" /><h1>@Model.Titulo</h1></div>
+    <table class="meta"><tr><td><strong>Folio:</strong> @Model.Folio</td><td><strong>Tipo:</strong> @Model.TipoDocumento</td></tr><tr><td><strong>Fecha de emisión:</strong> @Model.FechaEmision.Value.ToString("dd/MM/yyyy")</td><td><strong>Lugar:</strong> @Model.LugarEmision</td></tr><tr><td><strong>Cliente:</strong> @Model.Cliente</td><td><strong>Responsable:</strong> @Model.ResponsableNombre @Model.ResponsablePuesto</td></tr></table>
+    @if (!string.IsNullOrWhiteSpace(Model.Descripcion)) { <h2>Descripción general</h2><div class="preserve">@Model.Descripcion</div> }
+    @foreach (var seccion in Model.Secciones) { <div class="section"><h2>@seccion.Orden. @seccion.Titulo</h2><div class="preserve">@seccion.Contenido</div>@foreach (var image in seccion.Imagenes) { <img class="section-image" src="@Url.Content("~" + image.RutaArchivo)" alt="@image.TextoAlternativo" /> }</div> }
+    @if (Model.Conceptos.Any()) { <h2>Conceptos</h2><table class="items"><thead><tr><th>Concepto</th><th>Descripción</th><th>Cantidad</th><th>Precio unitario</th><th>Importe</th></tr></thead><tbody>@foreach (var item in Model.Conceptos) { <tr><td>@item.Clave</td><td>@item.Descripcion</td><td class="number">@item.Cantidad.ToString("N2") @item.Unidad</td><td class="number">@item.PrecioUnitario.ToString("C")</td><td class="number">@item.Importe.ToString("C")</td></tr> }</tbody></table><table class="totals"><tr><td>Subtotal</td><td class="number">@Model.SubTotal.ToString("C")</td></tr><tr><td>IVA</td><td class="number">@Model.IVA.ToString("C")</td></tr><tr><td><strong>Total</strong></td><td class="number"><strong>@Model.Total.ToString("C")</strong></td></tr></table> }
+    @if (!string.IsNullOrWhiteSpace(Model.Observaciones)) { <h2>Observaciones</h2><div class="preserve">@Model.Observaciones</div> }
+    @if (!string.IsNullOrWhiteSpace(Model.Notas)) { <h2>Notas</h2><div class="preserve">@Model.Notas</div> }
+    @if (Model.Firmas.Any()) { <div class="signatures">@foreach (var signature in Model.Firmas) { <div class="signature"><div class="line"><strong>@signature.NombreFirmante</strong><br />@signature.CargoFirmante<br />@signature.TipoFirma</div></div> }</div> }
+    <div class="footer">NEGMON · Documento generado en UTC @DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm")</div>
+</body></html>
