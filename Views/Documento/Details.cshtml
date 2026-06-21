@@ -7,6 +7,7 @@
 <div class="container">
     <div class="page-header"><h2>@Model.Titulo <small>@Model.Folio</small></h2></div>
     <p><strong>Tipo:</strong> @Model.TipoDocumento &nbsp; <strong>Estado:</strong> @Model.Estado &nbsp; <strong>Emisión:</strong> @Model.FechaEmision.Value.ToString("dd/MM/yyyy")</p>
+    @if (!string.IsNullOrWhiteSpace(Model.Cliente)) { <p><strong>Cliente:</strong> @Model.Cliente</p> }
     @if (!string.IsNullOrWhiteSpace(Model.Descripcion)) { <p>@Model.Descripcion</p> }
     <p><a class="btn btn-default" href="@Url.Action("Index")">Volver</a> <a class="btn btn-primary" href="@Url.Action("Edit", new { id = Model.Id })">Editar</a></p>
 

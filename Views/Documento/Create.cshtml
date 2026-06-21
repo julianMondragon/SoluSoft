@@ -28,6 +28,8 @@
                 <div class="form-group">
                     @Html.LabelFor(m => m.FechaEmision, new { @class = "col-sm-2 control-label" })
                     <div class="col-sm-4">@Html.TextBoxFor(m => m.FechaEmision, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" }) @Html.ValidationMessageFor(m => m.FechaEmision, "", new { @class = "text-danger" })</div>
+                    @Html.LabelFor(m => m.Cliente, new { @class = "col-sm-2 control-label" })
+                    <div class="col-sm-4">@Html.TextBoxFor(m => m.Cliente, new { @class = "form-control", maxlength = "250" }) @Html.ValidationMessageFor(m => m.Cliente, "", new { @class = "text-danger" })</div>
                 </div>
                 <div class="form-group">
                     @Html.LabelFor(m => m.Descripcion, new { @class = "col-sm-2 control-label" })

@@ -365,7 +365,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Backup_Database\dc3_negmon_final.sql" />
-    <Content Include="Backup_Database\Migraciones\Add_Documentos_Administrar_Operacion.sql" />
+    <Content Include="Docs\Documentos\CRUD_Documentos_Web.md" />
     <Content Include="Backup_Database\Migraciones\Alter_Pendiente_Add_properties.sql" />
     <Content Include="Backup_Database\Migraciones\Create_Table_Pendiente_Files.sql" />
     <Content Include="Backup_Database\Migraciones\Create_Table_Pendiente_Record_Status.sql" />

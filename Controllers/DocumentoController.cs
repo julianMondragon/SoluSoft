@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using Newtonsoft.Json.Linq;
 using TAS360.Filters;
 using TAS360.Models;
 using TAS360.Models.ViewModel.Documentos;
@@ -22,32 +23,55 @@ namespace TAS360.Controllers
 
         [HttpGet]
         [AuthorizeUser("Mostrar_Documentos")]
-        public ActionResult Index()
+        public ActionResult Index(string folio, string titulo, string cliente, string tipoDocumento, string estado)
         {
             try
             {
-                var documentos = db.Documento.AsNoTracking()
-                    .Where(x => x.Activo)
-                    .OrderByDescending(x => x.UpdatedAt)
-                    .Select(x => new DocumentoListItemViewModel
+                var query = db.Documento.AsNoTracking().Where(x => x.Activo);
+
+                folio = NullIfWhiteSpace(folio);
+                titulo = NullIfWhiteSpace(titulo);
+                cliente = NullIfWhiteSpace(cliente);
+                tipoDocumento = NullIfWhiteSpace(tipoDocumento);
+                estado = NullIfWhiteSpace(estado);
+
+                if (folio != null) query = query.Where(x => x.Folio.Contains(folio));
+                if (titulo != null) query = query.Where(x => x.Titulo.Contains(titulo));
+                if (cliente != null) query = query.Where(x => x.ContenidoJson != null && x.ContenidoJson.Contains(cliente));
+                if (tipoDocumento != null) query = query.Where(x => x.TipoDocumento == tipoDocumento);
+                if (estado != null) query = query.Where(x => x.Estado == estado);
+
+                var rows = query.OrderByDescending(x => x.UpdatedAt).ToList();
+                var model = new DocumentoIndexViewModel
+                {
+                    Folio = folio,
+                    Titulo = titulo,
+                    Cliente = cliente,
+                    TipoDocumento = tipoDocumento,
+                    Estado = estado,
+                    CanCreate = HasPermission("Crear_Documento"),
+                    CanEdit = HasPermission("Editar_Documento"),
+                    CanDelete = HasPermission("Eliminar_Documento"),
+                    Documentos = rows.Select(x => new DocumentoListItemViewModel
                     {
                         Id = x.Id,
                         Folio = x.Folio,
                         TipoDocumento = x.TipoDocumento,
                         Estado = x.Estado,
                         Titulo = x.Titulo,
+                        Cliente = ReadClient(x.ContenidoJson),
                         FechaEmision = x.FechaDocumento ?? DateTime.MinValue,
                         UpdatedAt = x.UpdatedAt
-                    })
-                    .ToList();
+                    }).ToList()
+                };
 
-                return View(documentos);
+                return View(model);
             }
             catch (Exception ex)
             {
                 SafeLog("ERROR INDEX: " + ex);
                 ViewBag.ExceptionMessage = "No fue posible consultar los documentos.";
-                return View(new List<DocumentoListItemViewModel>());
+                return View(new DocumentoIndexViewModel());
             }
         }
 
@@ -84,6 +108,7 @@ namespace TAS360.Controllers
                     Estado = "Borrador",
                     Titulo = model.Titulo.Trim(),
                     Descripcion = NullIfWhiteSpace(model.Descripcion),
+                    ContenidoJson = WriteClient(null, model.Cliente),
                     FechaDocumento = model.FechaEmision.Value.Date,
                     Activo = true,
                     CreatedAt = now,
@@ -146,6 +171,7 @@ namespace TAS360.Controllers
                 documento.Estado = model.Estado;
                 documento.Titulo = model.Titulo.Trim();
                 documento.Descripcion = NullIfWhiteSpace(model.Descripcion);
+                documento.ContenidoJson = WriteClient(documento.ContenidoJson, model.Cliente);
                 documento.FechaDocumento = model.FechaEmision.Value.Date;
                 documento.UpdatedAt = DateTime.UtcNow;
                 documento.UpdatedByUserId = userId;
@@ -241,7 +267,7 @@ namespace TAS360.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [AuthorizeUser("Administrar_Documentos")]
+        [AuthorizeUser("Editar_Documento")]
         public ActionResult SaveSection(DocumentoSeccionViewModel model)
         {
             try
@@ -289,7 +315,7 @@ namespace TAS360.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [AuthorizeUser("Administrar_Documentos")]
+        [AuthorizeUser("Editar_Documento")]
         public ActionResult DeleteSection(int id, int documentoId)
         {
             try
@@ -313,7 +339,7 @@ namespace TAS360.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [AuthorizeUser("Administrar_Documentos")]
+        [AuthorizeUser("Editar_Documento")]
         public ActionResult SaveConcept(DocumentoConceptoViewModel model)
         {
             try
@@ -364,7 +390,7 @@ namespace TAS360.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [AuthorizeUser("Administrar_Documentos")]
+        [AuthorizeUser("Editar_Documento")]
         public ActionResult DeleteConcept(int id, int documentoId)
         {
             try
@@ -381,7 +407,7 @@ namespace TAS360.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [AuthorizeUser("Administrar_Documentos")]
+        [AuthorizeUser("Editar_Documento")]
         public ActionResult SaveSignature(DocumentoFirmaViewModel model)
         {
             try
@@ -429,7 +455,7 @@ namespace TAS360.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [AuthorizeUser("Administrar_Documentos")]
+        [AuthorizeUser("Editar_Documento")]
         public ActionResult DeleteSignature(int id, int documentoId)
         {
             try
@@ -446,7 +472,7 @@ namespace TAS360.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [AuthorizeUser("Administrar_Documentos")]
+        [AuthorizeUser("Editar_Documento")]
         public ActionResult UploadImages(int sectionId, IEnumerable<HttpPostedFileBase> images)
         {
             var savedFiles = new List<string>();
@@ -522,7 +548,7 @@ namespace TAS360.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [AuthorizeUser("Administrar_Documentos")]
+        [AuthorizeUser("Editar_Documento")]
         public ActionResult DeleteImage(int id, int documentoId)
         {
             try
@@ -555,6 +581,7 @@ namespace TAS360.Controllers
                 Estado = documento.Estado,
                 Titulo = documento.Titulo,
                 Descripcion = documento.Descripcion,
+                Cliente = ReadClient(documento.ContenidoJson),
                 FechaEmision = documento.FechaDocumento
             };
             FillChildren(model);
@@ -678,8 +705,45 @@ namespace TAS360.Controllers
 
         private void SafeLog(string message)
         {
-            try { new Log(Server.MapPath("~/Logs/Documentos/")).Add(message); }
-            catch { System.Diagnostics.Trace.TraceError(message); }
+            string userContext = GetLogUserContext();
+            try { new Log(Server.MapPath("~/Logs/Documentos/")).Add(userContext + " - " + message); }
+            catch { System.Diagnostics.Trace.TraceError(userContext + " - " + message); }
+        }
+
+        private bool HasPermission(string operationName)
+        {
+            var user = Session["User"] as User;
+            if (user == null || !user.id_Roll.HasValue) return false;
+
+            return db.Roll_Operacion.Any(x => x.id_Roll == user.id_Roll &&
+                x.Operacion.nombre == operationName);
+        }
+
+        private string GetLogUserContext()
+        {
+            var user = Session["User"] as User;
+            return user == null
+                ? "Usuario: sesion-no-disponible"
+                : "UsuarioId: " + user.id + ", Usuario: " + user.nombre + ", RolId: " + user.id_Roll;
+        }
+
+        private static string ReadClient(string contentJson)
+        {
+            if (string.IsNullOrWhiteSpace(contentJson)) return null;
+            try { return (string)JObject.Parse(contentJson)["Cliente"]; }
+            catch { return null; }
+        }
+
+        private static string WriteClient(string contentJson, string client)
+        {
+            JObject metadata;
+            try { metadata = string.IsNullOrWhiteSpace(contentJson) ? new JObject() : JObject.Parse(contentJson); }
+            catch { metadata = new JObject(); }
+
+            string normalizedClient = NullIfWhiteSpace(client);
+            if (normalizedClient == null) metadata.Remove("Cliente");
+            else metadata["Cliente"] = normalizedClient;
+            return metadata.ToString(Newtonsoft.Json.Formatting.None);
         }
 
         private static string NullIfWhiteSpace(string value)

@@ -5,6 +5,27 @@ using System.Web.Mvc;
 
 namespace TAS360.Models.ViewModel.Documentos
 {
+    public class DocumentoIndexViewModel
+    {
+        public DocumentoIndexViewModel()
+        {
+            Documentos = new List<DocumentoListItemViewModel>();
+        }
+
+        public IList<DocumentoListItemViewModel> Documentos { get; set; }
+        public string Folio { get; set; }
+        public string Titulo { get; set; }
+        public string Cliente { get; set; }
+        public string TipoDocumento { get; set; }
+        public string Estado { get; set; }
+        public bool CanCreate { get; set; }
+        public bool CanEdit { get; set; }
+        public bool CanDelete { get; set; }
+
+        public IEnumerable<SelectListItem> TiposDocumento { get { return DocumentoCatalogos.TiposDocumento(); } }
+        public IEnumerable<SelectListItem> EstadosDocumento { get { return DocumentoCatalogos.EstadosDocumento(); } }
+    }
+
     public class DocumentoListItemViewModel
     {
         public int Id { get; set; }
@@ -12,6 +33,7 @@ namespace TAS360.Models.ViewModel.Documentos
         public string TipoDocumento { get; set; }
         public string Estado { get; set; }
         public string Titulo { get; set; }
+        public string Cliente { get; set; }
         public DateTime FechaEmision { get; set; }
         public DateTime UpdatedAt { get; set; }
     }
@@ -46,6 +68,10 @@ namespace TAS360.Models.ViewModel.Documentos
         [Display(Name = "Descripción")]
         public string Descripcion { get; set; }
 
+        [StringLength(250)]
+        [Display(Name = "Cliente")]
+        public string Cliente { get; set; }
+
         [Required(ErrorMessage = "La fecha de emisión es obligatoria.")]
         [DataType(DataType.Date)]
         [Display(Name = "Fecha de emisión")]
@@ -63,13 +89,7 @@ namespace TAS360.Models.ViewModel.Documentos
         {
             get
             {
-                return new[]
-                {
-                    new SelectListItem { Value = "ReporteServicio", Text = "Reporte de servicio" },
-                    new SelectListItem { Value = "Cotizacion", Text = "Cotización" },
-                    new SelectListItem { Value = "Requerimiento", Text = "Requerimiento" },
-                    new SelectListItem { Value = "DocumentoGeneral", Text = "Documento general" }
-                };
+                return DocumentoCatalogos.TiposDocumento();
             }
         }
 
@@ -77,12 +97,7 @@ namespace TAS360.Models.ViewModel.Documentos
         {
             get
             {
-                return new[]
-                {
-                    new SelectListItem { Value = "Borrador", Text = "Borrador" },
-                    new SelectListItem { Value = "Generado", Text = "Generado" },
-                    new SelectListItem { Value = "Cancelado", Text = "Cancelado" }
-                };
+                return DocumentoCatalogos.EstadosDocumento();
             }
         }
     }
@@ -170,5 +185,29 @@ namespace TAS360.Models.ViewModel.Documentos
         [DataType(DataType.DateTime)]
         [Display(Name = "Fecha de firma")]
         public DateTime? FechaFirma { get; set; }
+    }
+
+    internal static class DocumentoCatalogos
+    {
+        public static IEnumerable<SelectListItem> TiposDocumento()
+        {
+            return new[]
+            {
+                new SelectListItem { Value = "ReporteServicio", Text = "Reporte de servicio" },
+                new SelectListItem { Value = "Cotizacion", Text = "Cotización" },
+                new SelectListItem { Value = "Requerimiento", Text = "Requerimiento" },
+                new SelectListItem { Value = "DocumentoGeneral", Text = "Documento general" }
+            };
+        }
+
+        public static IEnumerable<SelectListItem> EstadosDocumento()
+        {
+            return new[]
+            {
+                new SelectListItem { Value = "Borrador", Text = "Borrador" },
+                new SelectListItem { Value = "Generado", Text = "Generado" },
+                new SelectListItem { Value = "Cancelado", Text = "Cancelado" }
+            };
+        }
     }
 }
