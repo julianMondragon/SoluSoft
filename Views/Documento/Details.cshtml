@@ -1,0 +1,41 @@
+@model TAS360.Models.ViewModel.Documentos.DocumentoEditViewModel
+@{
+    ViewBag.Title = "Detalle de documento";
+    Layout = "~/Views/Shared/_Layout3.cshtml";
+}
+<div class="container">
+    <div class="page-header"><h2>@Model.Titulo <small>@Model.Folio</small></h2></div>
+    @if (TempData["InfoMessage"] != null) { <div class="alert alert-success">@TempData["InfoMessage"]</div> }
+    @if (TempData["ErrorMessage"] != null) { <div class="alert alert-danger">@TempData["ErrorMessage"]</div> }
+    <p><strong>Tipo:</strong> @Model.TipoDocumento &nbsp; <strong>Estado:</strong> @Model.Estado &nbsp; <strong>Emisión:</strong> @Model.FechaEmision.Value.ToString("dd/MM/yyyy")</p>
+    @if (!string.IsNullOrWhiteSpace(Model.LugarEmision)) { <p><strong>Lugar:</strong> @Model.LugarEmision</p> }
+    @if (!string.IsNullOrWhiteSpace(Model.Cliente)) { <p><strong>Cliente:</strong> @Model.Cliente</p> }
+    @if (!string.IsNullOrWhiteSpace(Model.ResponsableNombre)) { <p><strong>Responsable:</strong> @Model.ResponsableNombre @Model.ResponsablePuesto</p> }
+    @if (!string.IsNullOrWhiteSpace(Model.Descripcion)) { <p style="white-space:pre-wrap">@Model.Descripcion</p> }
+    <p>
+        <a class="btn btn-default" href="@Url.Action("Index")">Volver</a>
+        <a class="btn btn-primary" href="@Url.Action("Edit", new { id = Model.Id })">Editar</a>
+        @if ((bool)ViewBag.CanGenerate) {
+            using (Html.BeginForm("GeneratePdf", "Documento", FormMethod.Post, new { style = "display:inline-block" })) {
+                @Html.AntiForgeryToken()<input type="hidden" name="id" value="@Model.Id" />
+                <button class="btn btn-warning"><span class="glyphicon glyphicon-file"></span> Generar PDF</button>
+            }
+        }
+        @if (Model.HasPdf) { <a class="btn btn-success" href="@Url.Action("DownloadPdf", new { id = Model.Id })"><span class="glyphicon glyphicon-download-alt"></span> Descargar último PDF</a> }
+    </p>
+    <h3>Secciones</h3>
+    @foreach (var seccion in Model.Secciones) {
+        <div class="panel panel-default"><div class="panel-heading"><strong>@seccion.Orden. @seccion.Titulo</strong></div><div class="panel-body">
+            <p style="white-space:pre-wrap">@seccion.Contenido</p>
+            <div class="row">@foreach (var image in seccion.Imagenes) { <div class="col-sm-3"><img class="img-responsive img-thumbnail" src="@Url.Content("~" + image.RutaArchivo)" alt="@image.TextoAlternativo" /></div> }</div>
+        </div></div>
+    }
+    <h3>Conceptos</h3>
+    <div class="table-responsive"><table class="table table-bordered table-striped"><thead><tr><th>Orden</th><th>Clave</th><th>Descripción</th><th>Unidad</th><th>Cantidad</th><th>P. unitario</th><th>Importe</th></tr></thead><tbody>
+        @foreach (var item in Model.Conceptos) { <tr><td>@item.Orden</td><td>@item.Clave</td><td>@item.Descripcion</td><td>@item.Unidad</td><td>@item.Cantidad</td><td>@item.PrecioUnitario.ToString("C")</td><td>@item.Importe.ToString("C")</td></tr> }
+    </tbody><tfoot><tr><th colspan="6" class="text-right">Subtotal</th><th>@Model.SubTotal.ToString("C")</th></tr><tr><th colspan="6" class="text-right">IVA</th><th>@Model.IVA.ToString("C")</th></tr><tr><th colspan="6" class="text-right">Total</th><th>@Model.Total.ToString("C")</th></tr></tfoot></table></div>
+    @if (!string.IsNullOrWhiteSpace(Model.Observaciones)) { <h3>Observaciones</h3><p style="white-space:pre-wrap">@Model.Observaciones</p> }
+    @if (!string.IsNullOrWhiteSpace(Model.Notas)) { <h3>Notas</h3><p style="white-space:pre-wrap">@Model.Notas</p> }
+    <h3>Firmas</h3>
+    <div class="row">@foreach (var signature in Model.Firmas) { <div class="col-sm-4"><div class="well"><small>Orden @signature.Orden</small><br /><strong>@signature.NombreFirmante</strong><br />@signature.CargoFirmante<br /><small>@signature.TipoFirma @(signature.FechaFirma.HasValue ? "- " + signature.FechaFirma.Value.ToString("dd/MM/yyyy HH:mm") : "")</small></div></div> }</div>
+</div>

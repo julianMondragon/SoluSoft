@@ -1,0 +1,66 @@
+@model TAS360.Models.ViewModel.Documentos.DocumentoEditViewModel
+@{
+    ViewBag.Title = "Crear documento";
+    Layout = "~/Views/Shared/_Layout3.cshtml";
+}
+
+<div class="container">
+    <div class="page-header"><h2>Crear documento</h2></div>
+    @if (ViewBag.ExceptionMessage != null) { <div class="alert alert-danger">@ViewBag.ExceptionMessage</div> }
+
+    @using (Html.BeginForm("Create", "Documento", FormMethod.Post, new { @class = "form-horizontal" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true, "", new { @class = "alert alert-danger" })
+        <div class="panel panel-default">
+            <div class="panel-heading"><strong>Datos generales</strong></div>
+            <div class="panel-body">
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Folio, new { @class = "col-sm-2 control-label" })
+                    <div class="col-sm-4">@Html.TextBoxFor(m => m.Folio, new { @class = "form-control", maxlength = "50", autofocus = "autofocus" }) @Html.ValidationMessageFor(m => m.Folio, "", new { @class = "text-danger" })</div>
+                    @Html.LabelFor(m => m.TipoDocumento, new { @class = "col-sm-2 control-label" })
+                    <div class="col-sm-4">@Html.DropDownListFor(m => m.TipoDocumento, Model.TiposDocumento, "-- Seleccione --", new { @class = "form-control" }) @Html.ValidationMessageFor(m => m.TipoDocumento, "", new { @class = "text-danger" })</div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Titulo, new { @class = "col-sm-2 control-label" })
+                    <div class="col-sm-10">@Html.TextBoxFor(m => m.Titulo, new { @class = "form-control", maxlength = "250" }) @Html.ValidationMessageFor(m => m.Titulo, "", new { @class = "text-danger" })</div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.FechaEmision, new { @class = "col-sm-2 control-label" })
+                    <div class="col-sm-4">@Html.TextBoxFor(m => m.FechaEmision, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" }) @Html.ValidationMessageFor(m => m.FechaEmision, "", new { @class = "text-danger" })</div>
+                    @Html.LabelFor(m => m.Cliente, new { @class = "col-sm-2 control-label" })
+                    <div class="col-sm-4">@Html.TextBoxFor(m => m.Cliente, new { @class = "form-control", maxlength = "250" }) @Html.ValidationMessageFor(m => m.Cliente, "", new { @class = "text-danger" })</div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Descripcion, new { @class = "col-sm-2 control-label" })
+                    <div class="col-sm-10">@Html.TextAreaFor(m => m.Descripcion, 5, 80, new { @class = "form-control", maxlength = "2000" }) @Html.ValidationMessageFor(m => m.Descripcion, "", new { @class = "text-danger" })</div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.LugarEmision, new { @class = "col-sm-2 control-label" })
+                    <div class="col-sm-4">@Html.TextBoxFor(m => m.LugarEmision, new { @class = "form-control", maxlength = "250" })</div>
+                    @Html.LabelFor(m => m.IVA, new { @class = "col-sm-2 control-label" })
+                    <div class="col-sm-4">@Html.TextBoxFor(m => m.IVA, new { @class = "form-control", type = "number", min = "0", step = "0.0001" })</div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.ResponsableNombre, new { @class = "col-sm-2 control-label" })
+                    <div class="col-sm-4">@Html.TextBoxFor(m => m.ResponsableNombre, new { @class = "form-control", maxlength = "200" })</div>
+                    @Html.LabelFor(m => m.ResponsablePuesto, new { @class = "col-sm-2 control-label" })
+                    <div class="col-sm-4">@Html.TextBoxFor(m => m.ResponsablePuesto, new { @class = "form-control", maxlength = "150" })</div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Observaciones, new { @class = "col-sm-2 control-label" })
+                    <div class="col-sm-4">@Html.TextAreaFor(m => m.Observaciones, 3, 40, new { @class = "form-control" })</div>
+                    @Html.LabelFor(m => m.Notas, new { @class = "col-sm-2 control-label" })
+                    <div class="col-sm-4">@Html.TextAreaFor(m => m.Notas, 3, 40, new { @class = "form-control" })</div>
+                </div>
+                @Html.HiddenFor(m => m.Estado)
+            </div>
+            <div class="panel-footer text-right">
+                <a class="btn btn-default" href="@Url.Action("Index")">Cancelar</a>
+                <button type="submit" class="btn btn-success">Crear y continuar</button>
+            </div>
+        </div>
+    }
+</div>
+
+@section scripts { @Scripts.Render("~/bundles/jqueryval") }

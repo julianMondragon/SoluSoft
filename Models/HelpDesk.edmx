@@ -101,6 +101,101 @@
           <Property Name="RutaArchivo" Type="nvarchar" MaxLength="500" />
           <Property Name="FechaFirma" Type="datetime" />
         </EntityType>
+        <EntityType Name="Documento">
+          <Key><PropertyRef Name="Id" /></Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="SyncGuid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Folio" Type="nvarchar" MaxLength="50" />
+          <Property Name="TipoDocumento" Type="varchar" MaxLength="30" Nullable="false" />
+          <Property Name="Estado" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="Titulo" Type="nvarchar" MaxLength="250" Nullable="false" />
+          <Property Name="Descripcion" Type="nvarchar" MaxLength="2000" />
+          <Property Name="Observaciones" Type="nvarchar" MaxLength="Max" />
+          <Property Name="Notas" Type="nvarchar" MaxLength="Max" />
+          <Property Name="ClienteNombre" Type="nvarchar" MaxLength="250" />
+          <Property Name="ResponsableNombre" Type="nvarchar" MaxLength="200" />
+          <Property Name="ResponsablePuesto" Type="nvarchar" MaxLength="150" />
+          <Property Name="LugarEmision" Type="nvarchar" MaxLength="250" />
+          <Property Name="FechaDocumento" Type="date" />
+          <Property Name="ContenidoJson" Type="nvarchar" MaxLength="Max" />
+          <Property Name="SubTotal" Type="decimal" Precision="18" Scale="4" Nullable="false" />
+          <Property Name="IVA" Type="decimal" Precision="18" Scale="4" Nullable="false" />
+          <Property Name="Total" Type="decimal" Precision="18" Scale="4" Nullable="false" />
+          <Property Name="RutaUltimoPdf" Type="nvarchar" MaxLength="1000" />
+          <Property Name="PdfGeneratedAt" Type="datetime2" Precision="0" />
+          <Property Name="Activo" Type="bit" Nullable="false" />
+          <Property Name="CreatedAt" Type="datetime2" Precision="0" Nullable="false" />
+          <Property Name="UpdatedAt" Type="datetime2" Precision="0" Nullable="false" />
+          <Property Name="CreatedByUserId" Type="int" />
+          <Property Name="UpdatedByUserId" Type="int" />
+        </EntityType>
+        <EntityType Name="DocumentoConcepto">
+          <Key><PropertyRef Name="Id" /></Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="DocumentoId" Type="int" Nullable="false" />
+          <Property Name="SyncGuid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Orden" Type="int" Nullable="false" />
+          <Property Name="Clave" Type="nvarchar" MaxLength="50" />
+          <Property Name="Descripcion" Type="nvarchar" MaxLength="1000" Nullable="false" />
+          <Property Name="Unidad" Type="nvarchar" MaxLength="30" />
+          <Property Name="Cantidad" Type="decimal" Precision="18" Scale="4" Nullable="false" />
+          <Property Name="PrecioUnitario" Type="decimal" Precision="18" Scale="4" Nullable="false" />
+          <Property Name="Importe" Type="decimal" Precision="18" Scale="4" Nullable="false" />
+          <Property Name="Activo" Type="bit" Nullable="false" />
+          <Property Name="CreatedAt" Type="datetime2" Precision="0" Nullable="false" />
+          <Property Name="UpdatedAt" Type="datetime2" Precision="0" Nullable="false" />
+          <Property Name="CreatedByUserId" Type="int" />
+          <Property Name="UpdatedByUserId" Type="int" />
+        </EntityType>
+        <EntityType Name="DocumentoFirma">
+          <Key><PropertyRef Name="Id" /></Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="DocumentoId" Type="int" Nullable="false" />
+          <Property Name="SyncGuid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Orden" Type="int" Nullable="false" />
+          <Property Name="TipoFirma" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="NombreFirmante" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="CargoFirmante" Type="nvarchar" MaxLength="150" />
+          <Property Name="FechaFirma" Type="datetime2" Precision="0" />
+          <Property Name="RutaArchivo" Type="nvarchar" MaxLength="1000" />
+          <Property Name="Firma" Type="varbinary" MaxLength="Max" />
+          <Property Name="Activo" Type="bit" Nullable="false" />
+          <Property Name="CreatedAt" Type="datetime2" Precision="0" Nullable="false" />
+          <Property Name="UpdatedAt" Type="datetime2" Precision="0" Nullable="false" />
+          <Property Name="CreatedByUserId" Type="int" />
+          <Property Name="UpdatedByUserId" Type="int" />
+        </EntityType>
+        <EntityType Name="DocumentoSeccion">
+          <Key><PropertyRef Name="Id" /></Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="DocumentoId" Type="int" Nullable="false" />
+          <Property Name="SyncGuid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Orden" Type="int" Nullable="false" />
+          <Property Name="Titulo" Type="nvarchar" MaxLength="250" />
+          <Property Name="Contenido" Type="nvarchar" MaxLength="Max" />
+          <Property Name="Activo" Type="bit" Nullable="false" />
+          <Property Name="CreatedAt" Type="datetime2" Precision="0" Nullable="false" />
+          <Property Name="UpdatedAt" Type="datetime2" Precision="0" Nullable="false" />
+          <Property Name="CreatedByUserId" Type="int" />
+          <Property Name="UpdatedByUserId" Type="int" />
+        </EntityType>
+        <EntityType Name="DocumentoSeccionImagen">
+          <Key><PropertyRef Name="Id" /></Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="DocumentoSeccionId" Type="int" Nullable="false" />
+          <Property Name="SyncGuid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Orden" Type="int" Nullable="false" />
+          <Property Name="NombreArchivo" Type="nvarchar" MaxLength="255" />
+          <Property Name="MimeType" Type="varchar" MaxLength="100" />
+          <Property Name="RutaArchivo" Type="nvarchar" MaxLength="1000" />
+          <Property Name="Imagen" Type="varbinary" MaxLength="Max" />
+          <Property Name="TextoAlternativo" Type="nvarchar" MaxLength="500" />
+          <Property Name="Activo" Type="bit" Nullable="false" />
+          <Property Name="CreatedAt" Type="datetime2" Precision="0" Nullable="false" />
+          <Property Name="UpdatedAt" Type="datetime2" Precision="0" Nullable="false" />
+          <Property Name="CreatedByUserId" Type="int" />
+          <Property Name="UpdatedByUserId" Type="int" />
+        </EntityType>
         <EntityType Name="Empresa">
           <Key>
             <PropertyRef Name="Id" />
@@ -846,6 +941,11 @@
           <EntitySet Name="DC3" EntityType="Self.DC3" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="DC3Documento" EntityType="Self.DC3Documento" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="DC3Firma" EntityType="Self.DC3Firma" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Documento" EntityType="Self.Documento" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="DocumentoConcepto" EntityType="Self.DocumentoConcepto" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="DocumentoFirma" EntityType="Self.DocumentoFirma" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="DocumentoSeccion" EntityType="Self.DocumentoSeccion" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="DocumentoSeccionImagen" EntityType="Self.DocumentoSeccionImagen" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Empresa" EntityType="Self.Empresa" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Files" EntityType="Self.Files" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Modulo" EntityType="Self.Modulo" Schema="dbo" store:Type="Tables" />
@@ -1216,6 +1316,11 @@
           <EntitySet Name="DC3" EntityType="HelpDeskModel.DC3" />
           <EntitySet Name="DC3Documento" EntityType="HelpDeskModel.DC3Documento" />
           <EntitySet Name="DC3Firma" EntityType="HelpDeskModel.DC3Firma" />
+          <EntitySet Name="Documento" EntityType="HelpDeskModel.Documento" />
+          <EntitySet Name="DocumentoConcepto" EntityType="HelpDeskModel.DocumentoConcepto" />
+          <EntitySet Name="DocumentoFirma" EntityType="HelpDeskModel.DocumentoFirma" />
+          <EntitySet Name="DocumentoSeccion" EntityType="HelpDeskModel.DocumentoSeccion" />
+          <EntitySet Name="DocumentoSeccionImagen" EntityType="HelpDeskModel.DocumentoSeccionImagen" />
           <EntitySet Name="Empresa" EntityType="HelpDeskModel.Empresa" />
           <EntitySet Name="Ocupacion" EntityType="HelpDeskModel.Ocupacion" />
           <EntitySet Name="Trabajador" EntityType="HelpDeskModel.Trabajador" />
@@ -2002,6 +2107,101 @@
           <Property Name="FechaFirma" Type="DateTime" Precision="3" />
           <NavigationProperty Name="DC3" Relationship="HelpDeskModel.FK_DC3Firma_DC3" FromRole="DC3Firma" ToRole="DC3" />
         </EntityType>
+        <EntityType Name="Documento">
+          <Key><PropertyRef Name="Id" /></Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="SyncGuid" Type="Guid" Nullable="false" />
+          <Property Name="Folio" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="TipoDocumento" Type="String" MaxLength="30" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Estado" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Titulo" Type="String" MaxLength="250" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Descripcion" Type="String" MaxLength="2000" FixedLength="false" Unicode="true" />
+          <Property Name="Observaciones" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Notas" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ClienteNombre" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="ResponsableNombre" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="ResponsablePuesto" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="LugarEmision" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="FechaDocumento" Type="DateTime" Precision="0" />
+          <Property Name="ContenidoJson" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="SubTotal" Type="Decimal" Precision="18" Scale="4" Nullable="false" />
+          <Property Name="IVA" Type="Decimal" Precision="18" Scale="4" Nullable="false" />
+          <Property Name="Total" Type="Decimal" Precision="18" Scale="4" Nullable="false" />
+          <Property Name="RutaUltimoPdf" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="PdfGeneratedAt" Type="DateTime" Precision="0" />
+          <Property Name="Activo" Type="Boolean" Nullable="false" />
+          <Property Name="CreatedAt" Type="DateTime" Precision="0" Nullable="false" />
+          <Property Name="UpdatedAt" Type="DateTime" Precision="0" Nullable="false" />
+          <Property Name="CreatedByUserId" Type="Int32" />
+          <Property Name="UpdatedByUserId" Type="Int32" />
+        </EntityType>
+        <EntityType Name="DocumentoConcepto">
+          <Key><PropertyRef Name="Id" /></Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="DocumentoId" Type="Int32" Nullable="false" />
+          <Property Name="SyncGuid" Type="Guid" Nullable="false" />
+          <Property Name="Orden" Type="Int32" Nullable="false" />
+          <Property Name="Clave" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Descripcion" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Unidad" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="Cantidad" Type="Decimal" Precision="18" Scale="4" Nullable="false" />
+          <Property Name="PrecioUnitario" Type="Decimal" Precision="18" Scale="4" Nullable="false" />
+          <Property Name="Importe" Type="Decimal" Precision="18" Scale="4" Nullable="false" />
+          <Property Name="Activo" Type="Boolean" Nullable="false" />
+          <Property Name="CreatedAt" Type="DateTime" Precision="0" Nullable="false" />
+          <Property Name="UpdatedAt" Type="DateTime" Precision="0" Nullable="false" />
+          <Property Name="CreatedByUserId" Type="Int32" />
+          <Property Name="UpdatedByUserId" Type="Int32" />
+        </EntityType>
+        <EntityType Name="DocumentoFirma">
+          <Key><PropertyRef Name="Id" /></Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="DocumentoId" Type="Int32" Nullable="false" />
+          <Property Name="SyncGuid" Type="Guid" Nullable="false" />
+          <Property Name="Orden" Type="Int32" Nullable="false" />
+          <Property Name="TipoFirma" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="NombreFirmante" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="CargoFirmante" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="FechaFirma" Type="DateTime" Precision="0" />
+          <Property Name="RutaArchivo" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="Firma" Type="Binary" MaxLength="Max" FixedLength="false" />
+          <Property Name="Activo" Type="Boolean" Nullable="false" />
+          <Property Name="CreatedAt" Type="DateTime" Precision="0" Nullable="false" />
+          <Property Name="UpdatedAt" Type="DateTime" Precision="0" Nullable="false" />
+          <Property Name="CreatedByUserId" Type="Int32" />
+          <Property Name="UpdatedByUserId" Type="Int32" />
+        </EntityType>
+        <EntityType Name="DocumentoSeccion">
+          <Key><PropertyRef Name="Id" /></Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="DocumentoId" Type="Int32" Nullable="false" />
+          <Property Name="SyncGuid" Type="Guid" Nullable="false" />
+          <Property Name="Orden" Type="Int32" Nullable="false" />
+          <Property Name="Titulo" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="Contenido" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Activo" Type="Boolean" Nullable="false" />
+          <Property Name="CreatedAt" Type="DateTime" Precision="0" Nullable="false" />
+          <Property Name="UpdatedAt" Type="DateTime" Precision="0" Nullable="false" />
+          <Property Name="CreatedByUserId" Type="Int32" />
+          <Property Name="UpdatedByUserId" Type="Int32" />
+        </EntityType>
+        <EntityType Name="DocumentoSeccionImagen">
+          <Key><PropertyRef Name="Id" /></Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="DocumentoSeccionId" Type="Int32" Nullable="false" />
+          <Property Name="SyncGuid" Type="Guid" Nullable="false" />
+          <Property Name="Orden" Type="Int32" Nullable="false" />
+          <Property Name="NombreArchivo" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="MimeType" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="RutaArchivo" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="Imagen" Type="Binary" MaxLength="Max" FixedLength="false" />
+          <Property Name="TextoAlternativo" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="Activo" Type="Boolean" Nullable="false" />
+          <Property Name="CreatedAt" Type="DateTime" Precision="0" Nullable="false" />
+          <Property Name="UpdatedAt" Type="DateTime" Precision="0" Nullable="false" />
+          <Property Name="CreatedByUserId" Type="Int32" />
+          <Property Name="UpdatedByUserId" Type="Int32" />
+        </EntityType>
         <EntityType Name="Empresa">
           <Key>
             <PropertyRef Name="Id" />
@@ -2523,6 +2723,76 @@
                 <ScalarProperty Name="TipoFirma" ColumnName="TipoFirma" />
                 <ScalarProperty Name="DC3Id" ColumnName="DC3Id" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Documento">
+            <EntityTypeMapping TypeName="HelpDeskModel.Documento">
+              <MappingFragment StoreEntitySet="Documento">
+                <ScalarProperty Name="PdfGeneratedAt" ColumnName="PdfGeneratedAt" /><ScalarProperty Name="RutaUltimoPdf" ColumnName="RutaUltimoPdf" />
+                <ScalarProperty Name="Total" ColumnName="Total" /><ScalarProperty Name="IVA" ColumnName="IVA" /><ScalarProperty Name="SubTotal" ColumnName="SubTotal" />
+                <ScalarProperty Name="UpdatedByUserId" ColumnName="UpdatedByUserId" /><ScalarProperty Name="CreatedByUserId" ColumnName="CreatedByUserId" />
+                <ScalarProperty Name="UpdatedAt" ColumnName="UpdatedAt" /><ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+                <ScalarProperty Name="Activo" ColumnName="Activo" /><ScalarProperty Name="ContenidoJson" ColumnName="ContenidoJson" />
+                <ScalarProperty Name="FechaDocumento" ColumnName="FechaDocumento" /><ScalarProperty Name="LugarEmision" ColumnName="LugarEmision" />
+                <ScalarProperty Name="ResponsablePuesto" ColumnName="ResponsablePuesto" /><ScalarProperty Name="ResponsableNombre" ColumnName="ResponsableNombre" />
+                <ScalarProperty Name="ClienteNombre" ColumnName="ClienteNombre" /><ScalarProperty Name="Notas" ColumnName="Notas" />
+                <ScalarProperty Name="Observaciones" ColumnName="Observaciones" /><ScalarProperty Name="Descripcion" ColumnName="Descripcion" />
+                <ScalarProperty Name="Titulo" ColumnName="Titulo" /><ScalarProperty Name="Estado" ColumnName="Estado" />
+                <ScalarProperty Name="TipoDocumento" ColumnName="TipoDocumento" /><ScalarProperty Name="Folio" ColumnName="Folio" />
+                <ScalarProperty Name="SyncGuid" ColumnName="SyncGuid" /><ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DocumentoConcepto">
+            <EntityTypeMapping TypeName="HelpDeskModel.DocumentoConcepto">
+              <MappingFragment StoreEntitySet="DocumentoConcepto">
+                <ScalarProperty Name="UpdatedByUserId" ColumnName="UpdatedByUserId" /><ScalarProperty Name="CreatedByUserId" ColumnName="CreatedByUserId" />
+                <ScalarProperty Name="UpdatedAt" ColumnName="UpdatedAt" /><ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+                <ScalarProperty Name="Activo" ColumnName="Activo" /><ScalarProperty Name="Importe" ColumnName="Importe" />
+                <ScalarProperty Name="PrecioUnitario" ColumnName="PrecioUnitario" /><ScalarProperty Name="Cantidad" ColumnName="Cantidad" />
+                <ScalarProperty Name="Unidad" ColumnName="Unidad" /><ScalarProperty Name="Descripcion" ColumnName="Descripcion" />
+                <ScalarProperty Name="Clave" ColumnName="Clave" /><ScalarProperty Name="Orden" ColumnName="Orden" />
+                <ScalarProperty Name="SyncGuid" ColumnName="SyncGuid" /><ScalarProperty Name="DocumentoId" ColumnName="DocumentoId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DocumentoFirma">
+            <EntityTypeMapping TypeName="HelpDeskModel.DocumentoFirma">
+              <MappingFragment StoreEntitySet="DocumentoFirma">
+                <ScalarProperty Name="UpdatedByUserId" ColumnName="UpdatedByUserId" /><ScalarProperty Name="CreatedByUserId" ColumnName="CreatedByUserId" />
+                <ScalarProperty Name="UpdatedAt" ColumnName="UpdatedAt" /><ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+                <ScalarProperty Name="Activo" ColumnName="Activo" /><ScalarProperty Name="Firma" ColumnName="Firma" />
+                <ScalarProperty Name="RutaArchivo" ColumnName="RutaArchivo" /><ScalarProperty Name="FechaFirma" ColumnName="FechaFirma" />
+                <ScalarProperty Name="CargoFirmante" ColumnName="CargoFirmante" /><ScalarProperty Name="NombreFirmante" ColumnName="NombreFirmante" />
+                <ScalarProperty Name="TipoFirma" ColumnName="TipoFirma" /><ScalarProperty Name="Orden" ColumnName="Orden" /><ScalarProperty Name="SyncGuid" ColumnName="SyncGuid" />
+                <ScalarProperty Name="DocumentoId" ColumnName="DocumentoId" /><ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DocumentoSeccion">
+            <EntityTypeMapping TypeName="HelpDeskModel.DocumentoSeccion">
+              <MappingFragment StoreEntitySet="DocumentoSeccion">
+                <ScalarProperty Name="UpdatedByUserId" ColumnName="UpdatedByUserId" /><ScalarProperty Name="CreatedByUserId" ColumnName="CreatedByUserId" />
+                <ScalarProperty Name="UpdatedAt" ColumnName="UpdatedAt" /><ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+                <ScalarProperty Name="Activo" ColumnName="Activo" /><ScalarProperty Name="Contenido" ColumnName="Contenido" />
+                <ScalarProperty Name="Titulo" ColumnName="Titulo" /><ScalarProperty Name="Orden" ColumnName="Orden" />
+                <ScalarProperty Name="SyncGuid" ColumnName="SyncGuid" /><ScalarProperty Name="DocumentoId" ColumnName="DocumentoId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DocumentoSeccionImagen">
+            <EntityTypeMapping TypeName="HelpDeskModel.DocumentoSeccionImagen">
+              <MappingFragment StoreEntitySet="DocumentoSeccionImagen">
+                <ScalarProperty Name="UpdatedByUserId" ColumnName="UpdatedByUserId" /><ScalarProperty Name="CreatedByUserId" ColumnName="CreatedByUserId" />
+                <ScalarProperty Name="UpdatedAt" ColumnName="UpdatedAt" /><ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+                <ScalarProperty Name="Activo" ColumnName="Activo" /><ScalarProperty Name="TextoAlternativo" ColumnName="TextoAlternativo" />
+                <ScalarProperty Name="Imagen" ColumnName="Imagen" /><ScalarProperty Name="RutaArchivo" ColumnName="RutaArchivo" />
+                <ScalarProperty Name="MimeType" ColumnName="MimeType" /><ScalarProperty Name="NombreArchivo" ColumnName="NombreArchivo" />
+                <ScalarProperty Name="Orden" ColumnName="Orden" /><ScalarProperty Name="SyncGuid" ColumnName="SyncGuid" />
+                <ScalarProperty Name="DocumentoSeccionId" ColumnName="DocumentoSeccionId" /><ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

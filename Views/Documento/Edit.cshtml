@@ -1,0 +1,254 @@
+@model TAS360.Models.ViewModel.Documentos.DocumentoEditViewModel
+@{
+    ViewBag.Title = "Editar documento";
+    Layout = "~/Views/Shared/_Layout3.cshtml";
+}
+
+<div class="container">
+    <div class="page-header">
+        <h2>Editar @Model.Folio <small>@Model.Estado</small></h2>
+        <a class="btn btn-default" href="@Url.Action("Index")">Volver</a>
+        <a class="btn btn-info" href="@Url.Action("Details", new { id = Model.Id })">Vista de consulta</a>
+        @if (Model.HasPdf) { <a class="btn btn-success" href="@Url.Action("DownloadPdf", new { id = Model.Id })"><span class="glyphicon glyphicon-download-alt"></span> Descargar PDF</a> }
+    </div>
+    @if (TempData["InfoMessage"] != null) { <div class="alert alert-success">@TempData["InfoMessage"]</div> }
+    @if (TempData["ErrorMessage"] != null) { <div class="alert alert-danger">@TempData["ErrorMessage"]</div> }
+    @if (ViewBag.ExceptionMessage != null) { <div class="alert alert-danger">@ViewBag.ExceptionMessage</div> }
+
+    @using (Html.BeginForm("Edit", "Documento", FormMethod.Post, new { @class = "form-horizontal" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(m => m.Id)
+        @Html.ValidationSummary(true, "", new { @class = "alert alert-danger" })
+        <div class="panel panel-primary">
+            <div class="panel-heading"><strong>Datos generales</strong></div>
+            <div class="panel-body">
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Folio, new { @class = "col-sm-2 control-label" })
+                    <div class="col-sm-4">@Html.TextBoxFor(m => m.Folio, new { @class = "form-control", maxlength = "50" }) @Html.ValidationMessageFor(m => m.Folio, "", new { @class = "text-danger" })</div>
+                    @Html.LabelFor(m => m.TipoDocumento, new { @class = "col-sm-2 control-label" })
+                    <div class="col-sm-4">@Html.DropDownListFor(m => m.TipoDocumento, Model.TiposDocumento, new { @class = "form-control" }) @Html.ValidationMessageFor(m => m.TipoDocumento, "", new { @class = "text-danger" })</div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Titulo, new { @class = "col-sm-2 control-label" })
+                    <div class="col-sm-10">@Html.TextBoxFor(m => m.Titulo, new { @class = "form-control", maxlength = "250" }) @Html.ValidationMessageFor(m => m.Titulo, "", new { @class = "text-danger" })</div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.FechaEmision, new { @class = "col-sm-2 control-label" })
+                    <div class="col-sm-4">@Html.TextBoxFor(m => m.FechaEmision, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" }) @Html.ValidationMessageFor(m => m.FechaEmision, "", new { @class = "text-danger" })</div>
+                    <label class="col-sm-2 control-label">Estado</label>
+                    <div class="col-sm-4">@Html.DropDownListFor(m => m.Estado, Model.EstadosDocumento, new { @class = "form-control" })</div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Cliente, new { @class = "col-sm-2 control-label" })
+                    <div class="col-sm-10">@Html.TextBoxFor(m => m.Cliente, new { @class = "form-control", maxlength = "250" }) @Html.ValidationMessageFor(m => m.Cliente, "", new { @class = "text-danger" })</div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Descripcion, new { @class = "col-sm-2 control-label" })
+                    <div class="col-sm-10">@Html.TextAreaFor(m => m.Descripcion, 4, 80, new { @class = "form-control", maxlength = "2000" })</div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.LugarEmision, new { @class = "col-sm-2 control-label" })
+                    <div class="col-sm-4">@Html.TextBoxFor(m => m.LugarEmision, new { @class = "form-control", maxlength = "250" })</div>
+                    @Html.LabelFor(m => m.IVA, new { @class = "col-sm-2 control-label" })
+                    <div class="col-sm-4">@Html.TextBoxFor(m => m.IVA, new { @class = "form-control", type = "number", min = "0", step = "0.0001" })</div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.ResponsableNombre, new { @class = "col-sm-2 control-label" })
+                    <div class="col-sm-4">@Html.TextBoxFor(m => m.ResponsableNombre, new { @class = "form-control", maxlength = "200" })</div>
+                    @Html.LabelFor(m => m.ResponsablePuesto, new { @class = "col-sm-2 control-label" })
+                    <div class="col-sm-4">@Html.TextBoxFor(m => m.ResponsablePuesto, new { @class = "form-control", maxlength = "150" })</div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Observaciones, new { @class = "col-sm-2 control-label" })
+                    <div class="col-sm-4">@Html.TextAreaFor(m => m.Observaciones, 3, 40, new { @class = "form-control" })</div>
+                    @Html.LabelFor(m => m.Notas, new { @class = "col-sm-2 control-label" })
+                    <div class="col-sm-4">@Html.TextAreaFor(m => m.Notas, 3, 40, new { @class = "form-control" })</div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Subtotal</label><div class="col-sm-4"><p class="form-control-static">@Model.SubTotal.ToString("C")</p></div>
+                    <label class="col-sm-2 control-label">Total</label><div class="col-sm-4"><p class="form-control-static"><strong>@Model.Total.ToString("C")</strong></p></div>
+                </div>
+            </div>
+            <div class="panel-footer text-right"><button class="btn btn-primary" type="submit">Guardar datos generales</button></div>
+        </div>
+    }
+
+    <div class="panel panel-default">
+        <div class="panel-heading"><strong>Secciones e imágenes</strong></div>
+        <div class="panel-body">
+            @foreach (var seccion in Model.Secciones)
+            {
+                <div class="well well-sm">
+                    @using (Html.BeginForm("SaveSection", "Documento", FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="Id" value="@seccion.Id" /><input type="hidden" name="DocumentoId" value="@Model.Id" />
+                        <div class="row">
+                            <div class="col-md-1 form-group"><label>Orden</label><input class="form-control" type="number" min="0" name="Orden" value="@seccion.Orden" /></div>
+                            <div class="col-md-4 form-group"><label>Título</label><input class="form-control" name="Titulo" maxlength="250" value="@seccion.Titulo" /></div>
+                            <div class="col-md-7 form-group"><label>Contenido</label><textarea class="form-control" name="Contenido" rows="3">@seccion.Contenido</textarea></div>
+                        </div>
+                        <button class="btn btn-sm btn-primary" type="submit">Actualizar sección</button>
+                    }
+                    @using (Html.BeginForm("DeleteSection", "Documento", FormMethod.Post, new { style = "display:inline-block;margin-top:5px" }))
+                    {
+                        @Html.AntiForgeryToken()<input type="hidden" name="id" value="@seccion.Id" /><input type="hidden" name="documentoId" value="@Model.Id" />
+                        <button class="btn btn-sm btn-danger" onclick="return confirm('¿Eliminar lógicamente esta sección y sus imágenes?');">Eliminar sección</button>
+                    }
+                    <hr />
+                    <div class="row">
+                        @foreach (var image in seccion.Imagenes)
+                        {
+                            <div class="col-xs-6 col-sm-3 text-center" style="margin-bottom:15px">
+                                <img class="img-responsive img-thumbnail" style="max-height:130px;margin:auto" src="@Url.Content("~" + image.RutaArchivo)" alt="@image.TextoAlternativo" />
+                                <small class="help-block">@image.NombreArchivo</small>
+                                @using (Html.BeginForm("SaveImageMetadata", "Documento", FormMethod.Post, new { @class = "form-inline" }))
+                                {
+                                    @Html.AntiForgeryToken()<input type="hidden" name="id" value="@image.Id" /><input type="hidden" name="documentoId" value="@Model.Id" />
+                                    <input class="form-control input-sm" style="width:60px" type="number" min="0" name="orden" value="@image.Orden" title="Orden" />
+                                    <input class="form-control input-sm" style="width:115px" name="textoAlternativo" maxlength="250" value="@image.TextoAlternativo" placeholder="Texto alternativo" />
+                                    <button class="btn btn-xs btn-primary" type="submit">Guardar</button>
+                                }
+                                @using (Html.BeginForm("DeleteImage", "Documento", FormMethod.Post))
+                                {
+                                    @Html.AntiForgeryToken()<input type="hidden" name="id" value="@image.Id" /><input type="hidden" name="documentoId" value="@Model.Id" />
+                                    <button class="btn btn-xs btn-danger" onclick="return confirm('¿Retirar esta imagen? El archivo físico se conservará.');">Retirar</button>
+                                }
+                            </div>
+                        }
+                    </div>
+                    @using (Html.BeginForm("UploadImages", "Documento", FormMethod.Post, new { enctype = "multipart/form-data", @class = "image-upload-form" }))
+                    {
+                        @Html.AntiForgeryToken()<input type="hidden" name="sectionId" value="@seccion.Id" />
+                        <div class="image-drop-zone" data-max-bytes="@ViewBag.ImageMaxBytes">
+                            <p><span class="glyphicon glyphicon-cloud-upload"></span> Arrastre aquí varias imágenes o haga clic para seleccionarlas.</p>
+                            <input class="document-image-input" type="file" name="images" multiple accept=".jpg,.jpeg,.png,image/jpeg,image/png" />
+                            <div class="image-preview clearfix"></div>
+                        </div>
+                        <button class="btn btn-sm btn-success" type="submit">Cargar imágenes</button>
+                        <span class="help-block">JPG, JPEG o PNG; máximo @Math.Ceiling(Convert.ToInt32(ViewBag.ImageMaxBytes) / 1048576m) MB por imagen.</span>
+                    }
+                </div>
+            }
+            <h4>Nueva sección</h4>
+            @using (Html.BeginForm("SaveSection", "Documento", FormMethod.Post, new { @class = "row" }))
+            {
+                @Html.AntiForgeryToken()<input type="hidden" name="DocumentoId" value="@Model.Id" />
+                <div class="col-md-1 form-group"><input class="form-control" type="number" min="0" name="Orden" value="@(Model.Secciones.Any() ? Model.Secciones.Max(x => x.Orden) + 1 : 0)" /></div>
+                <div class="col-md-4 form-group"><input class="form-control" name="Titulo" maxlength="250" placeholder="Título" /></div>
+                <div class="col-md-5 form-group"><textarea class="form-control" name="Contenido" rows="2" placeholder="Contenido"></textarea></div>
+                <div class="col-md-2"><button class="btn btn-success" type="submit">Agregar sección</button></div>
+            }
+        </div>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading"><strong>Conceptos o partidas</strong></div>
+        <div class="panel-body">
+            @foreach (var item in Model.Conceptos)
+            {
+                using (Html.BeginForm("SaveConcept", "Documento", FormMethod.Post, new { @class = "row", style = "margin-bottom:8px" }))
+                {
+                    @Html.AntiForgeryToken()<input type="hidden" name="Id" value="@item.Id" /><input type="hidden" name="DocumentoId" value="@Model.Id" />
+                    <div class="col-sm-1"><input class="form-control" type="number" min="0" name="Orden" value="@item.Orden" title="Orden" /></div>
+                    <div class="col-sm-1"><input class="form-control" name="Clave" maxlength="50" value="@item.Clave" placeholder="Clave" /></div>
+                    <div class="col-sm-3"><input class="form-control" required name="Descripcion" maxlength="1000" value="@item.Descripcion" placeholder="Descripción" /></div>
+                    <div class="col-sm-1"><input class="form-control" name="Unidad" maxlength="30" value="@item.Unidad" placeholder="Unidad" /></div>
+                    <div class="col-sm-2"><input class="form-control" type="number" min="0" step="0.0001" name="Cantidad" value="@item.Cantidad" /></div>
+                    <div class="col-sm-2"><input class="form-control" type="number" min="0" step="0.0001" name="PrecioUnitario" value="@item.PrecioUnitario" /></div>
+                    <div class="col-sm-2"><button class="btn btn-primary btn-sm">Guardar</button></div>
+                }
+                using (Html.BeginForm("DeleteConcept", "Documento", FormMethod.Post, new { style = "margin:-42px 0 12px calc(100% - 45px)" }))
+                {
+                    @Html.AntiForgeryToken()<input type="hidden" name="id" value="@item.Id" /><input type="hidden" name="documentoId" value="@Model.Id" /><button class="btn btn-danger btn-xs" onclick="return confirm('¿Eliminar esta partida?');">X</button>
+                }
+            }
+            <h4>Nueva partida</h4>
+            @using (Html.BeginForm("SaveConcept", "Documento", FormMethod.Post, new { @class = "row" }))
+            {
+                @Html.AntiForgeryToken()<input type="hidden" name="DocumentoId" value="@Model.Id" />
+                <div class="col-sm-1"><input class="form-control" type="number" min="0" name="Orden" value="@(Model.Conceptos.Any() ? Model.Conceptos.Max(x => x.Orden) + 1 : 0)" /></div>
+                <div class="col-sm-1"><input class="form-control" name="Clave" maxlength="50" placeholder="Clave" /></div>
+                <div class="col-sm-3"><input class="form-control" required name="Descripcion" maxlength="1000" placeholder="Descripción" /></div>
+                <div class="col-sm-1"><input class="form-control" name="Unidad" maxlength="30" placeholder="Unidad" /></div>
+                <div class="col-sm-2"><input class="form-control" type="number" min="0" step="0.0001" name="Cantidad" value="1" /></div>
+                <div class="col-sm-2"><input class="form-control" type="number" min="0" step="0.0001" name="PrecioUnitario" value="0" /></div>
+                <div class="col-sm-2"><button class="btn btn-success">Agregar</button></div>
+            }
+        </div>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading"><strong>Firmas</strong></div>
+        <div class="panel-body">
+            @foreach (var signature in Model.Firmas)
+            {
+                using (Html.BeginForm("SaveSignature", "Documento", FormMethod.Post, new { @class = "row", style = "margin-bottom:8px" }))
+                {
+                    @Html.AntiForgeryToken()<input type="hidden" name="Id" value="@signature.Id" /><input type="hidden" name="DocumentoId" value="@Model.Id" />
+                    <div class="col-sm-1"><input class="form-control" type="number" min="0" name="Orden" value="@signature.Orden" title="Orden" /></div>
+                    <div class="col-sm-2"><input class="form-control" required name="TipoFirma" maxlength="50" value="@signature.TipoFirma" placeholder="Tipo" /></div>
+                    <div class="col-sm-3"><input class="form-control" required name="NombreFirmante" maxlength="200" value="@signature.NombreFirmante" placeholder="Nombre" /></div>
+                    <div class="col-sm-3"><input class="form-control" name="CargoFirmante" maxlength="150" value="@signature.CargoFirmante" placeholder="Cargo" /></div>
+                    <div class="col-sm-2"><input class="form-control" type="datetime-local" name="FechaFirma" value="@(signature.FechaFirma.HasValue ? signature.FechaFirma.Value.ToString("yyyy-MM-ddTHH:mm") : "")" /></div>
+                    <div class="col-sm-1"><button class="btn btn-primary btn-sm">Guardar</button></div>
+                }
+                using (Html.BeginForm("DeleteSignature", "Documento", FormMethod.Post, new { style = "margin:-42px 0 12px calc(100% - 45px)" }))
+                {
+                    @Html.AntiForgeryToken()<input type="hidden" name="id" value="@signature.Id" /><input type="hidden" name="documentoId" value="@Model.Id" /><button class="btn btn-danger btn-xs" onclick="return confirm('¿Eliminar esta firma?');">X</button>
+                }
+            }
+            <h4>Nueva firma</h4>
+            @using (Html.BeginForm("SaveSignature", "Documento", FormMethod.Post, new { @class = "row" }))
+            {
+                @Html.AntiForgeryToken()<input type="hidden" name="DocumentoId" value="@Model.Id" />
+                <div class="col-sm-1"><input class="form-control" type="number" min="0" name="Orden" value="@(Model.Firmas.Any() ? Model.Firmas.Max(x => x.Orden) + 1 : 0)" title="Orden" /></div>
+                <div class="col-sm-2"><input class="form-control" required name="TipoFirma" maxlength="50" placeholder="Tipo" /></div>
+                <div class="col-sm-3"><input class="form-control" required name="NombreFirmante" maxlength="200" placeholder="Nombre" /></div>
+                <div class="col-sm-3"><input class="form-control" name="CargoFirmante" maxlength="150" placeholder="Cargo" /></div>
+                <div class="col-sm-2"><input class="form-control" type="datetime-local" name="FechaFirma" /></div>
+                <div class="col-sm-1"><button class="btn btn-success">Agregar</button></div>
+            }
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <style>
+        .image-drop-zone { border: 2px dashed #aaa; border-radius: 5px; padding: 15px; margin-bottom: 10px; cursor: pointer; background: #fafafa; }
+        .image-drop-zone.drag-over { border-color: #337ab7; background: #eef7ff; }
+        .image-preview-item { float: left; width: 110px; margin: 10px 10px 0 0; font-size: 11px; overflow: hidden; }
+        .image-preview-item img { width: 105px; height: 80px; object-fit: cover; }
+    </style>
+    <script>
+        (function () {
+            function validateAndPreview(input, files) {
+                var zone = input.closest('.image-drop-zone'), preview = zone.querySelector('.image-preview');
+                var max = parseInt(zone.getAttribute('data-max-bytes'), 10), accepted = /\.(jpe?g|png)$/i, valid = [];
+                preview.innerHTML = '';
+                Array.prototype.forEach.call(files, function (file) {
+                    if (!accepted.test(file.name) || file.size > max) { alert('Archivo no válido: ' + file.name + '. Use JPG, JPEG o PNG dentro del tamaño permitido.'); return; }
+                    valid.push(file);
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        var item = document.createElement('div'); item.className = 'image-preview-item';
+                        item.innerHTML = '<img class="img-thumbnail" src="' + e.target.result + '" alt=""><div>' + file.name.replace(/[<>]/g, '') + '</div>';
+                        preview.appendChild(item);
+                    };
+                    reader.readAsDataURL(file);
+                });
+                if (window.DataTransfer) { var dt = new DataTransfer(); valid.forEach(function (f) { dt.items.add(f); }); input.files = dt.files; }
+            }
+            document.querySelectorAll('.image-drop-zone').forEach(function (zone) {
+                var input = zone.querySelector('.document-image-input');
+                zone.addEventListener('click', function (e) { if (e.target !== input) input.click(); });
+                zone.addEventListener('dragover', function (e) { e.preventDefault(); zone.classList.add('drag-over'); });
+                zone.addEventListener('dragleave', function () { zone.classList.remove('drag-over'); });
+                zone.addEventListener('drop', function (e) { e.preventDefault(); zone.classList.remove('drag-over'); validateAndPreview(input, e.dataTransfer.files); });
+                input.addEventListener('change', function () { validateAndPreview(input, input.files); });
+            });
+        }());
+    </script>
+}

@@ -13,10 +13,20 @@ namespace TAS360.Filters
         private User oUser;
         private HelpDesk_Entities1 db = new HelpDesk_Entities1();
         private int idOperacion;
+        private string nombreOperacionConfigurada;
 
         public AuthorizeUser(int idOperacion = 0)
         {
             this.idOperacion = idOperacion;
+        }
+
+        /// <summary>
+        /// Permite autorizar por el nombre estable de la operacion y evita depender
+        /// de IDs identity que pueden cambiar entre ambientes.
+        /// </summary>
+        public AuthorizeUser(string nombreOperacion)
+        {
+            nombreOperacionConfigurada = nombreOperacion;
         }
 
         public override void OnAuthorization(AuthorizationContext filterContext)
@@ -35,6 +45,24 @@ namespace TAS360.Filters
                 }
                 else
                 {
+                    if (!string.IsNullOrWhiteSpace(nombreOperacionConfigurada))
+                    {
+                        var operacionConfigurada = db.Operacion
+                            .FirstOrDefault(x => x.nombre == nombreOperacionConfigurada);
+
+                        if (operacionConfigurada == null)
+                        {
+                            nombreOperacion = nombreOperacionConfigurada;
+                            filterContext.Result = new RedirectResult("~/Error/UnauthorizedOperation?operacion=" +
+                                HttpUtility.UrlEncode(nombreOperacion) +
+                                "&modulo=Documentos&message=" +
+                                HttpUtility.UrlEncode("La operacion no esta registrada en la base de datos."));
+                            return;
+                        }
+
+                        idOperacion = operacionConfigurada.id;
+                    }
+
                     var MyOperationsList = from Op in db.Roll_Operacion
                                            where Op.id_Roll == oUser.id_Roll && Op.id_Operacion == idOperacion
                                            select Op;
