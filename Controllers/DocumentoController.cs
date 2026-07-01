@@ -253,7 +253,7 @@ namespace TAS360.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [AuthorizeUser("Generar_Documento")]
+        //[AuthorizeUser("Generar_Documento")]
         public ActionResult GeneratePdf(int id)
         {
             try
