@@ -244,7 +244,7 @@ namespace TAS360.Controllers
         }
 
         [HttpGet]
-        [AuthorizeUser("Generar_Documento")]
+        //[AuthorizeUser("Generar_Documento")]
         public ActionResult DocumentPdf(int id)
         {
             var model = BuildDocumentViewModel(id);
